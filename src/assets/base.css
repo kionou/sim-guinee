@@ -1,0 +1,237 @@
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+
+  --vt-c-black: #181818;
+  --vt-c-black-soft: #222222;
+  --vt-c-black-mute: #282828;
+
+  --vt-c-indigo: #2c3e50;
+
+  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+  --vt-c-text-light-1: var(--vt-c-indigo);
+  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-dark-1: var(--vt-c-white);
+  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --color-primary: #369f4a;
+  --color-secondary: #ffca08;
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+
+  --color-border: var(--vt-c-divider-light-2);
+  --color-border-hover: var(--vt-c-divider-light-1);
+
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
+
+  --section-gap: 160px;
+}
+
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+  padding: 0;
+}
+
+.noresul {
+  border: 1px solid var(--primary-color);
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  border-radius: 6px;
+  font-size: 20px;
+  
+  }
+
+small {
+  color: #f8001b;
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+}
+
+.container_pagination {
+  width: auto;
+  text-align: end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px;
+  box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+  margin: 5px;
+  background-color:#fff;
+
+}
+
+.bouttons .boutton {
+  max-width: 50px;
+  width: 100%;
+  background: var(--primary-color);
+  color: #f9f9f9;
+  border: none;
+  padding: 8px;
+  /* text-transform: uppercase; */
+  border-radius: 2px;
+  cursor:pointer;
+  margin-top: 20px;
+}
+
+.bouttons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.bouttons .boutton:hover {
+ color: var(--primary-color);
+ background-color: #fff;
+ border: 1px solid var(--primary-color);
+}
+
+
+.boutton button {
+  max-width: 150px;
+  width: 100%;
+  background: var(--primary-color);
+  color: #f9f9f9;
+  border: none;
+  padding: 10px;
+  /* text-transform: uppercase; */
+  border-radius: 2px;
+  cursor:pointer;
+  margin-top: 20px;
+}
+
+.boutton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.boutton button:hover {
+ color: var(--primary-color);
+ background-color: #fff;
+ border: 1px solid var(--primary-color);
+}
+
+
+.form-container {
+  /* width: 700px; */
+  max-width: 1140px;
+  margin: 0 auto;
+  /* border-radius: 0.75rem; */
+  /* background-color: white; */
+  padding: 1rem;
+  color: black;
+  /* max-height: 550px; */
+  /* box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); */
+  /* border: 1px solid red; */
+}
+
+.form .content {
+  border: 1px solid rgb(201, 209, 217);
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+}
+
+.form {
+  margin-top: 1.5rem;
+}
+
+.input-groupe {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.input-groupe label {
+  display: block;
+  color: #000;
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+.m-select {
+  width: 100%;
+
+}
+
+.m-input{   
+  width: 100%;
+
+}
+
+.m-phone-number-input{
+width: 100%;
+
+}
+
+.modal-footer{
+
+  padding: 0 !important;
+}
+
+.contact-header {
+ 
+  background-color: white;
+  width: 100%;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+}
+.nombre{
+
+  color:#fff;
+  background-color:var( --secondary-rgb);
+  border-radius:50%;
+  padding: 2px 8px;
+  font-size: 16px;
+  z-index: 10; 
+}
+
+.nombres{
+
+  color:#fff;
+  background-color:#0ed1eff1;
+  border-radius:50%;
+  padding: 2px 8px;
+  font-size: 16px;
+  z-index: 10; 
+}
+.titre {
+  display: block;
+  color: #fff;
+  margin-bottom: 4px;
+  font-size: 16px;
+  width: fit-content;
+  border: 1px solid var(--secondary-rgb);
+  padding: 1px 5px;
+  font-weight: bolder;
+  left: 38px;
+    position: relative;
+    background-color: red;
+}
