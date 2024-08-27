@@ -85,8 +85,9 @@
           <li><router-link to="/sim/marches"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marchés</router-link></li>
           <li><router-link to="/sim/magasins"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link> </li>
           <li><router-link to="/sim/debarcaderes"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
+          <li><router-link to="/sim/unites"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Unités</router-link></li>
         </ul>
-      </li>		
+      </li>		 
      
     
       <li>

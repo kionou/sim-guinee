@@ -14,6 +14,8 @@ import Marches from '../views/parametrage/marches/default.vue'
 
 import Magasins from '../views/parametrage/magasins/default.vue'
 
+import Unites from '../views/parametrage/unites/default.vue'
+
 import Debarcaderes from '../views/parametrage/debarcaderes/default.vue'
 
 
@@ -47,6 +49,12 @@ const router = createRouter({
             name: 'localites',
             meta: { requiresAuth: true },
              component: Localite
+          },
+          {
+            path: 'unites',
+            name: 'unites',
+            meta: { requiresAuth: true },
+             component: Unites
           },
           {
             path: 'collectes',
