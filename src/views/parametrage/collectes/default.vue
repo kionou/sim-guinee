@@ -38,19 +38,584 @@
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#modal-center" ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
         </ul>
                   </div>        
 				</div>
-			  </div>
+		</div>
+<div class="box mx-2">
+	<div class="box-header with-border">
+		<h3 class="box-title mb-0">Liste des Collecteurs </h3>
+	</div>
+	
+	<div class="box-body">
+       <div class="table-responsive">
+         <table id="example1" class="table table-bordered table-striped">
+           <thead>
+               <tr>
+                   <th class="text-center">Code</th>
+                   <th>Nom & Prenoms</th>
+                   <th>Coordonnees</th>
+                   <th>Commune</th>
+                   <th>Relai</th>
+                   <th>Description</th>
+                   <th>Actions</th>
+                  
+               </tr>
+           </thead>
+           <tbody v-if="paginatedItems.length === 0" >
+                                                <tr>
+                                                  <td colspan="18">
+                                                    <div
+                                                      class="badge bg-warning"
+                                                      style="width: 100%; font-size: 14px"
+                                                    >
+                                                    Pas de données !!
+                                                    </div>
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+           <tbody v-else>
+               <tr v-for="data   in paginatedItems" :key="data.id">
+                   <td style="width: 50px;" class="text-center">
+                    {{ data?.code_collecteur ?? "-"}}
+                   </td>
+                   <td>
+					<div>
+					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-16">{{data.nom_collecteur}} {{data.prenom_collecteur}}</span>
+					<span style="font-size:12px !important" class="text-danger  d-block">{{data.sexe_collecteur[0]}} </span>
+				  </div>
+				   </td>
+                   <td >
+					<div>
+					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-16">{{data.adresse}}</span>
+					<span class="text-secondary d-block">{{data.telephone_collecteur}} / <b class="text-primary">{{data.whatsapp_collecteur}}</b> </span>
+				  </div>
+				   </td>
+				   <td style="width: 100px;" class="text-center">
+                    {{ data?.code_collecteur ?? "-"}}
+                   </td>
+				   <td style="width: 100px;" class="text-center">
+                    {{ data?.relai ?? "-"}}
+                   </td>
+				   <td style="width: 100px;" class="text-center">
+                    {{ data?.description ?? "-"}}
+                   </td>
+                   <td style="width: 100px;">
+                    <div class="d-flex justify-content-evenly border-0">
+                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_region_naturelle)"  data-original-title="Update" data-toggle="modal" data-target="#naturelle-update"><i class="ti-marker-alt"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_region_naturelle)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                    </div>   
+					</td > 
+               </tr>
+           </tbody>
+          
+         </table>
+       </div>
+       <div class="row">
+              <div class="col-lg-12">
+                <div class="container_pagination">
+                  <Pag
+                    :current-page="currentPage"
+                    :total-pages="totalPages"
+                    @page-change="updateCurrentPage"
+                  />
+                </div>
+              </div>
+             </div>
+          </div>
+</div>
+		
+
+   <div class="modal center-modal fade" id="modal-center"  ref="modal-center" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Ajouter des régions naturelles</h5>
+			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+         <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
+          <div class="bouttons" style="position: relative ; width: 100%; " > 
+        <div class="btn btn-secondary py-1 px-2" style="position: absolute; right: 0; top: 13px; z-index:1000" @click="AddformDataRegionNaturelles" ><i  class="ti-plus"></i></div>
+         </div>
+          <!-- </div>  -->
+                <div class="row align-items-center p-2  border-bottom " v-for="(regionNaturelle, index) in RegionNaturelles" :key="regionNaturelle.id">
+                  <div class="col-11">
+                    <span class="nombre">
+                            {{index + 1}}
+                        </span>
+                        <div class="row  content-group">
+                 
+                  <div class="col">
+                    <div class="input-groupe">
+                      <label for="userpassword"
+                        >Nom <span class="text-danger">*</span></label
+                      >
+                      <MazInput
+                        v-model="regionNaturelle.nom_region_naturelle"
+                        color="info"
+                        name="nom_region_naturelle"
+                        size="sm"
+                        rounded-size="sm"
+                        type="text"
+                        @input="clearErrorRegionNaturelles(index, 'nom_region_naturelle')"
+
+                      />
+                      <small v-if="errors.RegionNaturelles && errors.RegionNaturelles[index] && errors.RegionNaturelles[index].nom_region_naturelle">{{ errors.RegionNaturelles[index].nom_region_naturelle }}</small>
+                      <small v-if="resultError['RegionNaturelles']"> {{ resultError["RegionNaturelles"] }} </small>
+                    </div>
+                  </div>
+
+                 
+ 
+                </div>
+                  </div>
+                  <div class="col-1" style="position: relative">
+                    
+                      <button class="btn btn-sm btn-icon btn-danger btn-wave py-1 px-2" @click="deleteRowRegionNaturelles(index)"  style=" position:absolute !important ; top: 12px !important; background:red;">
+                       <i class="ti-trash"></i>
+                      </button>
+                  </div>
+
+                </div>
+             
+		  </div>
+		  <div class="modal-footer modal-footer-uniform text-end">
+		
+        <button type="button" @click="SubmitNaturelle('modal-center')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+
+
+		  </div>
+		</div>
+	  </div>
+	        </div>
+
+    
+          <div class="modal center-modal fade"  id="naturelle-update"  ref="naturelle-update" tabindex="-1">
+          <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Modifier une région naturelle</h5>
+            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                  <div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.nom_region_naturelle"
+                              color="secondary"
+                              name="step2.nom_region_naturelle"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.nom_region_naturelle.$error">{{
+                              v$.step2.nom_region_naturelle.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nom_region_naturelle']">
+                              {{ resultError["nom_region_naturelle"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+                      </div>
+                    
+            </div>
+            <div class="modal-footer modal-footer-uniform text-end">
+          
+              <button type="button" @click="submitUpdate('naturelle-update')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+          
+
+            </div>
+          </div>
+          </div>
+        </div>
     </div>
 </template>
 <script>
+import Pag from "@/components/others/pagination.vue";
+import Loading from "@/components/others/loading.vue";
+import axios from '@/lib/axiosConfig'
+import useVuelidate from "@vuelidate/core";
+import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
+import {successmsg} from "@/lib/modal.js"
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+  import Swal from 'sweetalert2'
 export default {
+	components:{
+        Pag , Loading
+    },
+    computed: {
+    loggedInUser() {
+      return this.$store.getters["auth/myAuthenticatedUser"];
+    },
+    totalPages() {
+      return Math.ceil(this.RegionsNaturelleOptions.length / this.itemsPerPage);
+    },
+    paginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.RegionsNaturelleOptions.slice(startIndex, endIndex);
+    },
+  
+  },
+    data() {
+        return {
+            loading: true,
+            searchNaturelle:"",
+            isModalUpdate:"",
+            RegionsNaturelleOptions: [],
+            data:[],
+            currentPage: 1,
+            itemsPerPage: 10,
+            ToId:"",
+            totalPageArray: [],
+            step2: {nom_region_naturelle:"",},
+            v$: useVuelidate(),
+            error: "",
+            resultError: {},
+            errors: {RegionNaturelles: [] , },
+        RegionNaturelles:[{ nom_region_naturelle:"", }
+        ],
+
+        }
+    },
+    validations: {
+       
+        step2: {nom_region_naturelle:{require}},
+  },
+  async  mounted() {
+    await this.fetchRegionNaturelle()
+        
+    },
+    methods: {
+        successmsg:successmsg,
+        AddformDataRegionNaturelles() {
+     this.RegionNaturelles.push({  nom_region_naturelle:''});
+   },
+   deleteRowRegionNaturelles(index) {
+  
+   if(index !== 0){
+     this.RegionNaturelles.splice(index, 1);
+   }
+  },
+  clearErrorRegionNaturelles(index, field) {   
+     if (this.errors.RegionNaturelles[index]) {
+       this.errors.RegionNaturelles[index][field] = null;
+     }
+   },
+   validateRegionNaturelles() {
+    let isValid = true;
+    this.errors = { RegionNaturelles: [] };
+    this.RegionNaturelles.forEach((regionNaturelle, index) => {
+        const regionNaturelleErrors = {};
+        
+        if (!regionNaturelle.nom_region_naturelle) {
+            regionNaturelleErrors.nom_region_naturelle = 'Ce champs est obligatoire!';
+            isValid = false;
+        }
+       
+      
+        this.errors.RegionNaturelles[index] = regionNaturelleErrors;
+    });
+    return isValid;
+},
+        
+        async fetchRegionNaturelle() {
+      try {
+        const response = await axios.get( '/parametrages/collecteurs',
+          {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+            
+          }
+        );
+
+          console.log('responsecolecteurs',response)
+        if (response.status === 200) {
+              this.data  = response.data ;
+              this.RegionsNaturelleOptions = this.data
+              this.loading =  false
+        }
+      } catch (error) {
+        console.log('errornaturelle',error.response)
+       
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+    },
+    async SubmitNaturelle(modalId) {
+     
+      if (this.validateRegionNaturelles()) {
+        console.log('regions',this.RegionNaturelles)
+        this.loading = true;
+        try {
+          const response = await axios.post("/parametrages/localites/region-naturelles", this.RegionNaturelles, {
+            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
+           
+          }
+          });
+       console.log('qfs',response)
+
+      
+          if (response.status === 200) {
+             this.closeModal(modalId);
+             this.successmsg(
+                "Création de régions naturelles",
+                "Vos régions naturelles ont été créées avec succès !"
+            );
+            await this.fetchRegionNaturelle();
+          } else {
+          }
+        } catch (error) {
+            console.log('erroor',error)
+   
+
+          this.loading = false;
+        //   if (error.response.data.status === "error") {
+        //     return (this.error = error.response.data.message);
+        //   } else {
+        //     this.formatValidationErrors(error.response.data.errors);
+        //   }
+        }
+      } else {
+      
+      }
+    },
+    async  HandleIdUpdate(id){
+    this.loading = true;
+
+      try {
+        const response = await axios.get(`/parametrages/localites/region-naturelles/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`
+          }
+        });
+
+      
+        if (response.status === 200) {
+            console.log('Slbvlkjbv',response)
+        
+          let data =  response.data
+          this.step2.nom_region_naturelle = data.nom_region_naturelle,
+       
+          this.ToId = data.id_region_naturelle
+          this.loading = false;
+        
+        }
+      } catch (error) {
+      
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+
+    },
+    async  submitUpdate(modalId){
+   
+   this.v$.step2.$touch();
+
+ 
+    if (this.v$.$errors.length == 0) {
     
+       this.loading = true;
+       let data = {
+            nom_region_naturelle:this.step2.nom_region_naturelle,
+          
+          
+            }
+
+
+ 
+      try {
+        const response = await axios.put(`/parametrages/localites/region-naturelles/${this.ToId}`,data, {
+          headers: {
+           
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          
+          },
+        });
+     
+        if (response.status === 200) {
+          this.closeModal(modalId);
+          this.successmsg(
+                "Mise à jour de la région naturelle",
+                "Votre région naturelle a été mise à jour avec succès !"
+            );
+            await this.fetchRegionNaturelle();
+         
+          
+        } 
+      } catch (error) {
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+    } else {
+  
+      this.loading = false;
+
+    }
+   },
+    async HandleIdDelete(id) {
+     // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
+     const result = await Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: 'Vous ne pourrez pas annuler cette action !',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, supprimez-le !',
+        cancelButtonText: 'Non, annulez !',
+        reverseButtons: true
+     });
+
+     // Si l'utilisateur confirme la suppression
+     if (result.isConfirmed) {
+       this.ConfirmeDelete(id);
+     }
+         },
+         async ConfirmeDelete(id) {
+          this.loading = true
+         
+         try {
+           // Faites une requête pour supprimer l'élément avec l'ID itemId
+           const response = await axios.delete(`/parametrages/localites/region-naturelles/${id}`, {
+             headers: {
+               Authorization: `Bearer ${this.loggedInUser.token}`,
+               
+   
+             },
+   
+   
+           });
+       
+           if (response.status === 200) {
+             this.loading = false
+                        this.successmsg(
+                "Suppression de la région naturelle",
+                "Votre région naturelle a été supprimée avec succès !"
+            );
+            await this.fetchRegionNaturelle();
+   
+           } else {
+        
+            if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+           }
+         } catch (error) {
+           console.error('Erreur lors de la suppression:', error);
+          
+        //    if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
+        //         await this.$store.dispatch('auth/clearMyAuthenticatedUser');
+        //       this.$router.push("/");  //a revoir
+        //     }
+           
+         }
+   
+       },
+    filterByName() {
+this.currentPage = 1;
+if (this.searchNaturelle !== null) {
+   const tt = this.searchNaturelle;
+  const  searchValue = tt.toLowerCase()
+  this.RegionsNaturelleOptions =this.data.filter(user => {
+    const Nom = user.nom_region_naturelle || '';
+    return Nom.toLowerCase().includes(searchValue)  ;
+  });
+
+} else {
+this.RegionsNaturelleOptions = [...this.data];
+ 
+}
+
+},
+closeModal(modalId) {
+      let modalElement = this.$refs[modalId];
+      modalElement.classList.remove("show");
+      modalElement.style.display = "none";
+      modalElement.style.opacity = "";
+       document.body.classList.remove("modal-open");
+      let modalBackdrop = document.querySelector(".modal-backdrop");
+      if (modalBackdrop) {
+        modalBackdrop.parentNode.removeChild(modalBackdrop);
+      }
+    },
+    async formatValidationErrors(errors) {
+      const formattedErrors = {};
+
+      for (const field in errors) {
+        const errorMessages = errors[field]; // Liste complète des messages d'erreur
+  
+
+        const concatenatedError = errorMessages.join(", "); // Concaténer les messages d'erreur
+       
+
+        formattedErrors[field] = concatenatedError; // Utilisez le nom du champ comme clé
+      }
+
+      this.resultError = formattedErrors; // Stockez les erreurs dans un objet
+
+    
+    },
+        updateCurrentPage(pageNumber) {
+      this.currentPage = pageNumber;
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth", // Utilisez 'auto' pour un défilement instantané
+      });
+    },
+    updatePaginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.RegionsNaturelleOptions.slice(startIndex, endIndex);
+    },
+    },
 }
 </script>
 <style lang="css" scoped>

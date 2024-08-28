@@ -13,7 +13,7 @@
 					<div class="search-bx mx-5">
 						<form>
 							<div class="input-group">
-							  <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchNaturelle" @input="filterByName">
 							  <div class="input-group-append">
 								<button class="btn border border-1" ><i class="ti-search"></i></button>
 							  </div>
@@ -23,7 +23,7 @@
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-secondary mb-5" data-toggle="modal" data-target="#modal-center" ><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#modal-center" ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
@@ -38,30 +38,29 @@
                <tr>
                    <th class="text-center">N°</th>
                    <th>Intitulé</th>
-                   <th>Etat</th>
                    <th>Actions</th>
                   
                </tr>
            </thead>
            <tbody v-if="paginatedItems.length === 0" >
-                                                <tr>
-                                                  <td colspan="18">
-                                                    <div
-                                                      class="badge bg-warning"
-                                                      style="width: 100%; font-size: 14px"
-                                                    >
-                                                    Pas de données !!
-                                                    </div>
-                                                  </td>
-                                                </tr>
-                                              </tbody>
+            <tr>
+              <td colspan="18">
+                <div
+                  class="badge bg-warning"
+                  style="width: 100%; font-size: 14px"
+                >
+                Pas de données !!
+                </div>
+              </td>
+            </tr>
+          </tbody>
            <tbody v-else>
                <tr v-for="(data , index)  in paginatedItems" :key="data.id">
                    <td style="width: 50px;" class="text-center">
                     {{ index+1 }}
                    </td>
                    <td>{{ data.nom_region_naturelle }}</td>
-                   <td style="width: 120px;">Edinburgh</td>
+                   
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_region_naturelle)"  data-original-title="Update" data-toggle="modal" data-target="#naturelle-update"><i class="ti-marker-alt"></i></a>
@@ -94,108 +93,116 @@
 	  <div class="modal-dialog">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title">Modal title</h5>
-			<button type="button" class="close" data-dismiss="modal">
+			<h5 class="modal-title">Ajouter des régions naturelles</h5>
+			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
 			  <span aria-hidden="true">&times;</span>
 			</button>
 		  </div>
 		  <div class="modal-body">
-            <div class="row mt-3 content-group">
+         <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
+          <div class="bouttons" style="position: relative ; width: 100%; " > 
+        <div class="btn btn-secondary py-1 px-2" style="position: absolute; right: 0; top: 13px; z-index:1000" @click="AddformDataRegionNaturelles" ><i  class="ti-plus"></i></div>
+         </div>
+          <!-- </div>  -->
+                <div class="row align-items-center p-2  border-bottom " v-for="(regionNaturelle, index) in RegionNaturelles" :key="regionNaturelle.id">
+                  <div class="col-11">
+                    <span class="nombre">
+                            {{index + 1}}
+                        </span>
+                        <div class="row  content-group">
+                 
                   <div class="col">
                     <div class="input-groupe">
                       <label for="userpassword"
-                        > Nom <span class="text-danger">*</span></label
+                        >Nom <span class="text-danger">*</span></label
                       >
                       <MazInput
-                        v-model="step1.nom_region_naturelle"
-                        color="secondary"
-                        name="step1.nom_region_naturelle"
+                        v-model="regionNaturelle.nom_region_naturelle"
+                        color="info"
+                        name="nom_region_naturelle"
                         size="sm"
                         rounded-size="sm"
                         type="text"
-                        
-                        
+                        @input="clearErrorRegionNaturelles(index, 'nom_region_naturelle')"
+
                       />
-                      <small v-if="v$.step1.nom_region_naturelle.$error">{{
-                        v$.step1.nom_region_naturelle.$errors[0].$message
-                      }}</small>
-                      <small v-if="resultError['nom_region_naturelle']">
-                        {{ resultError["nom_region_naturelle"] }}
-                      </small>
+                      <small v-if="errors.RegionNaturelles && errors.RegionNaturelles[index] && errors.RegionNaturelles[index].nom_region_naturelle">{{ errors.RegionNaturelles[index].nom_region_naturelle }}</small>
+                      <small v-if="resultError['RegionNaturelles']"> {{ resultError["RegionNaturelles"] }} </small>
                     </div>
                   </div>
-                
-                </div>
-                <div class="row justify-content-center mt-10">
-                    <div class="col-4">
-                    <button type="button" @click="SubmitNaturelle('modal-center')" class="waves-effect waves-light btn btn-secondary ">Valider</button>
 
-                    </div>
+                 
+ 
+                </div>
+                  </div>
+                  <div class="col-1" style="position: relative">
+                    
+                      <button class="btn btn-sm btn-icon btn-danger btn-wave py-1 px-2" @click="deleteRowRegionNaturelles(index)"  style=" position:absolute !important ; top: 12px !important; background:red;">
+                       <i class="ti-trash"></i>
+                      </button>
+                  </div>
 
                 </div>
+             
 		  </div>
 		  <div class="modal-footer modal-footer-uniform text-end">
 		
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" @click="SubmitNaturelle('modal-center')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+
 
 		  </div>
 		</div>
 	  </div>
-	</div>
+	        </div>
 
     
-    <div class="modal center-modal fade" id="naturelle-update"  ref="naturelle-update" tabindex="-1">
-	  <div class="modal-dialog">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">Modal title</h5>
-			<button type="button" class="close" data-dismiss="modal">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-            <div class="row mt-3 content-group">
-                  <div class="col">
-                    <div class="input-groupe">
-                      <label for="userpassword"
-                        > Nom <span class="text-danger">*</span></label
-                      >
-                      <MazInput
-                        v-model="step2.nom_region_naturelle"
-                        color="secondary"
-                        name="step2.nom_region_naturelle"
-                        size="sm"
-                        rounded-size="sm"
-                        type="text"
-                        
-                        
-                      />
-                      <small v-if="v$.step2.nom_region_naturelle.$error">{{
-                        v$.step2.nom_region_naturelle.$errors[0].$message
-                      }}</small>
-                      <small v-if="resultError['nom_region_naturelle']">
-                        {{ resultError["nom_region_naturelle"] }}
-                      </small>
-                    </div>
-                  </div>
-                
-                </div>
-                <div class="row justify-content-center mt-10">
-                    <div class="col-4">
-                    <button type="button" @click="submitUpdate('naturelle-update')" class="waves-effect waves-light btn btn-secondary ">Valider</button>
+          <div class="modal center-modal fade"  id="naturelle-update"  ref="naturelle-update" tabindex="-1">
+          <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Modifier une région naturelle</h5>
+            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                  <div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.nom_region_naturelle"
+                              color="secondary"
+                              name="step2.nom_region_naturelle"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.nom_region_naturelle.$error">{{
+                              v$.step2.nom_region_naturelle.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nom_region_naturelle']">
+                              {{ resultError["nom_region_naturelle"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+                      </div>
+                    
+            </div>
+            <div class="modal-footer modal-footer-uniform text-end">
+          
+              <button type="button" @click="submitUpdate('naturelle-update')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+          
 
-                    </div>
-
-                </div>
-		  </div>
-		  <div class="modal-footer modal-footer-uniform text-end">
-		
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-
-		  </div>
-		</div>
-	  </div>
-	</div>
+            </div>
+          </div>
+          </div>
+        </div>
     </div>
 </template>
 <script>
@@ -228,22 +235,26 @@ export default {
     data() {
         return {
             loading: true,
+            searchNaturelle:"",
+            isModalUpdate:"",
             RegionsNaturelleOptions: [],
             data:[],
             currentPage: 1,
             itemsPerPage: 10,
             ToId:"",
             totalPageArray: [],
-            step1: { nom_region_naturelle:"", },
             step2: {nom_region_naturelle:"",},
             v$: useVuelidate(),
             error: "",
             resultError: {},
+            errors: {RegionNaturelles: [] , },
+        RegionNaturelles:[{ nom_region_naturelle:"", }
+        ],
 
         }
     },
     validations: {
-        step1: { nom_region_naturelle:{require}},
+       
         step2: {nom_region_naturelle:{require}},
   },
   async  mounted() {
@@ -252,10 +263,40 @@ export default {
     },
     methods: {
         successmsg:successmsg,
+        AddformDataRegionNaturelles() {
+     this.RegionNaturelles.push({  nom_region_naturelle:''});
+   },
+   deleteRowRegionNaturelles(index) {
+  
+   if(index !== 0){
+     this.RegionNaturelles.splice(index, 1);
+   }
+  },
+  clearErrorRegionNaturelles(index, field) {   
+     if (this.errors.RegionNaturelles[index]) {
+       this.errors.RegionNaturelles[index][field] = null;
+     }
+   },
+   validateRegionNaturelles() {
+    let isValid = true;
+    this.errors = { RegionNaturelles: [] };
+    this.RegionNaturelles.forEach((regionNaturelle, index) => {
+        const regionNaturelleErrors = {};
+        
+        if (!regionNaturelle.nom_region_naturelle) {
+            regionNaturelleErrors.nom_region_naturelle = 'Ce champs est obligatoire!';
+            isValid = false;
+        }
+       
+      
+        this.errors.RegionNaturelles[index] = regionNaturelleErrors;
+    });
+    return isValid;
+},
         
         async fetchRegionNaturelle() {
       try {
-        const response = await axios.get( '/localites/region-naturelles',
+        const response = await axios.get( '/parametrages/localites/region-naturelles',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -271,14 +312,10 @@ export default {
               this.loading =  false
         }
       } catch (error) {
+        console.log('errornaturelle',error.response)
        
-        if (error.response.data.status === "error") {
-
-
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
             await this.$store.dispatch("auth/clearMyAuthenticatedUser");
             this.$router.push("/"); //a revoir
           }
@@ -290,22 +327,12 @@ export default {
       }
     },
     async SubmitNaturelle(modalId) {
-      this.v$.step1.$touch();
-      if (this.v$.$errors.length == 0) {
+     
+      if (this.validateRegionNaturelles()) {
+        console.log('regions',this.RegionNaturelles)
         this.loading = true;
-       let data = 
-             [
-                {
-                    nom_region_naturelle:this.step1.nom_region_naturelle,
-                }
-                ]
-       
-       
-       console.log('qfs',data)
-    
-
         try {
-          const response = await axios.post("/localites/region-naturelles", data, {
+          const response = await axios.post("/parametrages/localites/region-naturelles", this.RegionNaturelles, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
            
           }
@@ -315,10 +342,10 @@ export default {
       
           if (response.status === 200) {
              this.closeModal(modalId);
-            this.successmsg(
-                "Création de mode de financement",
-                "Votre mode de financement a été crée avec succès !"
-              );
+             this.successmsg(
+                "Création de régions naturelles",
+                "Vos régions naturelles ont été créées avec succès !"
+            );
             await this.fetchRegionNaturelle();
           } else {
           }
@@ -341,7 +368,7 @@ export default {
     this.loading = true;
 
       try {
-        const response = await axios.get(`/localites/region-naturelles/${id}`, {
+        const response = await axios.get(`/parametrages/localites/region-naturelles/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`
           }
@@ -360,21 +387,16 @@ export default {
         }
       } catch (error) {
       
-        // if (error.response.data.status === "error") {
-    
-
-        //   if (
-        //     error.response.data.message === "Vous n'êtes pas autorisé." ||
-        //     error.response.status === 401
-        //   ) {
-        //     await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-        //     this.$router.push("/"); //a revoir
-        //   }
-        // } else {
-        //   this.formatValidationErrors(error.response.data.errors);
-        //   this.loading = false;
-        //   return false;
-        // }
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
       }
 
     },
@@ -395,7 +417,7 @@ export default {
 
  
       try {
-        const response = await axios.put(`/localites/region-naturelles/${this.ToId}`,data, {
+        const response = await axios.put(`/parametrages/localites/region-naturelles/${this.ToId}`,data, {
           headers: {
            
             Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -406,25 +428,24 @@ export default {
         if (response.status === 200) {
           this.closeModal(modalId);
           this.successmsg(
-            "Données du financement mises à jour",
-            "Les données du financement ont été mises à jour avec succès !"
-          );
+                "Mise à jour de la région naturelle",
+                "Votre région naturelle a été mise à jour avec succès !"
+            );
             await this.fetchRegionNaturelle();
          
           
         } 
       } catch (error) {
-        console.error("Erreur lors du téléversement :", error);
-       
-        if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-              await this.$store.dispatch('auth/clearMyAuthenticatedUser');
-            this.$router.push("/");  //a revoir
+        if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
           }
-     else{
-       this.formatValidationErrors(error.response.data.errors);
-       this.loading = false;
-
-     }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
       }
     } else {
   
@@ -454,7 +475,7 @@ export default {
          
          try {
            // Faites une requête pour supprimer l'élément avec l'ID itemId
-           const response = await axios.delete(`/localites/region-naturelles/${id}`, {
+           const response = await axios.delete(`/parametrages/localites/region-naturelles/${id}`, {
              headers: {
                Authorization: `Bearer ${this.loggedInUser.token}`,
                
@@ -466,15 +487,24 @@ export default {
        
            if (response.status === 200) {
              this.loading = false
-             this.successmsg(
-                  "Données du mode de financement supprimées",
-                  "Les données du mode de financement ont été supprimées avec succès !"
-              );
+                        this.successmsg(
+                "Suppression de la région naturelle",
+                "Votre région naturelle a été supprimée avec succès !"
+            );
             await this.fetchRegionNaturelle();
    
            } else {
         
-             this.loading = false
+            if (error) {
+          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
            }
          } catch (error) {
            console.error('Erreur lors de la suppression:', error);
@@ -489,18 +519,16 @@ export default {
        },
     filterByName() {
 this.currentPage = 1;
-if (this.control.name !== null) {
-   const tt = this.control.name;
+if (this.searchNaturelle !== null) {
+   const tt = this.searchNaturelle;
   const  searchValue = tt.toLowerCase()
-  this.ClientOptions =this.data.filter(user => {
-    const Nom = user.duty_name || '';
-    const Descriptions = user.descriptions || '';
-   
-    return Nom.toLowerCase().includes(searchValue) || Descriptions.toLowerCase().includes(searchValue) ;
+  this.RegionsNaturelleOptions =this.data.filter(user => {
+    const Nom = user.nom_region_naturelle || '';
+    return Nom.toLowerCase().includes(searchValue)  ;
   });
 
 } else {
-this.ClientOptions = [...this.data];
+this.RegionsNaturelleOptions = [...this.data];
  
 }
 
@@ -509,7 +537,8 @@ closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");
       modalElement.style.display = "none";
-      document.body.classList.remove("modal-open");
+      modalElement.style.opacity = "";
+       document.body.classList.remove("modal-open");
       let modalBackdrop = document.querySelector(".modal-backdrop");
       if (modalBackdrop) {
         modalBackdrop.parentNode.removeChild(modalBackdrop);

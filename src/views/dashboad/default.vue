@@ -43,7 +43,7 @@
   </a>
   <ul v-if="isOpen" class="custom-dropdown-menu">
     <li class="user-body">
-      <router-link class="custom-dropdown-item" to="/"><i class="ti-user text-muted mr-2"></i> Profil</router-link>
+      <router-link class="custom-dropdown-item" to="/sim/profil"><i class="ti-user text-muted mr-2"></i> Profil</router-link>
       <div class="custom-dropdown-divider"></div>
       <a class="custom-dropdown-item" href="#" @click="logout"><i class="ti-lock text-muted mr-2"></i> Deconnexion</a>
     </li>
@@ -59,8 +59,7 @@
 
 <aside class="main-sidebar">
   <!-- sidebar-->
-  <section class="sidebar">	
-      
+  <section class="sidebar">  
     <!-- sidebar menu-->
     <ul class="sidebar-menu" data-widget="tree">
       <li>
@@ -69,36 +68,82 @@
           <span>Tableau de bord</span>
         </router-link>
       </li>
-     
-     
-      <li class="treeview">
-        <router-link to="#">
-          <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
-          <span>Paramétrages</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-right pull-right"></i>
-          </span>
-        </router-link>
-        <ul class="treeview-menu">			
-          <li><router-link to="/sim/localites"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Localités</router-link></li>
-          <li><router-link to="/sim/collectes"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Collecteurs</router-link></li>
-          <li><router-link to="/sim/marches"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marchés</router-link></li>
-          <li><router-link to="/sim/magasins"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link> </li>
-          <li><router-link to="/sim/debarcaderes"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
-        </ul>
-      </li>		
-     
-    
       <li>
+      <router-link to="#" @click.stop="toggleDropdownMenu('parametrages')">
+        <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
+        <span>Paramétrages</span>
+        <span class="pull-right-container">
+          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.parametrages }]"></i>
+        </span>
+      </router-link>
+      <transition name="slide">
+        <ul v-show="openMenus.parametrages" class="submenu">
+          <li><router-link to="/sim/localites" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Localités</router-link></li>
+          <li><router-link to="/sim/collectes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Collecteurs</router-link></li>
+          <li><router-link to="/sim/marches" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Marchés</router-link></li>
+          <li><router-link to="/sim/magasins" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link></li>
+          <li><router-link to="/sim/debarcaderes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
+          <li><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Types produits</router-link></li>
+        </ul>
+      </transition>
+    </li>
+    <li>
+      <router-link to="#" @click.stop="toggleDropdownMenu('users')">
+        <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
+        <span>Gestions des users</span>
+        <span class="pull-right-container">
+          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.users }]"></i>
+        </span>
+      </router-link>
+      <transition name="slide">
+        <ul v-show="openMenus.users" class="submenu">
+          <li><router-link to="/sim/utilisateurs" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Utilisateurs</router-link></li>
+          <li><router-link to="/sim/droits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Droits</router-link></li>
+        </ul>
+      </transition>
+    </li>
+     
+      <!-- <li>
+      <router-link class="" to="#" @click.stop="toggleDropdownMenu('parametrages')">
+        <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
+        <span>Paramétrages</span>
+        <span class="pull-right-container">
+          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.parametrages }]"></i>
+        </span>
+      </router-link>
+      <ul v-show="openMenus.parametrages" class="submenu">
+        <li><router-link to="/sim/localites">Localités</router-link></li>
+        <li><router-link to="/sim/collectes">Collecteurs</router-link></li>
+        <li><router-link to="/sim/collectes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Collecteurs</router-link></li>
+        <li><router-link to="/sim/marches">Marchés</router-link></li>
+        <li><router-link to="/sim/magasins">Magasins</router-link></li>
+        <li><router-link to="/sim/debarcaderes">Debarcadères</router-link></li>
+        <li><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Types produits</router-link></li>
+
+      </ul>
+    </li>
+    <li>
+      <router-link to="#" @click.stop="toggleDropdownMenu('users')">
+        <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
+        <span>Gestions des users</span>
+        <span class="pull-right-container">
+          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.users }]"></i>
+        </span>
+      </router-link>
+      <ul v-show="openMenus.users" class="submenu">
+        <li><router-link to="/sim/utilisateurs">Utilisateurs</router-link></li>
+        <li><router-link to="/sim/droits">Droits</router-link></li>
+      </ul>
+    </li> -->
+    
+      <!-- <li>
         <a href="extra_calendar.html">
-          <i span class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
+          <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
           <span>Calendar</span>
         </a>
-      </li>
-	     
+      </li>   -->
     </ul>
   </section>
- 
 </aside>
 
 <!-- Content Wrapper. Contains page content -->
@@ -123,6 +168,10 @@ export default {
     data() {
         return {
           isOpen: false,
+          openMenus: {
+        parametrages: false,
+        users: false
+      }
         }
     },
     computed: {
@@ -152,6 +201,15 @@ export default {
         this.$router.push("/");
         location.reload();
       } catch (error) {
+      }
+    },
+    toggleDropdownMenu(menu) {
+      this.openMenus[menu] = !this.openMenus[menu];
+      // Ferme les autres menus
+      for (let key in this.openMenus) {
+        if (key !== menu) {
+          this.openMenus[key] = false;
+        }
       }
     },
     initializeTreeView() {
@@ -1717,7 +1775,7 @@ function w3_close() {
   document.getElementById("myOverlay").style.display = "none";
 }
 
-this.initializeTreeView();
+// this.initializeTreeView();
 
    },
 }
@@ -1760,6 +1818,29 @@ this.initializeTreeView();
   margin: 5px 0;
   overflow: hidden;
   background-color: #e5e5e5;
+}
+.submenu {
+  list-style: none !important;
+  padding-left: 57px !important;
+}
+.submenu a {
+  color: var(--color-primary);
+}
+.fa-rotate-90 {
+  transform: rotate(90deg);
+}
+
+/* Animation de déroulement */
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.6s ease;
+  max-height: 200px; /* Ajustez cette valeur selon la hauteur maximale de votre menu */
+  overflow: hidden;
+}
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
 }
 
     

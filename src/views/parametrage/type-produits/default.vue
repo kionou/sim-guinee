@@ -3,13 +3,13 @@
         <div class="content-header">
 			<div class="d-flex align-items-center justify-content-between">
 				
-					<h3 class="page-title"> Localités </h3>
+					<h3 class="page-title"> Produits </h3>
 					<div class="d-inline-block align-items-center">
 						<nav>
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item"><router-link to="/"><i class="mdi mdi-home-outline"></i></router-link></li>
 								<li class="breadcrumb-item" aria-current="page">SIM</li>
-								<li class="breadcrumb-item active" aria-current="page">Localités</li>
+								<li class="breadcrumb-item active" aria-current="page">Produits</li>
 							</ol>
 						</nav>
 					</div>
@@ -27,10 +27,12 @@
 				<div class="box-body">
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs justify-content-center" role="tablist">
-						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#naturelle" role="tab"><span class="hidden-xs-down">Régions naturelles</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#region" role="tab"><span class="hidden-xs-down">Régions</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#prefecture" role="tab"> <span class="hidden-xs-down">Préfectures</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Communes</span></a> </li>
+						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#naturelle" role="tab"><span class="hidden-xs-down">Produits</span></a> </li>
+						<li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#naturelle" role="tab"><span class="hidden-xs-down">Catégories</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#region" role="tab"><span class="hidden-xs-down">Familles</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#prefecture" role="tab"> <span class="hidden-xs-down">Origines</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Formes</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Unités</span></a> </li>
 					</ul>
 					<!-- Tab panes -->
 					<div class="tab-content tabcontent-border">

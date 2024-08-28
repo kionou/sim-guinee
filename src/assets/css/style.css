@@ -13217,7 +13217,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
         border: 1px solid rgba(42, 48, 66, 0.5);
         border-radius: 100px; }
     .sidebar-menu > li:hover > a > i, .sidebar-menu > li:active > a > i, .sidebar-menu > li.active > a > i {
-      color: #ffffff; }
+      color: var(--color-primary); }
     .sidebar-menu > li:hover > a > svg, .sidebar-menu > li:active > a > svg, .sidebar-menu > li.active > a > svg {
       color: #ffffff; }
     .sidebar-menu > li.menu-open > a > i {
@@ -13595,6 +13595,9 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
       position: relative; color: #000000;}
       .sidebar-menu li > a > span:hover{
         color: var(--color-secondary);
+      }
+      .sidebar-menu li > a > span:active{
+        color: var(--color-secondary) !important;
       }
     .sidebar-menu li > a > .pull-right-container {
       position: absolute;
