@@ -1,12 +1,32 @@
 <template>
   <div>
     <Loading v-if="loading" style="z-index: 99999"></Loading>
+    <div class="content-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="page-title">Marchés</h3>
+        <div class="d-inline-block align-items-center">
+          <nav>
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <router-link to="/"
+                  ><i class="mdi mdi-home-outline"></i
+                ></router-link>
+              </li>
+              <li class="breadcrumb-item" aria-current="page">SIM</li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Marchés
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
     <div class="col-12">
       <div class="box">
         <div
           class="box-header with-border d-flex justify-content-between align-items-center p-3"
         >
-          <h3 class="box-title mb-0">Liste des collecteurs</h3>
+          <h3 class="box-title mb-0">Liste des marchés</h3>
           <div class="navbar-custom-menu r-side">
             <ul class="nav navbar-nav justify-content-end">
               <li class="btn-group d-lg-inline-flex d-none h-40">
@@ -35,7 +55,7 @@
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
                   data-target="#modal-center"
                 >
@@ -52,9 +72,11 @@
               <thead>
                 <tr>
                   <th class="text-center">N°</th>
-                  <th>Noms & Prénoms</th>
-                  <th>Adresses</th>
-                  <th>Contacts</th>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Superficie</th>
+                  <th>Commune</th>
+                  <th>Collecteur</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -75,11 +97,15 @@
                   <td style="width: 50px" class="text-center">
                     {{ index + 1 }}
                   </td>
-                  <td>
-                    {{ data.nom_collecteur }} {{ data.prenom_collecteur }}
+                  <td>{{ data.nom_marche }}</td>
+                  <td style="width: 150px">{{ data.type_marche }}</td>
+                  <td style="width: 180px">{{ data.superficie }}</td>
+                  <td style="width: 150px">
+                    {{ searchCommune(data.commune) }}
                   </td>
-                  <td style="width: 180px">{{ data.adresse }}</td>
-                  <td style="width: 150px">{{ data.telephone_collecteur }}</td>
+                  <td style="width: 150px">
+                    {{ searchCollecteur(data.id_marche) }}
+                  </td>
 
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
@@ -88,7 +114,7 @@
                         class="btn btn-circle btn-info btn-xs"
                         title=""
                         @click="
-                          HandleIdUpdate(data.id_collecteur);
+                          HandleIdUpdate(data.code_marche);
                           dataEdit = true;
                         "
                         data-original-title="Update"
@@ -99,7 +125,7 @@
                       <a
                         href="javascript:void(0)"
                         class="btn btn-circle btn-danger btn-xs"
-                        @click="HandleIdDelete(data.id_collecteur)"
+                        @click="HandleIdDelete(data.code_marche)"
                         title=""
                         data-toggle="tooltip"
                         data-original-title="Delete"
@@ -128,7 +154,7 @@
     </div>
 
     <div
-      class="modal center-modal fade"
+      class="modal center-modal fade custom-modal"
       id="modal-center"
       ref="modal-center"
       tabindex="-1"
@@ -136,10 +162,11 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
+            <h5 class="modal-title">
+              {{ dataEdit ? "Modifier marché" : "Ajouter marché" }}
+            </h5>
             <button
-              type="button"
-              class="close"
+              class="btn btn-danger close py-1 px-3"
               data-dismiss="modal"
               @click="fermer()"
             >
@@ -150,143 +177,150 @@
             <div class="row mt-3 content-group">
               <!-- Première ligne de deux inputs -->
               <div class="col-md-6">
-                <label for="code_collecteur">
-                  Code collecteur<span class="text-danger">*</span>
+                <label for="code_marche">
+                  Code marché<span class="text-danger">*</span>
                 </label>
                 <MazInput
-                  v-model="step1.code_collecteur"
+                  v-model="step1.code_marche"
                   color="secondary"
-                  name="step1.code_collecteur"
+                  name="step1.code_marche"
                   size="sm"
                   rounded-size="sm"
                   type="text"
                 />
               </div>
               <div class="col-md-6">
-                <label for="nom_collecteur">
+                <label for="nom_marche">
                   Nom <span class="text-danger">*</span>
                 </label>
                 <MazInput
-                  v-model="step1.nom_collecteur"
+                  v-model="step1.nom_marche"
                   color="secondary"
-                  name="step1.nom_collecteur"
+                  name="step1.nom_marche"
                   size="sm"
                   rounded-size="sm"
                   type="text"
                 />
-                <small v-if="v$.step1.nom_collecteur.$error">{{
-                  v$.step1.nom_collecteur.$errors[0].$message
+                <small v-if="v$.step1.nom_marche.$error">{{
+                  v$.step1.nom_marche.$errors[0].$message
                 }}</small>
-                <small v-if="resultError['nom_collecteur']">
-                  {{ resultError["nom_collecteur"] }}
+                <small v-if="resultError['nom_marche']">
+                  {{ resultError["nom_marche"] }}
                 </small>
               </div>
               <!-- Deuxième ligne de deux inputs -->
               <div class="col-md-6 mt-3">
-                <label for="prenom_collecteur">
-                  Prénom<span class="text-danger">*</span>
+                <label for="type_marche">
+                  Type de marché <span class="text-danger">*</span>
                 </label>
-                <MazInput
-                  v-model="step1.prenom_collecteur"
-                  color="secondary"
-                  name="step1.prenom_collecteur"
+                <select
+                  v-model="step1.type_marche"
+                  class="form-control form-control-sm"
+                  id="type_marche"
+                  name="type_marche"
                   size="sm"
                   rounded-size="sm"
-                  type="text"
-                />
-                <small v-if="v$.step1.prenom_collecteur.$error">{{
-                  v$.step1.prenom_collecteur.$errors[0].$message
-                }}</small>
-                <small v-if="resultError['prenom_collecteur']">
-                  {{ resultError["prenom_collecteur"] }}
-                </small>
+                >
+                  <option value="" disabled selected>
+                    Sélectionnez un type marché
+                  </option>
+                  <option value="1">Marché de collecte</option>
+                  <option value="2">Marché de consommation</option>
+                  <option value="3">Marché de grossiste</option>
+                  <option value="4">Marché de détail</option>
+                </select>
               </div>
               <div class="col-md-6 mt-3">
-                <label for="adresse">
-                  Adresse <span class="text-danger">*</span>
+                <label for="superficie">
+                  Superficie <span class="text-danger">*</span>
                 </label>
                 <MazInput
-                  v-model="step1.adresse"
+                  v-model="step1.superficie"
                   color="secondary"
-                  name="step1.adresse"
+                  name="step1.superficie"
                   size="sm"
                   rounded-size="sm"
                   type="text"
                 />
-                <small v-if="v$.step1.adresse.$error">{{
-                  v$.step1.adresse.$errors[0].$message
+                <small v-if="v$.step1.superficie.$error">{{
+                  v$.step1.superficie.$errors[0].$message
                 }}</small>
-                <small v-if="resultError['adresse']">
-                  {{ resultError["adresse"] }}
-                </small>
-              </div>
-              <!-- Troisième ligne de deux inputs -->
-              <div class="col-md-6 mt-3">
-                <label for="telephone_collecteur">
-                  Contact <span class="text-danger">*</span>
-                </label>
-                <MazInput
-                  v-model="step1.telephone_collecteur"
-                  color="secondary"
-                  name="step1.telephone_collecteur"
-                  size="sm"
-                  rounded-size="sm"
-                  type="text"
-                />
-                <small v-if="v$.step1.telephone_collecteur.$error">{{
-                  v$.step1.telephone_collecteur.$errors[0].$message
-                }}</small>
-                <small v-if="resultError['telephone_collecteur']">
-                  {{ resultError["telephone_collecteur"] }}
-                </small>
-              </div>
-              <div class="col-md-6 mt-3">
-                <label for="sexe_collecteur">
-                  Sexe<span class="text-danger">*</span>
-                </label>
-                <MazInput
-                  v-model="step1.sexe_collecteur"
-                  color="secondary"
-                  name="step1.sexe_collecteur"
-                  size="sm"
-                  rounded-size="sm"
-                  type="text"
-                />
-                <small v-if="v$.step1.sexe_collecteur.$error">{{
-                  v$.step1.sexe_collecteur.$errors[0].$message
-                }}</small>
-                <small v-if="resultError['sexe_collecteur']">
-                  {{ resultError["sexe_collecteur"] }}
+                <small v-if="resultError['superficie']">
+                  {{ resultError["superficie"] }}
                 </small>
               </div>
               <!-- Quatrième ligne de deux inputs -->
+
               <div class="col-md-6 mt-3">
-                <label for="whatsapp_collecteur">
-                  Whatsapp<span class="text-danger">*</span>
+                <label for="longitude">
+                  Longitude<span class="text-danger">*</span>
                 </label>
                 <MazInput
-                  v-model="step1.whatsapp_collecteur"
+                  v-model="step1.longitude"
                   color="secondary"
-                  name="step1.whatsapp_collecteur"
+                  name="step1.longitude"
                   size="sm"
                   rounded-size="sm"
                   type="text"
                 />
               </div>
               <div class="col-md-6 mt-3">
-                <label for="relai">
-                  Relai<span class="text-danger">*</span>
+                <label for="latitude">
+                  Latitude<span class="text-danger">*</span>
                 </label>
                 <MazInput
-                  v-model="step1.relai"
+                  v-model="step1.latitude"
                   color="secondary"
-                  name="step1.relai"
+                  name="step1.latitude"
                   size="sm"
                   rounded-size="sm"
                   type="text"
                 />
               </div>
-              <!-- Cinquième ligne avec un seul input -->
+              <div class="col-md-6 mt-3">
+                <label for="commune_collecteur">
+                  Commune<span class="text-danger">*</span>
+                </label>
+                <select
+                  v-model="step1.commune"
+                  class="form-control form-control-sm"
+                  id="commune"
+                  name="commune"
+                >
+                  <option value="" disabled selected>
+                    Sélectionnez une commune
+                  </option>
+                  <option
+                    v-for="commune in CommunesOptions"
+                    :key="commune.id"
+                    :value="commune.id_commune"
+                  >
+                    {{ commune.nom_commune }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6 mt-3">
+                <label for="commune_collecteur">
+                  Collecteur<span class="text-danger">*</span>
+                </label>
+                <select
+                  v-model="step1.collecteur"
+                  class="form-control form-control-sm"
+                  id="collecteur"
+                  name="collecteur"
+                >
+                  <option value="" disabled selected>
+                    Sélectionnez un collecteur
+                  </option>
+                  <option
+                    v-for="collecteur in CollecteursOptions"
+                    :key="collecteur.id"
+                    :value="collecteur.id_collecteur"
+                  >
+                    {{ collecteur.nom_collecteur }}
+                  </option>
+                </select>
+              </div>
               <div class="col-md-12 mt-3">
                 <label for="description">
                   Description<span class="text-danger">*</span>
@@ -301,26 +335,14 @@
                 />
               </div>
             </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
-                  type="button"
-                  @click="performAction()"
-                  class="waves-effect waves-light btn btn-secondary"
-                >
-                  Valider
-                </button>
-              </div>
-            </div>
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
             <button
               type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-              @click="fermer()"
+              @click="performAction()"
+              class="waves-effect waves-light btn btn-primary"
             >
-              Fermer
+              Valider
             </button>
           </div>
         </div>
@@ -347,12 +369,12 @@ export default {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
     totalPages() {
-      return Math.ceil(this.CollecteursOptions.length / this.itemsPerPage);
+      return Math.ceil(this.MarchesOptions.length / this.itemsPerPage);
     },
     paginatedItems() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      return this.CollecteursOptions.slice(startIndex, endIndex);
+      return this.MarchesOptions.slice(startIndex, endIndex);
     },
     // filteredList() {
     //   if (!this.searchQuery) {
@@ -369,6 +391,8 @@ export default {
   data() {
     return {
       loading: true,
+      MarchesOptions: [],
+      CommunesOptions: [],
       CollecteursOptions: [],
       data: [],
       currentPage: 1,
@@ -378,16 +402,15 @@ export default {
       searchQuery: "",
       totalPageArray: [],
       step1: {
-        nom_collecteur: "",
-        prenom_collecteur: "",
-        adresse: "",
-        telephone_collecteur: "",
-        code_collecteur: "",
-        sexe_collecteur: "",
-        whatsapp_collecteur: "",
-        commune_collecteur: 0,
-        relai: "",
+        nom_marche: "",
+        type_marche: "",
+        superficie: "",
+        commune: "",
+        code_marche: "",
         description: "",
+        longitude: "",
+        latitude: "",
+        collecteur: "",
       },
       //   step2: { nom_region_naturelle: "" },
       v$: useVuelidate(),
@@ -397,23 +420,84 @@ export default {
   },
   validations: {
     step1: {
-      nom_collecteur: { require },
-      prenom_collecteur: { require },
-      adresse: { require },
-      telephone_collecteur: { require },
-      sexe_collecteur: { require },
+      nom_marche: { require },
+      type_marche: { require },
+      superficie: { require },
+      commune: { require },
     },
     step2: { nom_region_naturelle: { require } },
   },
   async mounted() {
+    await this.fecthMarches();
+    await this.fetchCommunes();
     await this.fetchCollecteurs();
   },
   methods: {
     successmsg: successmsg,
 
+    async fecthMarches() {
+      try {
+        const response = await axios.get("parametrages/marches", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("response", response);
+        if (response.status === 200) {
+          this.data = response.data;
+          this.MarchesOptions = this.data;
+          this.loading = false;
+        }
+      } catch (error) {
+        if (error.response.data.status === "error") {
+          if (
+            error.response.data.message === "Vous n'êtes pas autorisé." ||
+            error.response.status === 401
+          ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+    },
+    async fetchCommunes() {
+      try {
+        const response = await axios.get("parametrages/localites/communes", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("response", response);
+        if (response.status === 200) {
+          this.data = response.data;
+          this.CommunesOptions = this.data;
+          this.loading = false;
+        }
+      } catch (error) {
+        if (error.response.data.status === "error") {
+          if (
+            error.response.data.message === "Vous n'êtes pas autorisé." ||
+            error.response.status === 401
+          ) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+    },
     async fetchCollecteurs() {
       try {
-        const response = await axios.get("/collecteurs", {
+        const response = await axios.get("parametrages/collecteurs", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -441,28 +525,25 @@ export default {
         }
       }
     },
-    async SubmitCollecteur(modalId) {
+    async SubmitMarche(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
-        let data = [
-          {
-            nom_collecteur: this.step1.nom_collecteur,
-            prenom_collecteur: this.step1.prenom_collecteur,
-            adresse: this.step1.adresse,
-            telephone_collecteur: this.step1.telephone_collecteur,
-            code_collecteur: this.step1.code_collecteur,
-            sexe_collecteur: this.step1.sexe_collecteur,
-            whatsapp_collecteur: this.step1.whatsapp_collecteur,
-            relai: this.step1.relai,
-            description: this.step1.description,
-          },
-        ];
-
+        let data = {
+          nom_marche: this.step1.nom_marche,
+          type_marche: this.step1.type_marche,
+          superficie: this.step1.superficie,
+          commune: this.step1.commune,
+          code_marche: this.step1.code_marche,
+          latitude: this.step1.latitude,
+          longitude: this.step1.longitude,
+          description: this.step1.description,
+          collecteur: this.step1.collecteur,
+        };
         console.log("qfs", data);
 
         try {
-          const response = await axios.post("/collecteurs", data, {
+          const response = await axios.post("parametrages/marches", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
           console.log("qfs", response);
@@ -470,10 +551,10 @@ export default {
           if (response.status === 200) {
             this.closeModal(modalId);
             this.successmsg(
-              "Création de mode de financement",
-              "Votre mode de financement a été crée avec succès !"
+              "Ajout de marché",
+              "Le marché a été ajouté avec succès !"
             );
-            await this.fetchCollecteurs();
+            await this.fecthMarches();
             this.fermer();
           } else {
           }
@@ -495,7 +576,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.get(`/collecteurs/${id}`, {
+        const response = await axios.get(`parametrages/marches/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -505,16 +586,16 @@ export default {
           console.log("Slbvlkjbv", response);
 
           let data = response.data;
-          (this.step1.nom_collecteur = data.nom_collecteur),
-            (this.step1.prenom_collecteur = data.prenom_collecteur),
-            (this.step1.adresse = data.adresse),
-            (this.step1.telephone_collecteur = data.telephone_collecteur),
-            (this.step1.code_collecteur = data.code_collecteur),
-            (this.step1.sexe_collecteur = data.sexe_collecteur),
-            (this.step1.whatsapp_collecteur = data.whatsapp_collecteur),
-            (this.step1.relai = data.relai),
+          (this.step1.nom_marche = data.nom_marche),
+            (this.step1.type_marche = data.type_marche),
+            (this.step1.superficie = data.superficie),
+            (this.step1.commune = data.commune),
+            (this.step1.code_marche = data.code_marche),
+            (this.step1.latitude = data.latitude),
+            (this.step1.longitude = data.longitude),
             (this.step1.description = data.description),
-            (this.ToId = data.id_collecteur);
+            (this.step1.collecteur = data.collecteur),
+            (this.ToId = data.code_marche);
           this.loading = false;
         }
       } catch (error) {
@@ -539,31 +620,35 @@ export default {
       if (this.v$.$errors.length == 0) {
         this.loading = true;
         let data = {
-          nom_collecteur: this.step1.nom_collecteur,
-          prenom_collecteur: this.step1.prenom_collecteur,
-          adresse: this.step1.adresse,
-          telephone_collecteur: this.step1.telephone_collecteur,
-          code_collecteur: this.step1.code_collecteur,
-          sexe_collecteur: this.step1.sexe_collecteur,
-          whatsapp_collecteur: this.step1.whatsapp_collecteur,
-          relai: this.step1.relai,
+          nom_marche: this.step1.nom_marche,
+          type_marche: this.step1.type_marche,
+          superficie: this.step1.superficie,
+          commune: this.step1.commune,
+          code_marche: this.step1.code_marche,
+          latitude: this.step1.latitude,
+          longitude: this.step1.longitude,
           description: this.step1.description,
+          collecteur: this.step1.collecteur,
         };
 
         try {
-          const response = await axios.put(`/collecteurs/${this.ToId}`, data, {
-            headers: {
-              Authorization: `Bearer ${this.loggedInUser.token}`,
-            },
-          });
+          const response = await axios.put(
+            `parametrages/marches/${this.ToId}`,
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${this.loggedInUser.token}`,
+              },
+            }
+          );
 
           if (response.status === 200) {
             this.closeModal(modalId);
             this.successmsg(
-              "Données du financement mises à jour",
-              "Les données du financement ont été mises à jour avec succès !"
+              "Données du marché mises à jour",
+              "Les données du marché ont été mises à jour avec succès !"
             );
-            await this.fetchCollecteurs();
+            await this.fecthMarches();
             this.fermer();
           }
         } catch (error) {
@@ -588,22 +673,39 @@ export default {
       if (this.dataEdit) {
         this.submitUpdate("modal-center");
       } else {
-        this.SubmitCollecteur("modal-center");
+        this.SubmitMarche("modal-center");
       }
     },
     fermer() {
-      this.step1.nom_collecteur = "";
-      this.step1.prenom_collecteur = "";
-      this.step1.adresse = "";
-      this.step1.telephone_collecteur = "";
+      this.step1.nom_marche = "";
+      this.step1.type_marche = "";
+      this.step1.superficie = "";
+      this.step1.commune = "";
       this.dataEdit = false;
-      this.step1.commune_collecteur = "";
-      this.step1.sexe_collecteur = "";
-      this.step1.whatsapp_collecteur = "";
-      this.step1.relai = "";
+      this.step1.code_marche = "";
+      this.step1.latitude = "";
+      this.step1.longitude = "";
       this.step1.description = "";
+      this.step1.collecteur = "";
+    },
+    searchCommune(id) {
+      for (let commune of this.CommunesOptions) {
+        if (commune.id_commune === id) {
+          return commune.nom_commune;
+        }
+      }
+      return "-";
+    },
+    searchCollecteur(id) {
+      const marche = this.MarchesOptions.find((item) => item.id_marche === id);
+
+      if (marche && marche.collecteur_relation) {
+        return marche.collecteur_relation.nom_collecteur;
+      }
+      return "-";
     },
     async HandleIdDelete(id) {
+      console.log(id);
       // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
       const result = await Swal.fire({
         title: "Êtes-vous sûr ?",
@@ -625,7 +727,7 @@ export default {
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/collecteurs/${id}`, {
+        const response = await axios.delete(`parametrages/marches/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -634,10 +736,10 @@ export default {
         if (response.status === 200) {
           this.loading = false;
           this.successmsg(
-            "Données du mode de financement supprimées",
-            "Les données du mode de financement ont été supprimées avec succès !"
+            "Suppression de marché",
+            "Le marché a été supprimés avec succès !"
           );
-          await this.fetchCollecteurs();
+          await this.fecthMarches();
         } else {
           this.loading = false;
         }
@@ -702,9 +804,13 @@ export default {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
 
       const endIndex = startIndex + this.itemsPerPage;
-      return this.CollecteursOptions.slice(startIndex, endIndex);
+      return this.MarchesOptions.slice(startIndex, endIndex);
     },
   },
 };
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.custom-modal .modal-dialog {
+  max-width: 60%; /* Ajustez la largeur comme nécessaire */
+}
+</style>
