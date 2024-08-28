@@ -41,23 +41,19 @@
 						</div>
 						<div class="tab-pane" id="region" role="tabpanel">
 							<div class="p-15">
-								<h4>Fusce porta eros a nisl varius, non molestie metus mollis. Pellentesque tincidunt ante sit amet ornare lacinia.</h4>
-								<p>Duis cursus eros lorem, pretium ornare purus tincidunt eleifend. Etiam quis justo vitae erat faucibus pharetra. Morbi in ullamcorper diam. Morbi lacinia, sem vitae dignissim cursus, massa nibh semper magna, nec pellentesque lorem nisl quis ex.</p>
-								<h3>Simple text.</h3>
+								<Region></Region>
+
 							</div>
 						</div>
 						<div class="tab-pane" id="prefecture" role="tabpanel">
 							<div class="p-15">
-								<h3>Simple text.</h3>
-								<p>Duis cursus eros lorem, pretium ornare purus tincidunt eleifend. Etiam quis justo vitae erat faucibus pharetra. Morbi in ullamcorper diam. Morbi lacinia, sem vitae dignissim cursus, massa nibh semper magna, nec pellentesque lorem nisl quis ex.</p>
-								<h4>Fusce porta eros a nisl varius, non molestie metus mollis. Pellentesque tincidunt ante sit amet ornare lacinia.</h4>
+								<Prefecture></Prefecture>
 							</div>
 						</div>
 						<div class="tab-pane" id="commune" role="tabpanel">
 							<div class="p-15">
-								<h4>Fusce porta eros a nisl varius, non molestie metus mollis. Pellentesque tincidunt ante sit amet ornare lacinia.</h4>
-								<h3>Simple text.</h3>
-								<p>Duis cursus eros lorem, pretium ornare purus tincidunt eleifend. Etiam quis justo vitae erat faucibus pharetra. Morbi in ullamcorper diam. Morbi lacinia, sem vitae dignissim cursus, massa nibh semper magna, nec pellentesque lorem nisl quis ex.</p>
+								<Commune></Commune>
+							
 							</div>
 						</div>
 						
@@ -71,9 +67,12 @@
 </template>
 <script>
 import Naturelle from "@/components/parametrages/localites/naturelle.vue"
+import Region from "@/components/parametrages/localites/regions.vue"
+import Prefecture from "@/components/parametrages/localites/prefectures.vue"
+import Commune from "@/components/parametrages/localites/communes.vue"
 export default {
     components:{
-        Naturelle
+        Naturelle , Region , Prefecture , Commune
     },
     data() {
         return {

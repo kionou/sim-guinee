@@ -6,6 +6,11 @@ import Login from '../views/auth/Login.vue'
 import Dashboard from '../views/dashboad/default.vue'
 import Accueil from '../views/dashboad/index.vue'
 
+import Users from '../views/users/default.vue'
+import Droits from '../views/users/droits.vue'
+import Profil from '../views/users/profil.vue'
+
+
 import Localite from '../views/parametrage/localites/default.vue'
 
 import Collectes from '../views/parametrage/collectes/default.vue'
@@ -14,7 +19,12 @@ import Marches from '../views/parametrage/marches/default.vue'
 
 import Magasins from '../views/parametrage/magasins/default.vue'
 
+import Unites from '../views/parametrage/unites/default.vue'
+
 import Debarcaderes from '../views/parametrage/debarcaderes/default.vue'
+
+import TypeProduits from '../views/parametrage/type-produits/default.vue'
+
 
 
 
@@ -43,10 +53,34 @@ const router = createRouter({
              component: Accueil
           },
           {
+            path: 'utilisateurs',
+            name: 'utilisateurs',
+            meta: { requiresAuth: true },
+             component: Users
+          },
+          {
+            path: 'droits',
+            name: 'roles-permissiosns',
+            meta: { requiresAuth: true },
+             component: Droits
+          },
+          {
+            path: 'profil',
+            name: 'profil',
+            meta: { requiresAuth: true },
+             component: Profil
+          },
+          {
             path: 'localites',
             name: 'localites',
             meta: { requiresAuth: true },
              component: Localite
+          },
+          {
+            path: 'unites',
+            name: 'unites',
+            meta: { requiresAuth: true },
+             component: Unites
           },
           {
             path: 'collectes',
@@ -71,6 +105,12 @@ const router = createRouter({
             name: 'debarcaderes',
             meta: { requiresAuth: true },
              component: Debarcaderes
+          },
+          {
+            path: 'types-produits',
+            name: 'types-produits',
+            meta: { requiresAuth: true },
+             component: TypeProduits
           },
         ]
     }

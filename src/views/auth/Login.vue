@@ -2,49 +2,33 @@
       <Loading v-if="loading" style="z-index: 99999"></Loading>
     <div class="bg-white" style="height: 100vh !important;">
         <header class="main-header" style="background-color: #369f4a !important ; border-bottom: 1px solid #369f4a !important ; box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06);">
-	<div class="d-flex align-items-center logo-box justify-content-center" style="background-color: #fff !important">
-		<!-- Logo -->
-		<a href="index.html" class="logo">
-		  <!-- logo-->
-		  <div class="logo-mini">
-			  <span class="light-logo"><img src="@/assets/img/logo_mobile.png" alt="logo"></span>
-			  <span class="dark-logo"><img src="@/assets/img/logo_mobile.png" alt="logo"></span>
-		  </div>
-		  <!-- logo-->
-		  <div class="logo-lg">
-			  <span class="light-logo"><img src="@/assets/img/logo.png" alt="logo" style="width: 180px !important; "></span>
-			  <span class="dark-logo"><img src="@/assets/img/logo.png" alt="logo" style="width: 180px !important; "></span>
-		  </div>
-		</a>	
-	</div>  
-  
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top pl-10">
-     
-    </nav>
+		 
+          <h3 class="text-center " style="color:var(--color-secondary)"> <b>Système d'Informations sur les Marchés</b> </h3>
+		
   </header>
         <div class="loginHeader">
         <div class="containerHeader">
-
-            <div class="texte">
+          <div class="row">
+            <div class="col-xl-8">
+              <div class=" d-none d-sm-block d-lg-block ">
                 <div class="row justify-content-center text-center">
                     <h2> <b>BIENVENUE SUR</b> </h2>
-                    <img src="@/assets/img/logo.png" class="text-center" alt="" style="width: 230px; height: auto ">
+                    <img src="@/assets/img/logo.png" class="text-center" alt="" style="width: 150px; height: auto ">
                     <p>
                         Les SIM sont des dispositifs (ou services) qui ont pour objectif de collecter régulièrement 
                         sur les marchés (marchés de collecte, de gros ou de détail) des informations sur les prix des produits agricoles,
                     </p>
                 </div>
-                <div class="row justify-content-center">
-                    <div class=" col-8">
+                
+                   
 				 
-                        <div class="swiper mySwiper keyboard-control slide">
+                       <!-- <div class="swiper mySwiper keyboard-control slide">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
                         <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
                             <div>
                                 <div class="mb-5">
-                                    <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail h-250 " alt="">
+                                    <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail h-350  w-500" alt="">
                                 </div>
                                 
                               
@@ -55,7 +39,7 @@
                         <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
                             <div>
                                 <div class="mb-5">
-                                    <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail   h-250" alt="">
+                                    <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail    h-350  w-500" alt="">
 
                                 </div>
                                
@@ -66,7 +50,7 @@
                         <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
                             <div>
                                 <div class="mb-5">
-                                    <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail  h-250" alt="">
+                                    <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
                                 
                                 </div>
                                
@@ -77,7 +61,7 @@
                         <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
                             <div>
                                 <div class="mb-5">
-                                    <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail  h-250" alt="">
+                                    <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
                                 </div>
                
                             </div>
@@ -86,23 +70,48 @@
                 </div>
              
                 <div class="swiper-pagination"></div>
-            </div> 
-			</div>  
-                </div>
+                        </div>   -->
+
+    <div class="swiper">
+  <!-- Additional required wrapper -->
+  <div class="swiper-wrapper">
+   
+  
+    <div class="swiper-slide">
+      <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+    </div>
+    <div class="swiper-slide">
+      <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+    </div>
+    <div class="swiper-slide">
+      <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+    </div>
+    <div class="swiper-slide">
+      <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+    </div>
+   
+  </div>
+  <!-- If we need pagination -->
+ 
+
+</div>
+			  
+              
 
             </div>
-
-            <div class="formulaire">
-                <div class="container">
+            </div>
+            <div class="col-xl-4">
+              <div class="formulaire">
+                <div class="">
                     <div class="info">
-                        <h1>Connexion</h1>
+                        <h1 class="text-center">Connexion</h1>
                         <span>Connectez-vous à votre espace administrateur</span>
                     </div>
                     <small>{{ error }}</small>
                 </div>
                 <div class="form">
                     <div class="row mt-3 content-group">
-                        <div class="col-12">
+                        <div class="">
     <div class="mb-3 position-relative" style="text-align: start !important;">
       <label for="password" >Pseudo <span class="text-danger">*</span> </label>
       <MazInput v-model="step1.username" type="username" name="username" color="secondary"
@@ -113,7 +122,7 @@
     </div>
   </div>
   
-  <div class="col-12">
+  <div class="">
     <div class="mb-3 position-relative" style="text-align: start !important;">
       <label for="password">Mot de passe <span class="text-danger">*</span> </label>
       <MazInput v-model="step1.password" type="password" name="password" color="secondary"
@@ -132,6 +141,13 @@
                 </div>
     
             </div>
+            </div>
+
+          </div>
+
+           
+
+         
     
     
         </div>
@@ -372,31 +388,51 @@ async ChangePassword(){
     },
   },
     mounted() {
-        const swiper = new Swiper(".keyboard-control", {
-      slidesPerView: 1,
-      spaceBetween: 30,
-      keyboard: {
-          enabled: true,
-      },
-      pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-      },
-      navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-      },
-      loop: true,
-      autoplay: {
-          delay: 2000,
+      const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  direction: 'vertical',
+  loop: true,
+
+  // If we need pagination
+  pagination: {
+    el: '.swiper-pagination',
+    
+  },
+
+  autoplay: {
+          delay: 5000,
           disableOnInteraction: false
       }
-  });
+});
+  //       const swiper = new Swiper(".keyboard-control", {
+  //     slidesPerView: 1,
+  //     spaceBetween: 30,
+  //     keyboard: {
+  //         enabled: true,
+  //     },
+  //     pagination: {
+  //         el: ".swiper-pagination",
+  //         clickable: true,
+  //     },
+  //     navigation: {
+  //         nextEl: ".swiper-button-next",
+  //         prevEl: ".swiper-button-prev",
+  //     },
+  //     loop: true,
+  //     autoplay: {
+  //         delay: 5000,
+  //         disableOnInteraction: false
+  //     }
+  // });
     },
 
 }
 </script>
 <style lang="css" scoped>
+.swiper {
+  width: 600px;
+  height: 320px;
+}
 .loginHeader {
     width: 100%;
     height: 92vh;
@@ -424,7 +460,7 @@ async ChangePassword(){
 }
 
 .containerHeader .formulaire {
-    width: 30%;
+   
     height: 100%;
     border: 1px solid rgb(203, 208, 204);
     display: flex;
