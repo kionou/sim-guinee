@@ -448,7 +448,7 @@ export default {
     successmsg: successmsg,
     async fetchCommunes() {
       try {
-        const response = await axios.get("/localites/communes", {
+        const response = await axios.get("/parametrages/localites/communes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -477,7 +477,7 @@ export default {
     },
     async fetchCollecteurs() {
       try {
-        const response = await axios.get("/collecteurs", {
+        const response = await axios.get("/parametrages/collecteurs", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -507,7 +507,7 @@ export default {
     },
     async fetchMagasins() {
       try {
-        const response = await axios.get("/magasins", {
+        const response = await axios.get("/parametrages/magasins", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -555,13 +555,13 @@ export default {
         let title = "";
         let message = "";
         if (this.stepModal === "add") {
-          url = await axios.post("/magasins", data, {
+          url = await axios.post("/parametrages/magasins", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
         title = "Création de magasin";
           message = "Votre magasin a été crée avec succès !";
         } else {
-          url = await axios.put(`/magasins/${this.ToId}`, data, {
+          url = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
           title = "Mise à jour de magasin";
@@ -597,7 +597,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.get(`/magasins/${id}`, {
+        const response = await axios.get(`/parametrages/magasins/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -637,7 +637,7 @@ export default {
         };
 
         try {
-          const response = await axios.put(`/magasins/${this.ToId}`, data, {
+          const response = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -691,7 +691,7 @@ export default {
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/magasins/${id}`, {
+        const response = await axios.delete(`/parametrages/magasins/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },

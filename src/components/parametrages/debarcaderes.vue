@@ -351,7 +351,7 @@ export default {
 
     async fetchDebarcaderes() {
       try {
-        const response = await axios.get("/debarcaderes", {
+        const response = await axios.get("/parametrages/debarcaderes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -381,7 +381,7 @@ export default {
     },
     async fetchCommunes() {
       try {
-        const response = await axios.get("/localites/communes", {
+        const response = await axios.get("/parametrages/localites/communes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -410,7 +410,7 @@ export default {
     },
     async fetchCollecteurs() {
       try {
-        const response = await axios.get("/collecteurs", {
+        const response = await axios.get("/parametrages/collecteurs", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -455,13 +455,13 @@ export default {
         let title = "";   
         let message = "";
         if (this.stepModal === "add") {
-          url = await axios.post("/debarcaderes", data, {
+          url = await axios.post("/parametrages/debarcaderes", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
             });
             title = "Création de debarcadère";  
           message = "Votre debarcadère a été crée avec succès !";
         } else {
-          url = await axios.put(`/debarcaderes/${this.ToId}`, data, {
+          url = await axios.put(`/parametrages/debarcaderes/${this.ToId}`, data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
           title = "Mise à jour de debarcadère";     
@@ -500,7 +500,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.get(`/debarcaderes/${id}`, {
+        const response = await axios.get(`/parametrages/debarcaderes/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -534,7 +534,7 @@ export default {
         };
 
         try {
-          const response = await axios.put(`/debarcaderes/${this.ToId}`, data, {
+          const response = await axios.put(`/parametrages/debarcaderes/${this.ToId}`, data, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -588,7 +588,7 @@ export default {
         
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/debarcaderes/${id}`, {
+        const response = await axios.delete(`/parametrages/debarcaderes/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
