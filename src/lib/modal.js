@@ -11,6 +11,15 @@ export const  successmsg = (title,text)  => {
 
     });
 }
+export const  errorMsg = (title,text)  => {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: "error",
+        confirmButtonColor: "red",
+
+    });
+}
 
 
 
