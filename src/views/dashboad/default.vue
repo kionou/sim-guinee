@@ -84,6 +84,7 @@
           <li><router-link to="/sim/magasins" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link></li>
           <li><router-link to="/sim/debarcaderes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
           <li><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Types produits</router-link></li>
+          <li><router-link to="/sim/utilisateurs" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Utilisateurs</router-link></li>
         </ul>
       </transition>
     </li>
@@ -97,7 +98,6 @@
       </router-link>
       <transition name="slide">
         <ul v-show="openMenus.users" class="submenu">
-          <li><router-link to="/sim/utilisateurs" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Utilisateurs</router-link></li>
           <li><router-link to="/sim/droits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Droits</router-link></li>
         </ul>
       </transition>

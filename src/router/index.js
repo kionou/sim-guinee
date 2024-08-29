@@ -6,9 +6,9 @@ import Login from '../views/auth/Login.vue'
 import Dashboard from '../views/dashboad/default.vue'
 import Accueil from '../views/dashboad/index.vue'
 
-import Users from '../views/users/default.vue'
-import Droits from '../views/users/droits.vue'
-import Profil from '../views/users/profil.vue'
+import Users from '../views/parametrage/users/default.vue'
+import Droits from '../views/parametrage/users/droits.vue'
+import Profil from '../views/parametrage/users/profil.vue'
 
 
 import Localite from '../views/parametrage/localites/default.vue'
