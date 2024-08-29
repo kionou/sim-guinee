@@ -395,7 +395,7 @@ export default {
 
     async fetchPrefectures() {
       try {
-        const response = await axios.get('/localites/prefectures',
+        const response = await axios.get('/parametrages/localites/prefectures',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,

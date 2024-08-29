@@ -27,34 +27,46 @@
 				<div class="box-body">
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs justify-content-center" role="tablist">
-						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#naturelle" role="tab"><span class="hidden-xs-down">Produits</span></a> </li>
-						<li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#naturelle" role="tab"><span class="hidden-xs-down">Catégories</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#region" role="tab"><span class="hidden-xs-down">Familles</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#prefecture" role="tab"> <span class="hidden-xs-down">Origines</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Formes</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Unités</span></a> </li>
+						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#produit" role="tab"><span class="hidden-xs-down">Produits</span></a> </li>
+						<li class="nav-item"> <a class="nav-link " data-toggle="tab" href="#categorie" role="tab"><span class="hidden-xs-down">Catégories</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#famille" role="tab"><span class="hidden-xs-down">Familles</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#origine" role="tab"> <span class="hidden-xs-down">Origines</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#forme" role="tab"> <span class="hidden-xs-down">Formes</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#unite" role="tab"> <span class="hidden-xs-down">Unités</span></a> </li>
 					</ul>
 					<!-- Tab panes -->
 					<div class="tab-content tabcontent-border">
-						<div class="tab-pane active" id="naturelle" role="tabpanel">
+						<div class="tab-pane active" id="produit" role="tabpanel">
 							<div class="p-15">
 								<Naturelle></Naturelle>
 							</div>
 						</div>
-						<div class="tab-pane" id="region" role="tabpanel">
+						<div class="tab-pane" id="categorie" role="tabpanel">
 							<div class="p-15">
-								<Region></Region>
+								<Categories></Categories>
 
 							</div>
 						</div>
-						<div class="tab-pane" id="prefecture" role="tabpanel">
+						<div class="tab-pane" id="famille" role="tabpanel">
 							<div class="p-15">
-								<Prefecture></Prefecture>
+								<Familles></Familles>
 							</div>
 						</div>
-						<div class="tab-pane" id="commune" role="tabpanel">
+						<div class="tab-pane" id="origine" role="tabpanel">
 							<div class="p-15">
-								<Commune></Commune>
+								<Origines></Origines>
+							
+							</div>
+						</div>
+                        <div class="tab-pane" id="forme" role="tabpanel">
+							<div class="p-15">
+								<Formes></Formes>
+							
+							</div>
+						</div>
+                        <div class="tab-pane" id="unite" role="tabpanel">
+							<div class="p-15">
+								<Unite></Unite>
 							
 							</div>
 						</div>
@@ -68,13 +80,14 @@
     </div>
 </template>
 <script>
-import Naturelle from "@/components/parametrages/localites/naturelle.vue"
-import Region from "@/components/parametrages/localites/regions.vue"
-import Prefecture from "@/components/parametrages/localites/prefectures.vue"
-import Commune from "@/components/parametrages/localites/communes.vue"
+import Unite from "@/components/parametrages/produits/unites.vue"
+import Formes from "@/components/parametrages/produits/formes.vue"
+import Origines from "@/components/parametrages/produits/origines.vue"
+import Familles from "@/components/parametrages/produits/familles.vue"
+import Categories from "@/components/parametrages/produits/categorie.vue"
 export default {
     components:{
-        Naturelle , Region , Prefecture , Commune
+        Unite ,Formes , Origines , Familles , Categories
     },
     data() {
         return {

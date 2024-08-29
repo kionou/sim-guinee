@@ -22,8 +22,8 @@ import App from './App.vue'
 // import solidGauge from 'highcharts/modules/solid-gauge'
 
 
-// import Toast from 'vue-toastification'
-// import 'vue-toastification/dist/index.css'
+ import Toast from 'vue-toastification'
+ import 'vue-toastification/dist/index.css'
 import 'maz-ui/styles'
 import MazBtn from 'maz-ui/components/MazBtn'
 import MazInput from 'maz-ui/components/MazInput'
@@ -38,8 +38,8 @@ import MazSwitch from 'maz-ui/components/MazSwitch'
  import MazAccordion from 'maz-ui/components/MazAccordion'
  import MazInputCode from 'maz-ui/components/MazInputCode'
  import MazRadioButtons from 'maz-ui/components/MazRadioButtons'
-// import 'sweetalert2/dist/sweetalert2.min.css';
-// import 'vue-toastification/dist/index.css';
+ import 'sweetalert2/dist/sweetalert2.min.css';
+
 // import AOS from 'aos'
 // import 'aos/dist/aos.css'
 
@@ -73,7 +73,7 @@ const app = createApp(App)
    app.use(router)
    app.use(store);
  
-//   app.use(Toast)
+   app.use(Toast)
   
   app.mount('#app')
    

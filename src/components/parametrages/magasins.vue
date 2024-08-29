@@ -13,34 +13,23 @@
                 <div class="app-menu">
                   <div class="search-bx mx-5">
                     <form>
-                      <div class="input-group">
-                        <input
-                          type="search"
-                          class="form-control"
-                          placeholder="Search"
-                          aria-label="Search"
-                          aria-describedby="button-addon2"
-                        />
-                        <div class="input-group-append">
-                          <button class="btn border border-1">
-                            <i class="ti-search"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </form>
+							<div class="input-group">
+							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchMagasin" @input="filterByName">
+							  <div class="input-group-append">
+								<button class="btn border border-1" ><i class="ti-search"></i></button>
+							  </div>
+							</div>
+						</form>
                   </div>
                 </div>
               </li>
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
-                  data-target="#modal-center"
-                  @click="
-                    stepModal = 'add';
-                    step1;
-                  "
+                  data-target="#add-magasin"
+                  
                 >
                   <i class="mdi mdi-plus"></i>
                 </button>
@@ -54,15 +43,14 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th class="text-center">N°</th>
+                 
                   <th>Code</th>
                   <th>Nom</th>
-                  <th>Description</th>
-                  <th>Longitude</th>
-                  <th>Latitude</th>
                   <th>Capacité</th>
-                  <th>Collecteur</th>
+                  <th>Geo local.</th>
                   <th>Commune</th>
+                  <th>Collecteur(e)</th>
+                  <th>Description</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -76,18 +64,20 @@
                 </tr>
               </tbody>
               <tbody v-else>
-                <tr v-for="(data, index) in paginatedItems" :key="data.id_magasin">
-                  <td style="width: 50px" class="text-center">
-                    {{ index + 1 }}
-                  </td>
-                  <td>{{ data.code_magasin }}</td>
+                <tr v-for="(data) in paginatedItems" :key="data.id_magasin">
+                 
+                  <td style="width: 50px;" class="text-center">{{ data.code_magasin }}</td>
                   <td>{{ data.nom_magasin }}</td>
+                  <td style="width: 50px;">{{ data.capacite }}</td>
+                  <td style="width: 100px;" class="text-center">
+                    {{ data?.longitude ?? "-"}} , {{ data?.latitude ?? "-"}}
+                   </td>
+                  <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
+                  <td style="width: 150px;" class="text-center">
+                      <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
+                      <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
+                   </td>
                   <td>{{ data.description }}</td>
-                  <td>{{ data.longitude }}</td>
-                  <td>{{ data.latitude }}</td>
-                  <td>{{ data.capacite }}</td>
-                  <td>{{ data.collecteur_relation.nom_collecteur }}</td>
-                  <td>{{ data.commune_relation.nom_commune }}</td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
                       <a
@@ -97,7 +87,7 @@
                         @click="HandleIdUpdate(data.code_magasin)"
                         data-original-title="Update"
                         data-toggle="modal"
-                        data-target="#modal-center"
+                        data-target="#update-magasin"
                         ><i class="ti-marker-alt"></i
                       ></a>
                       <a
@@ -133,17 +123,17 @@
 
     <div
       class="modal center-modal fade"
-      id="modal-center"
-      ref="modal-center"
+      id="add-magasin"
+      ref="add-magasin"
       tabindex="-1"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              {{ stepModal === "add" ? "Ajouter" : "Modifier" }} un magasin
+              Ajouter un magasin
             </h5>
-            <button type="button" class="close" data-dismiss="modal">
+            <button type="button" class="btn btn-danger close py-1 px-3 close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -191,27 +181,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.description"
-                    color="secondary"
-                    name="step1.description"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.description.$error">{{
-                    v$.step1.description.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['description']">
-                    {{ resultError["description"] }}
-                  </small>
-                </div>
-              </div>
+             
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
@@ -275,25 +245,23 @@
                   </small>
                 </div>
               </div>
+
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Commune <span class="text-danger">*</span>
                   </label>
-                  <select
-                    v-model="step1.commune"
-                    class="form-select"
-                    name="step1.commune"
-                  >
-                    <option value="" disabled>Sélectionnez une commune</option>
-                    <option
-                      v-for="commune in dataCommunes"
-                      :key="commune.id_commune"
-                      :value="commune.id_commune"
-                    >
-                      {{ commune.nom_commune }}
-                    </option>
-                  </select>
+                  <MazSelect
+                              v-model="step1.commune"
+                              color="secondary"
+                              name="step1.commune"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CommunesOptions"
+                              
+                              
+                            />
                   <small v-if="v$.step1.commune.$error">{{
                     v$.step1.commune.$errors[0].$message
                   }}</small>
@@ -305,22 +273,19 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Collecteur <span class="text-danger">*</span>
+                    Collecteur(e) <span class="text-danger">*</span>
                   </label>
-                  <select
-                    v-model="step1.collecteur"
-                    class="form-select"
-                    name="step1.collecteur"
-                  >
-                    <option value="" disabled>Sélectionnez un collecteur</option>
-                    <option
-                      v-for="collecteur in dataCollecteurs"
-                      :key="collecteur.id_collecteur"
-                      :value="collecteur.id_collecteur"
-                    >
-                      {{ collecteur.nom_collecteur }}
-                    </option>
-                  </select>
+                  <MazSelect
+                              v-model="step1.collecteur"
+                              color="secondary"
+                              name="step1.collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CollectionOptions"
+                              
+                              
+                            />
                   <small v-if="v$.step1.collecteur.$error">{{
                     v$.step1.collecteur.$errors[0].$message
                   }}</small>
@@ -329,44 +294,238 @@
                   </small>
                 </div>
               </div>
-              <!-- <div class="col-6">
+              <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Collecteur <span class="text-danger">*</span></label
+                    Description <span class="text-danger">*</span></label
+                  >
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
+
+                  <small v-if="v$.step1.description.$error">{{
+                    v$.step1.description.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
+              </div>
+            
+            </div>
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
+                  type="button"
+                  @click="SubmitMagasins('add-magasin')"
+                  class="waves-effect waves-light btn btn-primary"
+                >
+                  Valider
+                </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal center-modal fade"
+      id="update-magasin"
+      ref="update-magasin"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Modifier un magasin
+            </h5>
+            <button type="button" class="close btn btn-danger close py-1 px-3" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Code <span class="text-danger">*</span></label
                   >
                   <MazInput
-                    v-model="step1.collecteur"
+                    v-model="step2.code_magasin"
                     color="secondary"
-                    name="step1.collecteur"
+                    name="step2.code_magasin"
                     size="sm"
                     rounded-size="sm"
                     type="text"
                   />
-                  <small v-if="v$.step1.collecteur.$error">{{
-                    v$.step1.collecteur.$errors[0].$message
+                  <small v-if="v$.step2.code_magasin.$error">{{
+                    v$.step2.code_magasin.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['code_magasin']">
+                    {{ resultError["code_magasin"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Nom <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.nom_magasin"
+                    color="secondary"
+                    name="step2.nom_magasin"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.nom_magasin.$error">{{
+                    v$.step2.nom_magasin.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['nom_magasin']">
+                    {{ resultError["nom_magasin"] }}
+                  </small>
+                </div>
+              </div>
+             
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Capacité <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.capacite"
+                    color="secondary"
+                    name="step2.capacite"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.capacite.$error">{{
+                    v$.step2.capacite.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['capacite']">
+                    {{ resultError["capacite"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Longitude <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.longitude"
+                    color="secondary"
+                    name="step2.longitude"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.longitude.$error">{{
+                    v$.step2.longitude.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['longitude']">
+                    {{ resultError["longitude"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Latitude <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.latitude"
+                    color="secondary"
+                    name="step2.latitude"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.latitude.$error">{{
+                    v$.step2.latitude.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['latitude']">
+                    {{ resultError["latitude"] }}
+                  </small>
+                </div>
+              </div>
+
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Commune <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.commune"
+                              color="secondary"
+                              name="step2.commune"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CommunesOptions"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.commune.$error">{{
+                    v$.step2.commune.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['commune']">
+                    {{ resultError["commune"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Collecteur(e) <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.collecteur"
+                              color="secondary"
+                              name="step2.collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CollectionOptions"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.collecteur.$error">{{
+                    v$.step2.collecteur.$errors[0].$message
                   }}</small>
                   <small v-if="resultError['collecteur']">
                     {{ resultError["collecteur"] }}
                   </small>
                 </div>
-              </div> -->
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Description <span class="text-danger">*</span></label
+                  >
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+
+                  <small v-if="v$.step2.description.$error">{{
+                    v$.step2.description.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
+              </div>
+            
             </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
                   type="button"
-                  @click="SubmitMagasins('modal-center')"
-                  class="waves-effect waves-light btn btn-secondary"
+                  @click="submitUpdate('update-magasin')"
+                  class="waves-effect waves-light btn btn-primary"
                 >
                   Valider
                 </button>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer modal-footer-uniform text-end">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
-            </button>
           </div>
         </div>
       </div>
@@ -382,8 +541,14 @@ import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
 import { successmsg } from "@/lib/modal.js";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import Swal from "sweetalert2";
+import { useToast } from "vue-toastification";
 export default {
+  setup() {
+   const toast = useToast();
+   return { toast }
+ },
   components: {
+    
     Pag,
     Loading,
   },
@@ -403,16 +568,26 @@ export default {
   data() {
     return {
       loading: true,
+      searchMagasin:"",
       MagasinsOptions: [],
+      CommunesOptions: [],
+      CollectionOptions: [],
       data: [],
       currentPage: 1,
       itemsPerPage: 10,
       ToId: "",
-      stepModal: "add",
-      dataCommunes: [],
-      dataCollecteurs: [],
       totalPageArray: [],
       step1: {
+        code_magasin: "",
+        nom_magasin: "",
+        longitude: "",
+        latitude: "",
+        capacite: "",
+        description: "",
+        collecteur: "",
+        commune: "",
+      },
+      step2: {
         code_magasin: "",
         nom_magasin: "",
         longitude: "",
@@ -438,6 +613,16 @@ export default {
       collecteur: { require },
       commune: { require },
     },
+    step2: {
+      code_magasin: { require },
+      nom_magasin: { require },
+      longitude: { require },
+      latitude: { require },
+      capacite: { require },
+      description: { require },
+      collecteur: { require },
+      commune: { require },
+    },
   },
   async mounted() {
     await this.fetchMagasins();
@@ -448,7 +633,7 @@ export default {
     successmsg: successmsg,
     async fetchCommunes() {
       try {
-        const response = await axios.get("/localites/communes", {
+        const response = await axios.get("/parametrages/localites/communes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -456,28 +641,37 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.dataCommunes = response.data;
+          response.data.map(item => this.CommunesOptions.push({
+				label: item.nom_commune,
+				value: item.id_commune
+				}))
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
+        console.log('eroorcommune',error.response)
+        if(error.response.status === 500){
+          // error network push sur maintenance 
+          
         }
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
       }
     },
     async fetchCollecteurs() {
       try {
-        const response = await axios.get("/collecteurs", {
+        const response = await axios.get("/parametrages/collecteurs", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -485,29 +679,36 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.dataCollecteurs = response.data;
-          console.log("data_coll", this.dataCollecteurs);
+          response.data.map(item => this.CollectionOptions.push({
+            label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
+            value: item.id_collecteur 
+				}))
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
+        if(error.response.status === 500){
+          // error network push sur maintenance 
+          
         }
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
       }
     },
     async fetchMagasins() {
       try {
-        const response = await axios.get("/magasins", {
+        const response = await axios.get("/parametrages/magasins", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -520,22 +721,27 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
+        if(error.response.status === 500){
+          // error network push sur maintenance 
+          
         }
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
       }
     },
-    async SubmitMagasins() {
+    async SubmitMagasins(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
@@ -550,45 +756,48 @@ export default {
           collecteur: this.step1.collecteur,
           commune: this.step1.commune,
         };
-        console.log("qfs", data);
-        let url;
-        let title = "";
-        let message = "";
-        if (this.stepModal === "add") {
-          url = await axios.post("/magasins", data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
-          });
-        title = "Création de magasin";
-          message = "Votre magasin a été crée avec succès !";
-        } else {
-          url = await axios.put(`/magasins/${this.ToId}`, data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
-          });
-          title = "Mise à jour de magasin";
-          message = "Les données du magasin ont été mises à jour avec succès !";
-        }
-        console.log("url", url);
+       
+        console.log('data',data)
         try {
-          const response = url;
-          console.log("qfs", response);
+          const response = await axios.post("/parametrages/magasins", data, {
+            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
+          }
+          });
+		  console.log('qfs', response)
+		  if (response.status === 200) {
+            this.closeModal(modalId);
+			this.successmsg(
+				"Création du magasin",
+				"Votre magasin a été créé avec succès !"
+			);
 
-          if (response.status === 200) {
-            this.closeModal("modal-center");
-            this.successmsg(title, message);
+
             await this.fetchMagasins();
           } else {
-            this.loading = false;
           }
         } catch (error) {
-          console.log("erroor", error);
-
-          this.loading = false;
-          //   if (error.response.data.status === "error") {
-          //     return (this.error = error.response.data.message);
-          //   } else {
-          //     this.formatValidationErrors(error.response.data.errors);
-          //   }
+				console.log('error',error)
+        if(error.response?.status === 500){
+          // error network push sur maintenance 
+          
         }
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
+        }
+       
+      
       } else {
       }
     },
@@ -597,7 +806,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.get(`/magasins/${id}`, {
+        const response = await axios.get(`/parametrages/magasins/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -607,14 +816,14 @@ export default {
           console.log("Slbvlkjbv", response);
 
           let data = response.data;
-          (this.step1.code_magasin = data.code_magasin),
-            (this.step1.nom_magasin = data.nom_magasin),
-            (this.step1.description = data.description),
-            (this.step1.longitude = data.longitude),
-            (this.step1.latitude = data.latitude),
-            (this.step1.capacite = data.capacite),
-            (this.step1.commune = data.commune),
-            (this.step1.collecteur = data.collecteur),
+          (this.step2.code_magasin = data.code_magasin),
+            (this.step2.nom_magasin = data.nom_magasin),
+            (this.step2.description = data.description),
+            (this.step2.longitude = data.longitude),
+            (this.step2.latitude = data.latitude),
+            (this.step2.capacite = data.capacite),
+            (this.step2.commune = data.commune),
+            (this.step2.collecteur = data.collecteur),
             (this.ToId = data.code_magasin);
           this.loading = false;
         }
@@ -637,7 +846,7 @@ export default {
         };
 
         try {
-          const response = await axios.put(`/magasins/${this.ToId}`, data, {
+          const response = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -646,23 +855,31 @@ export default {
           if (response.status === 200) {
             this.closeModal(modalId);
             this.successmsg(
-              "Données du financement mises à jour",
-              "Les données du financement ont été mises à jour avec succès !"
+              "Données du magasin mises à jour",
+              "Les données du magasin ont été mises à jour avec succès !"
             );
             await this.fetchMagasins();
           }
         } catch (error) {
           console.error("Erreur lors du téléversement :", error);
 
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          } else {
-            this.formatValidationErrors(error.response.data.errors);
+          if(error.response.status === 500){
+          // error network push sur maintenance 
+          
+        }
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
             this.loading = false;
+            return false;
           }
         }
       } else {
@@ -691,7 +908,7 @@ export default {
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/magasins/${id}`, {
+        const response = await axios.delete(`/parametrages/magasins/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -709,26 +926,62 @@ export default {
         }
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
+        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else if(error.response.data.detail.includes(404)) {
+              this.loading = false;
+            return  this.data = []
+			   
+          }else{
+            console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
       }
     },
     filterByName() {
       this.currentPage = 1;
-      if (this.control.name !== null) {
-        const tt = this.control.name;
+      if (this.searchMagasin !== null) {
+        const tt = this.searchMagasin;
         const searchValue = tt.toLowerCase();
-        this.ClientOptions = this.data.filter((user) => {
-          const Nom = user.duty_name || "";
-          const Descriptions = user.descriptions || "";
+        this.MagasinsOptions = this.data.filter((user) => {
+          const Nom = user.code_magasin || "";
+          const Descriptions = user.nom_magasin || "";
+          const Commune = user.commune_relation?.nom_commune  || "";
+          const Collecteur = user.collecteur_relation?.nom_collecteur || "";
+         
 
           return (
             Nom.toLowerCase().includes(searchValue) ||
-            Descriptions.toLowerCase().includes(searchValue)
+            Descriptions.toLowerCase().includes(searchValue) ||
+            Commune.toLowerCase().includes(searchValue) ||
+            Collecteur.toLowerCase().includes(searchValue) 
           );
         });
       } else {
-        this.ClientOptions = [...this.data];
+        this.MagasinsOptions = [...this.data];
       }
     },
+    triggerToast(errorMessage) {
+  this.toast.error(errorMessage, {
+    position: "top-right",
+    timeout: 8000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: true,
+    closeButton: "button",
+    icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+    rtl: false,
+    className: 'toast-error'
+  });
+},
     closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");

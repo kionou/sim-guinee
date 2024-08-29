@@ -1,5 +1,6 @@
 <template >
     <div>
+		<Loading v-if="loading" style="z-index: 99999"></Loading>
         <div class="content-header">
 			<div class="d-flex align-items-center justify-content-between">
 				
@@ -28,17 +29,18 @@
 					<div class="search-bx mx-5">
 						<form>
 							<div class="input-group">
-							  <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-							  <div class="input-group-append">
-								<button class="btn border border-1" ><i class="ti-search"></i></button>
-							  </div>
-							</div>
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                          aria-describedby="button-addon2" v-model="searchCollect" @input="filterByName">
+                        <div class="input-group-append">
+                          <button class="btn border border-1"><i class="ti-search"></i></button>
+                        </div>
+                      </div>
 						</form>
 					</div>
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#modal-center" ><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#add-collecteur" ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
@@ -96,7 +98,7 @@
 				  </div>
 				   </td>
 				   <td style="width: 100px;" class="text-center">
-                    {{ data?.code_collecteur ?? "-"}}
+                    {{ data?.commune?.nom_commune ?? "-"}}
                    </td>
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.relai ?? "-"}}
@@ -106,8 +108,8 @@
                    </td>
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_region_naturelle)"  data-original-title="Update" data-toggle="modal" data-target="#naturelle-update"><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_region_naturelle)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_collecteur)"  data-original-title="Update" data-toggle="modal" data-target="#update-collecteur"><i class="ti-marker-alt"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_collecteur)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
                </tr>
@@ -130,65 +132,242 @@
 </div>
 		
 
-   <div class="modal center-modal fade" id="modal-center"  ref="modal-center" tabindex="-1">
-	  <div class="modal-dialog">
+   <div class="modal center-modal fade" id="add-collecteur"  ref="add-collecteur" tabindex="-1">
+	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title">Ajouter des régions naturelles</h5>
+			<h5 class="modal-title">Ajouter un(e) collecteur(e)</h5>
 			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
 			  <span aria-hidden="true">&times;</span>
 			</button>
 		  </div>
 		  <div class="modal-body">
-         <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
-          <div class="bouttons" style="position: relative ; width: 100%; " > 
-        <div class="btn btn-secondary py-1 px-2" style="position: absolute; right: 0; top: 13px; z-index:1000" @click="AddformDataRegionNaturelles" ><i  class="ti-plus"></i></div>
-         </div>
-          <!-- </div>  -->
-                <div class="row align-items-center p-2  border-bottom " v-for="(regionNaturelle, index) in RegionNaturelles" :key="regionNaturelle.id">
-                  <div class="col-11">
-                    <span class="nombre">
-                            {{index + 1}}
-                        </span>
-                        <div class="row  content-group">
-                 
-                  <div class="col">
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Code <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.code_collecteur"
+                              color="secondary"
+                              name="step1.code_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.code_collecteur.$error">{{
+                              v$.step1.code_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['code_collecteur']">
+                              {{ resultError["code_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.nom_collecteur"
+                              color="secondary"
+                              name="step1.nom_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.nom_collecteur.$error">{{
+                              v$.step1.nom_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nom_collecteur']">
+                              {{ resultError["nom_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Prenom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.prenom_collecteur"
+                              color="secondary"
+                              name="step1.prenom_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.prenom_collecteur.$error">{{
+                              v$.step1.prenom_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['prenom_collecteur']">
+                              {{ resultError["prenom_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Sexe <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step1.sexe_collecteur"
+                              color="secondary"
+                              name="step1.sexe_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							  :options="choix"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.sexe_collecteur.$error">{{
+                              v$.step1.sexe_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['sexe_collecteur']">
+                              {{ resultError["sexe_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+				<div class="col col-md-6 col-sm-12">
                     <div class="input-groupe">
-                      <label for="userpassword"
-                        >Nom <span class="text-danger">*</span></label
-                      >
-                      <MazInput
-                        v-model="regionNaturelle.nom_region_naturelle"
-                        color="info"
-                        name="nom_region_naturelle"
-                        size="sm"
-                        rounded-size="sm"
-                        type="text"
-                        @input="clearErrorRegionNaturelles(index, 'nom_region_naturelle')"
-
-                      />
-                      <small v-if="errors.RegionNaturelles && errors.RegionNaturelles[index] && errors.RegionNaturelles[index].nom_region_naturelle">{{ errors.RegionNaturelles[index].nom_region_naturelle }}</small>
-                      <small v-if="resultError['RegionNaturelles']"> {{ resultError["RegionNaturelles"] }} </small>
+                      <label for="userpassword">Numéro Téléphonique <span class="text-danger">*</span></label>
+                      <MazPhoneNumberInput v-model="step1.telephone_collecteur" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
+                      <small v-if="v$.step1.telephone_collecteur.$error">{{
+                        v$.step1.telephone_collecteur.$errors[0].$message
+                        }}</small>
+                      <small v-if="resultError['telephone_collecteur']">
+                        {{ resultError["telephone_collecteur"] }}
+                      </small>
                     </div>
                   </div>
-
-                 
- 
-                </div>
+						<div class="col col-md-6 col-sm-12">
+                    <div class="input-groupe">
+                      <label for="userpassword">Numéro Whatsapp <span class="text-danger">*</span></label>
+                      <MazPhoneNumberInput v-model="step1.whatsapp_collecteur" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
+                      <small v-if="v$.step1.whatsapp_collecteur.$error">{{
+                        v$.step1.whatsapp_collecteur.$errors[0].$message
+                        }}</small>
+                      <small v-if="resultError['whatsapp_collecteur']">
+                        {{ resultError["whatsapp_collecteur"] }}
+                      </small>
+                    </div>
                   </div>
-                  <div class="col-1" style="position: relative">
-                    
-                      <button class="btn btn-sm btn-icon btn-danger btn-wave py-1 px-2" @click="deleteRowRegionNaturelles(index)"  style=" position:absolute !important ; top: 12px !important; background:red;">
-                       <i class="ti-trash"></i>
-                      </button>
-                  </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              >Commune <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step1.commune_collecteur"
+                              color="secondary"
+                              name="step1.commune_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							  :options="CommunesOptions"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.commune_collecteur.$error">{{
+                              v$.step1.commune_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['commune_collecteur']">
+                              {{ resultError["commune_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Adresse <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.adresse"
+                              color="secondary"
+                              name="step1.adresse"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.adresse.$error">{{
+                              v$.step1.adresse.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['adresse']">
+                              {{ resultError["adresse"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              >Relai <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.relai"
+                              color="secondary"
+                              name="step1.relai"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.relai.$error">{{
+                              v$.step1.relai.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['relai']">
+                              {{ resultError["relai"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Description <span class="text-danger">*</span></label
+                            >
+							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
 
-                </div>
+                            <small v-if="v$.step1.description.$error">{{
+                              v$.step1.description.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['description']">
+                              {{ resultError["description"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
              
 		  </div>
 		  <div class="modal-footer modal-footer-uniform text-end">
 		
-        <button type="button" @click="SubmitNaturelle('modal-center')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+        <button type="button" @click="SubmitCollecteur('add-collecteur')" class="waves-effect waves-light btn btn-primary ">Valider</button>
 
 
 		  </div>
@@ -197,47 +376,245 @@
 	        </div>
 
     
-          <div class="modal center-modal fade"  id="naturelle-update"  ref="naturelle-update" tabindex="-1">
-          <div class="modal-dialog">
+          <div class="modal center-modal fade"  id="update-collecteur"  ref="update-collecteur" tabindex="-1">
+          <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title">Modifier une région naturelle</h5>
+            <h5 class="modal-title">Modifier un(e) collcteur(e)</h5>
             <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
             <div class="modal-body">
-                  <div class="row mt-3 content-group">
+				<div class="modal-body">
+			<div class="row mt-3 content-group">
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Nom <span class="text-danger">*</span></label
+                              > Code <span class="text-danger">*</span></label
                             >
                             <MazInput
-                              v-model="step2.nom_region_naturelle"
+                              v-model="step2.code_collecteur"
                               color="secondary"
-                              name="step2.nom_region_naturelle"
+                              name="step2.code_collecteur"
                               size="sm"
                               rounded-size="sm"
                               type="text"
                               
                               
                             />
-                            <small v-if="v$.step2.nom_region_naturelle.$error">{{
-                              v$.step2.nom_region_naturelle.$errors[0].$message
+                            <small v-if="v$.step2.code_collecteur.$error">{{
+                              v$.step2.code_collecteur.$errors[0].$message
                             }}</small>
-                            <small v-if="resultError['nom_region_naturelle']">
-                              {{ resultError["nom_region_naturelle"] }}
+                            <small v-if="resultError['code_collecteur']">
+                              {{ resultError["code_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.nom_collecteur"
+                              color="secondary"
+                              name="step2.nom_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.nom_collecteur.$error">{{
+                              v$.step2.nom_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nom_collecteur']">
+                              {{ resultError["nom_collecteur"] }}
                             </small>
                           </div>
                         </div>
                       
-                      </div>
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Prenom <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.prenom_collecteur"
+                              color="secondary"
+                              name="step2.prenom_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.prenom_collecteur.$error">{{
+                              v$.step2.prenom_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['prenom_collecteur']">
+                              {{ resultError["prenom_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Sexe <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step2.sexe_collecteur"
+                              color="secondary"
+                              name="step2.sexe_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							  :options="choix"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.sexe_collecteur.$error">{{
+                              v$.step2.sexe_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['sexe_collecteur']">
+                              {{ resultError["sexe_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+				<div class="col col-md-6 col-sm-12">
+                    <div class="input-groupe">
+                      <label for="userpassword">Numéro Téléphonique <span class="text-danger">*</span></label>
+                      <MazPhoneNumberInput v-model="step2.telephone_collecteur" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
+                      <small v-if="v$.step2.telephone_collecteur.$error">{{
+                        v$.step2.telephone_collecteur.$errors[0].$message
+                        }}</small>
+                      <small v-if="resultError['telephone_collecteur']">
+                        {{ resultError["telephone_collecteur"] }}
+                      </small>
+                    </div>
+                  </div>
+						<div class="col col-md-6 col-sm-12">
+                    <div class="input-groupe">
+                      <label for="userpassword">Numéro Whatsapp <span class="text-danger">*</span></label>
+                      <MazPhoneNumberInput v-model="step2.whatsapp_collecteur" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
+                      <small v-if="v$.step2.whatsapp_collecteur.$error">{{
+                        v$.step2.whatsapp_collecteur.$errors[0].$message
+                        }}</small>
+                      <small v-if="resultError['whatsapp_collecteur']">
+                        {{ resultError["whatsapp_collecteur"] }}
+                      </small>
+                    </div>
+                  </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              >Commune <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step2.commune_collecteur"
+                              color="secondary"
+                              name="step2.commune_collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							  :options="CommunesOptions"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.commune_collecteur.$error">{{
+                              v$.step2.commune_collecteur.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['commune_collecteur']">
+                              {{ resultError["commune_collecteur"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Adresse <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.adresse"
+                              color="secondary"
+                              name="step2.adresse"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.adresse.$error">{{
+                              v$.step2.adresse.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['adresse']">
+                              {{ resultError["adresse"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+			<div class="row mt-3 content-group">
+                        <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              >Relai <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.relai"
+                              color="secondary"
+                              name="step2.relai"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.relai.$error">{{
+                              v$.step2.relai.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['relai']">
+                              {{ resultError["relai"] }}
+                            </small>
+                          </div>
+                        </div>
+						<div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Description <span class="text-danger">*</span></label
+                            >
+							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+
+                            <small v-if="v$.step2.description.$error">{{
+                              v$.step2.description.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['description']">
+                              {{ resultError["description"] }}
+                            </small>
+                          </div>
+                        </div>
+                      
+            </div>
+             
+		  </div>
                     
             </div>
             <div class="modal-footer modal-footer-uniform text-end">
           
-              <button type="button" @click="submitUpdate('naturelle-update')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+              <button type="button" @click="submitUpdate('update-collecteur')" class="waves-effect waves-light btn btn-primary ">Valider</button>
           
 
             </div>
@@ -255,87 +632,113 @@ import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
 import {successmsg} from "@/lib/modal.js"
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
   import Swal from 'sweetalert2'
+  import { useToast } from "vue-toastification";
 export default {
+	setup() {
+   const toast = useToast();
+   return { toast }
+ },
 	components:{
-        Pag , Loading
+        Pag , Loading , MazPhoneNumberInput
     },
     computed: {
     loggedInUser() {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
     totalPages() {
-      return Math.ceil(this.RegionsNaturelleOptions.length / this.itemsPerPage);
+      return Math.ceil(this.CollecteursOptions.length / this.itemsPerPage);
     },
     paginatedItems() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      return this.RegionsNaturelleOptions.slice(startIndex, endIndex);
+      return this.CollecteursOptions.slice(startIndex, endIndex);
     },
   
   },
     data() {
         return {
             loading: true,
-            searchNaturelle:"",
+            searchCollect:"",
             isModalUpdate:"",
-            RegionsNaturelleOptions: [],
+            CollecteursOptions: [],
+			CommunesOptions:[],
             data:[],
             currentPage: 1,
             itemsPerPage: 10,
             ToId:"",
             totalPageArray: [],
-            step2: {nom_region_naturelle:"",},
+			choix: [
+				{ label: "MASCULIN", value: 'MASCULIN' },
+				{ label: "FEMININ", value: 'FEMININ' },
+        		],
+			step1: {
+				code_collecteur:"",
+				nom_collecteur:"",
+				prenom_collecteur:"",
+				sexe_collecteur:"",
+				whatsapp_collecteur:"",
+				telephone_collecteur:"",
+				commune_collecteur:"",
+				adresse:"",
+				relai:"",
+				description:"",
+			},
+            step2: {
+				code_collecteur:"",
+				nom_collecteur:"",
+				prenom_collecteur:"",
+				sexe_collecteur:"",
+				whatsapp_collecteur:"",
+				telephone_collecteur:"",
+				commune_collecteur:"",
+				adresse:"",
+				relai:"",
+				description:"",
+
+			},
             v$: useVuelidate(),
             error: "",
             resultError: {},
-            errors: {RegionNaturelles: [] , },
-        RegionNaturelles:[{ nom_region_naturelle:"", }
-        ],
 
         }
     },
     validations: {
+		step1: {
+				code_collecteur:{require},
+				nom_collecteur:{require},
+				prenom_collecteur:{require},
+				sexe_collecteur:{require},
+				whatsapp_collecteur:{require},
+				telephone_collecteur:{require},
+				commune_collecteur:{require},
+				adresse:{require},
+				relai:{require},
+				description:{require},
+			},
        
-        step2: {nom_region_naturelle:{require}},
+         step2: {
+			   code_collecteur:{require},
+				nom_collecteur:{require},
+				prenom_collecteur:{require},
+				sexe_collecteur:{require},
+				whatsapp_collecteur:{require},
+				telephone_collecteur:{require},
+				commune_collecteur:{require},
+				adresse:{require},
+				relai:{require},
+				description:{require},
+		 },
   },
   async  mounted() {
-    await this.fetchRegionNaturelle()
+    await this.fetchCollecteurs()
+    await this.fetchCommunes()
         
     },
     methods: {
         successmsg:successmsg,
-        AddformDataRegionNaturelles() {
-     this.RegionNaturelles.push({  nom_region_naturelle:''});
-   },
-   deleteRowRegionNaturelles(index) {
   
-   if(index !== 0){
-     this.RegionNaturelles.splice(index, 1);
-   }
-  },
-  clearErrorRegionNaturelles(index, field) {   
-     if (this.errors.RegionNaturelles[index]) {
-       this.errors.RegionNaturelles[index][field] = null;
-     }
-   },
-   validateRegionNaturelles() {
-    let isValid = true;
-    this.errors = { RegionNaturelles: [] };
-    this.RegionNaturelles.forEach((regionNaturelle, index) => {
-        const regionNaturelleErrors = {};
         
-        if (!regionNaturelle.nom_region_naturelle) {
-            regionNaturelleErrors.nom_region_naturelle = 'Ce champs est obligatoire!';
-            isValid = false;
-        }
-       
-      
-        this.errors.RegionNaturelles[index] = regionNaturelleErrors;
-    });
-    return isValid;
-},
-        
-        async fetchRegionNaturelle() {
+        async fetchCollecteurs() {
       try {
         const response = await axios.get( '/parametrages/collecteurs',
           {
@@ -349,7 +752,7 @@ export default {
           console.log('responsecolecteurs',response)
         if (response.status === 200) {
               this.data  = response.data ;
-              this.RegionsNaturelleOptions = this.data
+              this.CollecteursOptions = this.data
               this.loading =  false
         }
       } catch (error) {
@@ -367,39 +770,97 @@ export default {
         }
       }
     },
-    async SubmitNaturelle(modalId) {
-     
-      if (this.validateRegionNaturelles()) {
-        console.log('regions',this.RegionNaturelles)
+	async fetchCommunes() {
+      try {
+        const response = await axios.get('/parametrages/localites/communes',
+          {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+
+          }
+        );
+
+        console.log('response', response)
+        if (response.status === 200) {
+			response.data.map(item => this.CommunesOptions.push({
+				label: item.nom_commune,
+				value: item.id_commune
+				}))
+          
+        }
+      } catch (error) {
+
+        if (error) {
+          if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401) {
+            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+            this.$router.push("/"); //a revoir
+          }
+        } else {
+          this.formatValidationErrors(error.response.data.errors);
+          this.loading = false;
+          return false;
+        }
+      }
+    },
+    async SubmitCollecteur(modalId) {
+      this.v$.step1.$touch();
+      if (this.v$.$errors.length == 0) {
         this.loading = true;
+       let data = {
+
+            code_collecteur:this.step1.code_collecteur,
+            nom_collecteur:this.step1.nom_collecteur,
+            prenom_collecteur:this.step1.prenom_collecteur,
+            sexe_collecteur:this.step1.sexe_collecteur,
+            whatsapp_collecteur:this.step1.whatsapp_collecteur,
+            telephone_collecteur:this.step1.telephone_collecteur,
+            commune_collecteur:this.step1.commune_collecteur,
+            adresse:this.step1.adresse,
+            relai:this.step1.relai,
+            description:this.step1.description,
+       }
+       
+	   console.log('data',data)
         try {
-          const response = await axios.post("/parametrages/localites/region-naturelles", this.RegionNaturelles, {
+          const response = await axios.post("/parametrages/collecteurs", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
-           
           }
           });
-       console.log('qfs',response)
+		  console.log('qfs', response)
+		  if (response.status === 200) {
+            this.closeModal(modalId);
+			this.successmsg(
+				"Création du collecteur",
+				"Votre collecteur a été créé avec succès !"
+			);
 
-      
-          if (response.status === 200) {
-             this.closeModal(modalId);
-             this.successmsg(
-                "Création de régions naturelles",
-                "Vos régions naturelles ont été créées avec succès !"
-            );
-            await this.fetchRegionNaturelle();
+
+            await this.fetchCollecteurs();
           } else {
           }
         } catch (error) {
-            console.log('erroor',error)
-   
+				console.log('error',error)
 
-          this.loading = false;
-        //   if (error.response.data.status === "error") {
-        //     return (this.error = error.response.data.message);
-        //   } else {
-        //     this.formatValidationErrors(error.response.data.errors);
-        //   }
+			this.loading = false;
+          if (error) {
+            if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401) {
+              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+              this.$router.push("/"); //a revoir
+            }else {
+			console.log('error',error.response.data.detail)
+
+            this.triggerToast(error.response.data.detail);
+            this.loading = false;
+            return false;
+          }
+          } else {
+			console.log('error',error)
+
+            
+            this.loading = false;
+           
+          }
         }
       } else {
       
@@ -409,7 +870,7 @@ export default {
     this.loading = true;
 
       try {
-        const response = await axios.get(`/parametrages/localites/region-naturelles/${id}`, {
+        const response = await axios.get(`/parametrages/collecteurs/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`
           }
@@ -420,9 +881,22 @@ export default {
             console.log('Slbvlkjbv',response)
         
           let data =  response.data
-          this.step2.nom_region_naturelle = data.nom_region_naturelle,
+          this.step2 = {
+            code_collecteur: data.code_collecteur,
+            nom_collecteur: data.nom_collecteur,
+            prenom_collecteur: data.prenom_collecteur,
+            sexe_collecteur: data.sexe_collecteur[0],
+            whatsapp_collecteur: data.whatsapp_collecteur,
+            telephone_collecteur: data.telephone_collecteur,
+            commune_collecteur: data.commune_collecteur,
+            adresse: data.adresse,
+            relai: data.relai,
+            description: data.description,
+            
+
+          }
        
-          this.ToId = data.id_region_naturelle
+          this.ToId = data.id_collecteur
           this.loading = false;
         
         }
@@ -450,7 +924,16 @@ export default {
     
        this.loading = true;
        let data = {
-            nom_region_naturelle:this.step2.nom_region_naturelle,
+		code_collecteur:this.step2.code_collecteur,
+            nom_collecteur:this.step2.nom_collecteur,
+            prenom_collecteur:this.step2.prenom_collecteur,
+            sexe_collecteur:this.step2.sexe_collecteur,
+            whatsapp_collecteur:this.step2.whatsapp_collecteur,
+            telephone_collecteur:this.step2.telephone_collecteur,
+            commune_collecteur:this.step2.commune_collecteur,
+            adresse:this.step2.adresse,
+            relai:this.step2.relai,
+            description:this.step2.description,
           
           
             }
@@ -458,7 +941,7 @@ export default {
 
  
       try {
-        const response = await axios.put(`/parametrages/localites/region-naturelles/${this.ToId}`,data, {
+        const response = await axios.put(`/parametrages/collecteurs/${this.ToId}`,data, {
           headers: {
            
             Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -469,10 +952,10 @@ export default {
         if (response.status === 200) {
           this.closeModal(modalId);
           this.successmsg(
-                "Mise à jour de la région naturelle",
-                "Votre région naturelle a été mise à jour avec succès !"
-            );
-            await this.fetchRegionNaturelle();
+				"Mise à jour du collecteur",
+				"Votre collecteur a été mis à jour avec succès !"
+			);
+            await this.fetchCollecteurs();
          
           
         } 
@@ -516,7 +999,7 @@ export default {
          
          try {
            // Faites une requête pour supprimer l'élément avec l'ID itemId
-           const response = await axios.delete(`/parametrages/localites/region-naturelles/${id}`, {
+           const response = await axios.delete(`/parametrages/collecteurs/{code}?id=${id}`, {
              headers: {
                Authorization: `Bearer ${this.loggedInUser.token}`,
                
@@ -528,11 +1011,11 @@ export default {
        
            if (response.status === 200) {
              this.loading = false
-                        this.successmsg(
-                "Suppression de la région naturelle",
-                "Votre région naturelle a été supprimée avec succès !"
-            );
-            await this.fetchRegionNaturelle();
+			 this.successmsg(
+						"Suppression du collecteur",
+						"Votre collecteur a été supprimé avec succès !"
+					);
+            await this.fetchCollecteurs();
    
            } else {
         
@@ -560,16 +1043,21 @@ export default {
        },
     filterByName() {
 this.currentPage = 1;
-if (this.searchNaturelle !== null) {
-   const tt = this.searchNaturelle;
+if (this.searchCollect !== null) {
+   const tt = this.searchCollect;
   const  searchValue = tt.toLowerCase()
-  this.RegionsNaturelleOptions =this.data.filter(user => {
-    const Nom = user.nom_region_naturelle || '';
-    return Nom.toLowerCase().includes(searchValue)  ;
+  this.CollecteursOptions =this.data.filter(user => {
+    const Nom = user.nom_collecteur || '';
+    const Prenom = user.prenom_collecteur || '';
+    const Sexe = user.sexe_collecteur[0] || '';
+    const Commune = user.commune?.nom_commune || '';
+    const Whatsapp = user.whatsapp_collecteur || '';
+    const Telephone = user.code_collecteur || '';
+    return Nom.toLowerCase().includes(searchValue) || Prenom.toLowerCase().includes(searchValue) || Sexe.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) || Whatsapp.toLowerCase().includes(searchValue) || Telephone.toLowerCase().includes(searchValue)   ;
   });
 
 } else {
-this.RegionsNaturelleOptions = [...this.data];
+this.CollecteursOptions = [...this.data];
  
 }
 
@@ -585,6 +1073,23 @@ closeModal(modalId) {
         modalBackdrop.parentNode.removeChild(modalBackdrop);
       }
     },
+	triggerToast(errorMessage) {
+  this.toast.error(errorMessage, {
+    position: "top-right",
+    timeout: 5000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: true,
+    closeButton: "button",
+    icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+    rtl: false,
+    className: 'toast-error'
+  });
+},
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 
@@ -613,7 +1118,7 @@ closeModal(modalId) {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
 
       const endIndex = startIndex + this.itemsPerPage;
-      return this.RegionsNaturelleOptions.slice(startIndex, endIndex);
+      return this.CollecteursOptions.slice(startIndex, endIndex);
     },
     },
 }
