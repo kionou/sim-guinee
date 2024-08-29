@@ -19,6 +19,8 @@
                           class="form-control"
                           placeholder="Search"
                           aria-label="Search"
+                          v-model="searchUsers"
+                          @input="filterByName()"
                           aria-describedby="button-addon2"
                         />
                         <div class="input-group-append">
@@ -54,12 +56,8 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th class="text-center">N°</th>
-                  <th>Nom d'utilisateur</th>
-                  <th>email</th>
-                  <th>Nom</th>
-                  <th>Prenom</th>
-                  <th>Whatsapp</th>
+                  <th>Nom & Prenoms</th>
+                  <th>Coordonnées</th>
                   <th>Role</th>
                   <th>Commune</th>
                   <th>Status</th>
@@ -77,20 +75,51 @@
               </tbody>
               <tbody v-else>
                 <tr v-for="(data, index) in paginatedItems" :key="data.id_user">
-                  <td style="width: 50px" class="text-center">
-                    {{ index + 1 }}
+                  <td>
+                    <div class="widget-user-image">
+                      <img
+                        class="rounded-circle"
+                        width="50"
+                        src="@/assets/images/man.avif"
+                        alt="User Avatar"
+                        style="float: left; margin-right: 10px"
+                      />
+                      <div style="display: inline-block">
+                        <span style="font-weight: 600; font-size: 1.1em; display: block"
+                          >{{ data.lastname }} {{ data.firstname }}</span
+                        >
+                        <span style="display: block">{{ data.username }}</span>
+                      </div>
+                    </div>
                   </td>
-                  <td>{{ data.username }}</td>
-                  <td>{{ data.email }}</td>
-                  <td>{{ data.lastname }}</td>
-                  <td>{{ data.firstname }}</td>
-                  <td>{{ data.whatsapp }}</td>
-                  <td>{{ data.role }}</td>
-                  <td v-if="typeof data.commune_relation === 'object' && data.commune_relation !== null">{{ data.commune_relation.nom_commune }}</td>
+                  <td>
+                    <span style="font-weight: 600; font-size: 1.1em">{{
+                      data.email
+                    }}</span>
+                    <br />
+                    {{ data.whatsapp }}
+                  </td>
+                  <td>{{ data.role ?? "Sans rôle" }}</td>
+                  <td
+                    v-if="
+                      typeof data.commune_relation === 'object' &&
+                      data.commune_relation !== null
+                    "
+                  >
+                    {{ data.commune_relation.nom_commune }}
+                  </td>
                   <td v-else>Sans commune</td>
                   <td>
-                  <span v-if="data.status === true" class="badge bg-success">Actif</span>
-                  <span v-else class="badge bg-danger">Inactif</span>
+                    <a
+                      href="javascript:void(0)"
+                      :class="
+                        data.status
+                          ? 'btn btn-circle btn-success btn-xs'
+                          : 'btn btn-circle btn-danger btn-xs'
+                      "
+                      title=""
+                      ><i :class="data.status ? 'ti-lock' : 'ti-unlock'"></i>
+                    </a>
                   </td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
@@ -104,15 +133,15 @@
                         data-target="#modal-users"
                         ><i class="ti-marker-alt"></i
                       ></a>
-                      <!-- <a
-                          href="javascript:void(0)"
-                          class="btn btn-circle btn-danger btn-xs"
-                          @click="HandleIdDelete(data.username)"
-                          title=""
-                          data-toggle="tooltip"
-                          data-original-title="Delete"
-                          ><i class="ti-trash"></i
-                        ></a> -->
+                      <a
+                        href="javascript:void(0)"
+                        class="btn btn-circle btn-danger btn-xs"
+                        @click="HandleIdDelete(data.username)"
+                        title=""
+                        data-toggle="tooltip"
+                        data-original-title="Delete"
+                        ><i class="ti-trash"></i
+                      ></a>
                     </div>
                   </td>
                 </tr>
@@ -407,6 +436,7 @@ export default {
       itemsPerPage: 10,
       ToId: "",
       stepModal: "add",
+      searchUsers: "",
       totalPageArray: [],
       step1: {
         username: "",
@@ -655,20 +685,31 @@ export default {
     },
     filterByName() {
       this.currentPage = 1;
-      if (this.control.name !== null) {
-        const tt = this.control.name;
+      if (this.searchUsers !== null) {
+        const tt = this.searchUsers;
         const searchValue = tt.toLowerCase();
-        this.ClientOptions = this.data.filter((user) => {
-          const Nom = user.duty_name || "";
-          const firstnames = user.firstnames || "";
-
+        this.UsersOptions = this.data.filter((user) => {
+          const Username = user.username || "";
+          const Email = user.email || "";
+          const Firstname = user.firstname || "";
+          const Lastname = user.lastname || "";
+          const Whatsapp = user.whatsapp || "";
+          const Commune = user.commune || "";
+          const Role = user.role || "";
+          const Status = user.status || "";
           return (
-            Nom.toLowerCase().includes(searchValue) ||
-            firstnames.toLowerCase().includes(searchValue)
+            Username.toLowerCase().includes(searchValue) ||
+            Email.toLowerCase().includes(searchValue) ||
+            Firstname.toLowerCase().includes(searchValue) ||
+            Lastname.toLowerCase().includes(searchValue) ||
+            Whatsapp.toLowerCase().includes(searchValue) ||
+            Commune.toLowerCase().includes(searchValue) ||
+            Role.toLowerCase().includes(searchValue) ||
+            Status.toLowerCase().includes(searchValue)
           );
         });
       } else {
-        this.ClientOptions = [...this.data];
+        this.UsersOptions = [...this.data];
       }
     },
     closeModal(modalId) {
