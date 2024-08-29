@@ -32,7 +32,7 @@
 						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#region" role="tab"><span class="hidden-xs-down">Familles</span></a> </li>
 						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#prefecture" role="tab"> <span class="hidden-xs-down">Origines</span></a> </li>
 						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Formes</span></a> </li>
-						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#commune" role="tab"> <span class="hidden-xs-down">Unités</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#unites" role="tab"> <span class="hidden-xs-down">Unités</span></a> </li>
 					</ul>
 					<!-- Tab panes -->
 					<div class="tab-content tabcontent-border">
@@ -58,6 +58,12 @@
 							
 							</div>
 						</div>
+						<div class="tab-pane" id="unites" role="tabpanel">
+							<div class="p-15">
+								<Unites></Unites>
+							
+							</div>
+						</div>
 						
 					</div>
 				</div>
@@ -71,10 +77,11 @@
 import Naturelle from "@/components/parametrages/localites/naturelle.vue"
 import Region from "@/components/parametrages/localites/regions.vue"
 import Prefecture from "@/components/parametrages/localites/prefectures.vue"
+import Unites from "@/components/parametrages/unites.vue"
 import Commune from "@/components/parametrages/localites/communes.vue"
 export default {
     components:{
-        Naturelle , Region , Prefecture , Commune
+        Naturelle , Region , Prefecture , Commune, Unites
     },
     data() {
         return {

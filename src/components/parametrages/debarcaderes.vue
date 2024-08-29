@@ -34,10 +34,10 @@
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
                   data-target="#modal-center"
-                  @click="stepModal = 'add'"
+                  @click="stepModal = 'add'; InitDebarcaderes()"
                 >
                   <i class="mdi mdi-plus"></i>
                 </button>
@@ -134,9 +134,9 @@
             <h5 class="modal-title">
               {{ stepModal === "add" ? "Ajouter" : "Modifier" }} un debarcadère
             </h5>
-            <button type="button" class="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
           </div>
           <div class="modal-body">
             <div class="row mt-3 content-group">
@@ -259,22 +259,11 @@
                 </div>
               </div>
             </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
-                  type="button"
-                  @click="SubmitDebarcaderes('modal-center')"
-                  class="waves-effect waves-light btn btn-secondary"
-                >
-                  Valider
-                </button>
-              </div>
-            </div>
+           
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
-            </button>
+            <button type="button" @click="SubmitPrefecture('add-prefecture')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+           
           </div>
         </div>
       </div>
@@ -581,6 +570,15 @@ export default {
       // Si l'utilisateur confirme la suppression
       if (result.isConfirmed) {
         this.ConfirmeDelete(id);
+      }
+    },
+    InitDebarcaderes(){
+        this.step1= {
+        code_debarcadere: "",
+        nom_debarcadere: "",
+        description: "",
+        collecteur: "",
+        commune: "",
       }
     },
     async ConfirmeDelete(id) {

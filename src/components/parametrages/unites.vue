@@ -34,12 +34,12 @@
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
-                  data-target="#modal-center"
+                  data-target="#modal-unites"
                   @click="
                     stepModal = 'add';
-                    step1;
+                    InitUnites();
                   "
                 >
                   <i class="mdi mdi-plus"></i>
@@ -87,7 +87,7 @@
                         @click="HandleIdUpdate(data.id_unite)"
                         data-original-title="Update"
                         data-toggle="modal"
-                        data-target="#modal-center"
+                        data-target="#modal-unites"
                         ><i class="ti-marker-alt"></i
                       ></a>
                       <a
@@ -123,8 +123,8 @@
 
     <div
       class="modal center-modal fade"
-      id="modal-center"
-      ref="modal-center"
+      id="modal-unites"
+      ref="modal-unites"
       tabindex="-1"
     >
       <div class="modal-dialog modal-lg">
@@ -133,91 +133,142 @@
             <h5 class="modal-title">
               {{ stepModal === "add" ? "Ajouter" : "Modifier" }} une unité
             </h5>
-            <button type="button" class="close" data-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-danger close py-1 px-3"
+              data-dismiss="modal"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <div class="row mt-3 content-group">
-              <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Nom <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.nom_unite"
-                    color="secondary"
-                    name="step1.nom_unite"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.nom_unite.$error">{{
-                    v$.step1.nom_unite.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['nom_unite']">
-                    {{ resultError["nom_unite"] }}
-                  </small>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Poids indicatif <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.poids_indicatif"
-                    color="secondary"
-                    name="step1.poids_indicatif"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.poids_indicatif.$error">{{
-                    v$.step1.poids_indicatif.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['poids_indicatif']">
-                    {{ resultError["poids_indicatif"] }}
-                  </small>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Definition <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.definition"
-                    color="secondary"
-                    name="step1.definition"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.definition.$error">{{
-                    v$.step1.definition.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['definition']">
-                    {{ resultError["definition"] }}
-                  </small>
-                </div>
+            <div class="bouttons" style="position: relative; width: 100%">
+              <div
+                v-if="stepModal === 'add'"
+                class="btn btn-secondary py-1 px-2"
+                style="position: absolute; right: 0; top: 13px; z-index: 1000"
+                @click="AddformDataUnites"
+              >
+                <i class="ti-plus"></i>
               </div>
             </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
-                  type="button"
-                  @click="SubmitUnites('modal-center')"
-                  class="waves-effect waves-light btn btn-secondary"
-                >
-                  Valider
-                </button>
+            <div
+              class="row align-items-center p-2 border-bottom"
+              v-for="(unite, index) in Unites"
+              :key="unite.id"
+            >
+              <div class="col-11">
+                <span class="nombre" v-if="stepModal === 'add'">
+                  {{ index + 1 }}
+                </span>
+                <div class="row content-group">
+                  <div class="col-6">
+                    <div class="input-groupe">
+                      <label for="userpassword">
+                        Nom <span class="text-danger">*</span></label
+                      >
+                      <MazInput
+                        v-model="unite.nom_unite"
+                        color="secondary"
+                        name="nom_unite"
+                        size="sm"
+                        rounded-size="sm"
+                        type="text"
+                        @input="clearErrorUnites(index, 'nom_unite')"
+                      />
+                      <small
+                        v-if="
+                          errors.Unites &&
+                          errors.Unites[index] &&
+                          errors.Unites[index].nom_unite
+                        "
+                        >{{ errors.Unites[index].nom_unite }}</small
+                      >
+                      <small v-if="resultError['Unites']">
+                        {{ resultError["Unites"] }}
+                      </small>
+                    </div>
+                  </div>
+                  <div :class="{ 'col-3': stepModal === 'add', 'col-4': stepModal !== 'add' }">
+                    <div class="input-groupe">
+                      <label for="userpassword">
+                        Definition <span class="text-danger">*</span></label
+                      >
+                      <MazInput
+                        v-model="unite.definition"
+                        color="secondary"
+                        name="definition"
+                        size="sm"
+                        rounded-size="sm"
+                        type="text"
+                        @input="clearErrorUnites(index, 'definition')"
+                      />
+                      <small
+                        v-if="
+                          errors.Unites &&
+                          errors.Unites[index] &&
+                          errors.Unites[index].definition
+                        "
+                        >{{ errors.Unites[index].definition }}</small
+                      >
+                      <small v-if="resultError['Unites']">
+                        {{ resultError["Unites"] }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="input-groupe">
+                      <label for="userpassword">
+                        Poids indicatif <span class="text-danger">*</span></label
+                      >
+                      <MazInput
+                        v-model="unite.poids_indicatif"
+                        color="secondary"
+                        name="poids_indicatif"
+                        size="sm"
+                        rounded-size="sm"
+                        type="text"
+                        @input="clearErrorUnites(index, 'poids_indicatif')"
+                      />
+                      <small
+                        v-if="
+                          errors.Unites &&
+                          errors.Unites[index] &&
+                          errors.Unites[index].poids_indicatif
+                        "
+                        >{{ errors.Unites[index].poids_indicatif }}</small
+                      >
+                      <small v-if="resultError['Unites']">
+                        {{ resultError["Unites"] }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-1" style="position: relative">
+                    <button
+                      class="btn btn-sm btn-icon btn-danger btn-wave py-1 px-2"
+                      v-if="stepModal === 'add'"
+                      @click="deleteRowUnites(index)"
+                      style="
+                        position: absolute !important ;
+                        top: 12px !important;
+                        background: red;
+                      "
+                    >
+                      <i class="ti-trash"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
           <div class="modal-footer modal-footer-uniform text-end">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
+            <button
+              type="button"
+              @click="SubmitUnites()"
+              class="waves-effect waves-light btn btn-primary"
+            >
+              Valider
             </button>
           </div>
         </div>
@@ -268,7 +319,15 @@ export default {
         poids_indicatif: "",
       },
       v$: useVuelidate(),
-      error: "",
+
+      errors: { Unites: [] },
+      Unites: [
+        {
+          definition: "",
+          nom_unite: "",
+          poids_indicatif: "",
+        },
+      ],
       resultError: {},
     };
   },
@@ -279,15 +338,62 @@ export default {
       poids_indicatif: { require },
     },
   },
+
   async mounted() {
     await this.fetchUnites();
   },
   methods: {
     successmsg: successmsg,
+    AddformDataUnites() {
+      this.Unites.push({
+        definition: "",
+        nom_unite: "",
+        poids_indicatif: "",
+      });
+    },
+    InitUnites(){
+        this.Unites= [
+        {
+          definition: "",
+          nom_unite: "",
+          poids_indicatif: "",
+        },]
+    },
+    deleteRowUnites(index) {
+      if (index !== 0) {
+        this.Unites.splice(index, 1);
+      }
+    },
+    validateUnites() {
+      let isValid = true;
+      this.errors = { Unites: [] };
+      this.Unites.forEach((unite, index) => {
+        const uniteErrors = {};
 
+        if (!unite.definition) {
+          uniteErrors.definition = "Ce champs est obligatoire!";
+          isValid = false;
+        }
+        if (!unite.nom_unite) {
+          uniteErrors.nom_unite = "Ce champs est obligatoire!";
+          isValid = false;
+        }
+        if (!unite.poids_indicatif) {
+          uniteErrors.poids_indicatif = "Ce champs est obligatoire!";
+          isValid = false;
+        }
+        this.errors.Unites[index] = uniteErrors;
+      });
+      return isValid;
+    },
+    clearErrorUnites(index, field) {
+      if (this.errors.Unites[index]) {
+        this.errors.Unites[index][field] = null;
+      }
+    },
     async fetchUnites() {
       try {
-        const response = await axios.get("/unites", {
+        const response = await axios.get("/parametrages/unites", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -316,8 +422,7 @@ export default {
       }
     },
     async SubmitUnites() {
-      this.v$.step1.$touch();
-      if (this.v$.$errors.length == 0) {
+      if (this.validateUnites()) {
         this.loading = true;
 
         let data = {
@@ -329,13 +434,15 @@ export default {
         let title = "";
         let message = "";
         if (this.stepModal === "add") {
-          url = await axios.post("/unites", [data], {
+          url = await axios.post("/parametrages/unites", this.Unites, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
           title = "Création de l'unité";
           message = "Votre unité a été crée avec succès !";
         } else {
-          url = await axios.put(`/unites/${this.ToId}`, data, {
+           const dataEdit = this.Unites[0]
+            console.log(data);
+          url = await axios.put(`/parametrages/unites/${this.ToId}`, dataEdit, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
           title = "Mise à jour de l'unité";
@@ -346,7 +453,7 @@ export default {
           console.log("qfs", response);
 
           if (response.status === 200) {
-            this.closeModal("modal-center");
+            this.closeModal("modal-unites");
             this.successmsg(title, message);
             await this.fetchUnites();
           } else {
@@ -368,9 +475,10 @@ export default {
     async HandleIdUpdate(id) {
       this.stepModal = "update";
       this.loading = true;
+      this.Unites = [];
 
       try {
-        const response = await axios.get(`/unites/${id}`, {
+        const response = await axios.get(`/parametrages/unites/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -380,10 +488,16 @@ export default {
           console.log("Slbvlkjbv", response);
 
           let data = response.data;
-          (this.step1.nom_unite = data.nom_unite),
-            (this.step1.definition = data.definition),
-            (this.step1.poids_indicatif = data.poids_indicatif),
-            (this.ToId = data.id_unite);
+          this.ToId = data.id_unite;
+          this.Unites.push({
+            definition: data.definition,
+            nom_unite: data.nom_unite,
+            poids_indicatif: data.poids_indicatif,
+          });
+          //   (this.step1.nom_unite = data.nom_unite),
+          //     (this.step1.definition = data.definition),
+          //     (this.step1.poids_indicatif = data.poids_indicatif),
+          //    
           this.loading = false;
         }
       } catch (error) {}
@@ -411,7 +525,7 @@ export default {
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/unites/${id}`, {
+        const response = await axios.delete(`/parametrages/unites/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },

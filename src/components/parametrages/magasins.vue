@@ -34,12 +34,12 @@
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
                   data-target="#modal-center"
                   @click="
                     stepModal = 'add';
-                    step1;
+                    InitMagasins();
                   "
                 >
                   <i class="mdi mdi-plus"></i>
@@ -143,7 +143,11 @@
             <h5 class="modal-title">
               {{ stepModal === "add" ? "Ajouter" : "Modifier" }} un magasin
             </h5>
-            <button type="button" class="close" data-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-danger close py-1 px-3"
+              data-dismiss="modal"
+            >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -329,43 +333,15 @@
                   </small>
                 </div>
               </div>
-              <!-- <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Collecteur <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.collecteur"
-                    color="secondary"
-                    name="step1.collecteur"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.collecteur.$error">{{
-                    v$.step1.collecteur.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['collecteur']">
-                    {{ resultError["collecteur"] }}
-                  </small>
-                </div>
-              </div> -->
-            </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
-                  type="button"
-                  @click="SubmitMagasins('modal-center')"
-                  class="waves-effect waves-light btn btn-secondary"
-                >
-                  Valider
-                </button>
-              </div>
             </div>
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
+            <button
+              type="button"
+              @click="SubmitMagasins('modal-center')"
+              class="waves-effect waves-light btn btn-primary"
+            >
+              Valider
             </button>
           </div>
         </div>
@@ -535,6 +511,18 @@ export default {
         }
       }
     },
+    InitMagasins() {
+      this.step1 = {
+        code_magasin: "",
+        nom_magasin: "",
+        longitude: "",
+        latitude: "",
+        capacite: "",
+        description: "",
+        collecteur: "",
+        commune: "",
+      };
+    },
     async SubmitMagasins() {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
@@ -558,7 +546,7 @@ export default {
           url = await axios.post("/parametrages/magasins", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
           });
-        title = "Création de magasin";
+          title = "Création de magasin";
           message = "Votre magasin a été crée avec succès !";
         } else {
           url = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
