@@ -47,6 +47,7 @@
               
                   <th>Code</th>
                   <th>Nom</th>
+                  <th>Type</th>
                   <th>Commune</th>
                   <th>Collecteur(e)</th>
                   <th>Description</th>
@@ -67,6 +68,7 @@
                 
                   <td>{{ data?.code_debarcadere ?? "-"}}</td>
                   <td>{{ data.nom_debarcadere ?? "-" }}</td>
+                  <td>{{ (data.type === true) ? 'Debarcadère' : 'Port' }}</td>
                   <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
                   <td style="width: 120px;" class="text-center">
                       <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
@@ -226,12 +228,36 @@
                   </small>
                 </div>
               </div>
-              <div class="col-12">
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step1.type"
+                              color="secondary"
+                              name="step1.type"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="type"
+                              
+                              
+                            />
+                  <small v-if="v$.step1.type.$error">{{
+                    v$.step1.type.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type']">
+                    {{ resultError["type"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Description <span class="text-danger">*</span></label
                   >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
 
                   <small v-if="v$.step1.description.$error">{{
                     v$.step1.description.$errors[0].$message
@@ -367,12 +393,36 @@
                   </small>
                 </div>
               </div>
-              <div class="col-12">
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.type"
+                              color="secondary"
+                              name="step2.type"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="type"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.type.$error">{{
+                    v$.step2.type.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type']">
+                    {{ resultError["type"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Description <span class="text-danger">*</span></label
                   >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
 
                   <small v-if="v$.step2.description.$error">{{
                     v$.step2.description.$errors[0].$message
@@ -450,6 +500,7 @@ export default {
         description: "",
         collecteur: "",
         commune: "",
+        type:"",
       },
       step2: {
         code_debarcadere: "",
@@ -457,7 +508,13 @@ export default {
         description: "",
         collecteur: "",
         commune: "",
+        type:"",
       },
+      type:[
+        {label:"Debarcadère" , value:1 },
+        {label:"Port" , value:0 },
+
+      ],
       v$: useVuelidate(),
       error: "",
       resultError: {},
@@ -470,6 +527,7 @@ export default {
       description: { require },
       collecteur: { require },
       commune: { require },
+      type: { require },
     },
     step2: {
       code_debarcadere: { require },
@@ -477,6 +535,7 @@ export default {
       description: { require },
       collecteur: { require },
       commune: { require },
+      type: { require },
     },
   },
   async mounted() {
@@ -611,7 +670,7 @@ export default {
           description: this.step1.description,
           collecteur: this.step1.collecteur,
           commune: this.step1.commune,
-          type:true
+          type:this.step1.type
         };
        
         console.log('data',data)
@@ -676,6 +735,7 @@ export default {
             (this.step2.description = data.description),
             (this.step2.commune = data.commune),
             (this.step2.collecteur = data.collecteur),
+            (this.step2.type = (data.type === true) ? 1 :0),
             (this.ToId = data.code_debarcadere);
           this.loading = false;
         }
@@ -692,7 +752,7 @@ export default {
           description: this.step2.description,
           collecteur: this.step2.collecteur,
           commune: this.step2.commune,
-          type:true,
+          type:this.step2.type,
         };
 
         try {

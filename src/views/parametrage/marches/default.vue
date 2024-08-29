@@ -60,7 +60,7 @@
                <tr>
                    <th class="text-center">Code</th>
                    <th>Nom </th>
-                   <th>Type</th>
+                   <th>Type marché</th>
                    <th>Superficie</th>
                    <th>Geo local.</th>
                    <th>Commune</th>
@@ -204,15 +204,16 @@
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Type <span class="text-danger">*</span></label
+                              > Type marché <span class="text-danger">*</span></label
                             >
-                            <MazInput
+                            <MazSelect
                               v-model="step1.type_marche"
                               color="secondary"
                               name="step1.type_marche"
                               size="sm"
                               rounded-size="sm"
-                              type="text"
+                              search
+							  :options="Marches"
                               
                               
                             />
@@ -446,7 +447,7 @@
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Type <span class="text-danger">*</span></label
+                              > Type marché <span class="text-danger">*</span></label
                             >
                             <MazInput
                               v-model="step2.type_marche"
@@ -454,7 +455,8 @@
                               name="step2.type_marche"
                               size="sm"
                               rounded-size="sm"
-                              type="text"
+                              search
+							  :options="Marche"
                               
                               
                             />
