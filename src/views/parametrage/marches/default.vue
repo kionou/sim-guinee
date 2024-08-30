@@ -93,11 +93,11 @@
 					
 				  </div>
 				   </td>
-                   <td style="width: 50px;" class="text-center">
-					<div>
-						{{ data?.type_marche ?? "-"}}
-					
-				  </div>
+                   <td style="width: 120px;" class="text-center">
+					{{ data?.type_marche === 1 ? "Marché de collecte" :
+						data?.type_marche === 2 ? "Marché de consommation" :
+						data?.type_marche === 3 ? "Marché de grossiste" :
+						data?.type_marche === 4 ? "Marché de détail" : "-" }}
 				   </td>
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.superficie ?? "0"}} ha
@@ -108,7 +108,7 @@
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.commune_relation?.nom_commune ?? "-"}}
                    </td>
-				   <td style="width: 120px;" class="text-center">
+				   <td style="width: 170px;" class="text-center">
 					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
 					<span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
                    </td>
@@ -449,14 +449,14 @@
                             <label for="userpassword"
                               > Type marché <span class="text-danger">*</span></label
                             >
-                            <MazInput
+                            <MazSelect
                               v-model="step2.type_marche"
                               color="secondary"
                               name="step2.type_marche"
                               size="sm"
                               rounded-size="sm"
                               search
-							  :options="Marche"
+							  :options="Marches"
                               
                               
                             />
@@ -672,9 +672,11 @@ export default {
             itemsPerPage: 10,
             ToId:"",
             totalPageArray: [],
-			choix: [
-				{ label: "MASCULIN", value: 'MASCULIN' },
-				{ label: "FEMININ", value: 'FEMININ' },
+			Marches: [
+				{ label: "Marché de collecte", value: 1 },
+				{ label: "Marché de consommation", value: 2 },
+				{ label: "Marché de grossiste", value: 3 },
+				{ label: "Marché de détail", value: 4 },
         		],
 			step1: {
 				code_marche:"",
@@ -760,25 +762,7 @@ export default {
               this.loading =  false
         }
       } catch (error) {
-		if(error.response?.status === 500){
-			this.loading = false
-			// this.push vers maintenance 
-		}
-        
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+		this.handleErrors(error);
       }
     },
 	async fetchCommunes() {
@@ -802,21 +786,7 @@ export default {
         }
       } catch (error) {
 
-        console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+        this.handleErrors(error);
       }
     },
 	async fetchCollecteurs() {
@@ -840,21 +810,7 @@ export default {
 });
         }
       } catch (error) {
-		console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+		this.handleErrors(error);
       }
     },
     async SubmitCollecteur(modalId) {
@@ -892,21 +848,7 @@ export default {
           } else {
           }
         } catch (error) {
-			console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+			this.handleErrors(error);
         }
       } else {
       
@@ -930,7 +872,7 @@ export default {
           this.step2 = {
             code_marche: data.code_marche,
             nom_marche: data.nom_marche,
-            type_marche: data.type_marche,
+            type_marche: parseInt(data.type_marche),
             superficie: data.superficie,
             longitude: data.longitude,
             latitude: data.latitude,
@@ -947,21 +889,7 @@ export default {
         }
       } catch (error) {
       
-		console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+		this.handleErrors(error);
       }
 
     },
@@ -1009,21 +937,7 @@ export default {
           
         } 
       } catch (error) {
-		console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+		this.handleErrors(error);
       }
     } else {
   
@@ -1073,33 +987,10 @@ export default {
    
            } else {
         
-            if (error) {
-          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+			this.handleErrors(error);
            }
          } catch (error) {
-			console.error("Erreur lors de la suppression:", error);
-        if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 || error.response.data.detail.includes(401)) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else if(error.response.data.detail.includes(404)) {
-              this.loading = false;
-            return  this.data = []
-			   
-          }else{
-            console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
+			this.handleErrors(error);
            
          }
    
@@ -1131,6 +1022,41 @@ this.MarchesOptions = [...this.data];
 }
 
 },
+triggerToast(errorMessage) {
+      this.toast.error(errorMessage, {
+        position: "top-right",
+        timeout: 8000,
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+        rtl: false,
+        className: 'toast-error'
+      });
+    },
+    async handleErrors(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+        this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
 closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");
@@ -1142,23 +1068,7 @@ closeModal(modalId) {
         modalBackdrop.parentNode.removeChild(modalBackdrop);
       }
     },
-	triggerToast(errorMessage) {
-  this.toast.error(errorMessage, {
-    position: "top-right",
-    timeout: 8000,
-    closeOnClick: true,
-    pauseOnFocusLoss: true,
-    pauseOnHover: true,
-    draggable: true,
-    draggablePercent: 0.6,
-    showCloseButtonOnHover: false,
-    hideProgressBar: true,
-    closeButton: "button",
-    icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
-    rtl: false,
-    className: 'toast-error'
-  });
-},
+
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 

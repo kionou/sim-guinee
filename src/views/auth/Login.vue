@@ -13,11 +13,17 @@
               <div class=" d-none d-sm-block d-lg-block ">
                 <div class="row justify-content-center text-center">
                     <h2> <b>BIENVENUE SUR</b> </h2>
+                    <div class="col-lg-12 col-md-12">
                     <img src="@/assets/img/logo.png" class="text-center" alt="" style="width: 150px; height: auto ">
-                    <p>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6" style="width:600px !important">
+                      <p>
                         Les SIM sont des dispositifs (ou services) qui ont pour objectif de collecter régulièrement 
                         sur les marchés (marchés de collecte, de gros ou de détail) des informations sur les prix des produits agricoles,
                     </p>
+                    </div>
+                   
                 </div>
                 
                    
@@ -556,11 +562,18 @@ async ChangePassword(){
 }
 
 .slide{
-
-   
+  
     height: 310px;
 }
 
+@media (max-width: 1200px) {
+  .loginHeader{
+    height: auto !important;
+  }
+  .formulaire{
+    margin-top: 10px !important;
+  }
+ }
 
 
 

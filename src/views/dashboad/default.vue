@@ -84,10 +84,34 @@
           <li><router-link to="/sim/magasins" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link></li>
           <li><router-link to="/sim/debarcaderes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
           <li><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Types produits</router-link></li>
+          <li><router-link to="/sim/utilisateurs" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Utilisateurs</router-link></li>
+          <!-- <li><router-link to="/sim/droits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Droits</router-link></li> -->
         </ul>
       </transition>
     </li>
-    <li>
+     <li>
+        <router-link to="/sim">
+          <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
+          <span>Enquêtes</span>
+        </router-link>
+      </li>   
+    <!-- <li>
+      <router-link to="#" @click.stop="toggleDropdownMenu('enquete')">
+        <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
+        <span>Enquêtes</span>
+        <span class="pull-right-container">
+          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.enquete }]"></i>
+        </span>
+      </router-link>
+      <transition name="slide">
+        <ul v-show="openMenus.users" class="submenu">
+          <li><router-link to="/sim/utilisateurs" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Utilisateurs</router-link></li>
+          <li><router-link to="/sim/droits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Droits</router-link></li>
+        </ul>
+      </transition>
+    </li> -->
+ 
+    <!-- <li>
       <router-link to="#" @click.stop="toggleDropdownMenu('users')">
         <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
         <span>Gestions des users</span>
@@ -101,47 +125,9 @@
           <li><router-link to="/sim/droits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Droits</router-link></li>
         </ul>
       </transition>
-    </li>
-     
-      <!-- <li>
-      <router-link class="" to="#" @click.stop="toggleDropdownMenu('parametrages')">
-        <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
-        <span>Paramétrages</span>
-        <span class="pull-right-container">
-          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.parametrages }]"></i>
-        </span>
-      </router-link>
-      <ul v-show="openMenus.parametrages" class="submenu">
-        <li><router-link to="/sim/localites">Localités</router-link></li>
-        <li><router-link to="/sim/collectes">Collecteurs</router-link></li>
-        <li><router-link to="/sim/collectes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Collecteurs</router-link></li>
-        <li><router-link to="/sim/marches">Marchés</router-link></li>
-        <li><router-link to="/sim/magasins">Magasins</router-link></li>
-        <li><router-link to="/sim/debarcaderes">Debarcadères</router-link></li>
-        <li><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Types produits</router-link></li>
-
-      </ul>
-    </li>
-    <li>
-      <router-link to="#" @click.stop="toggleDropdownMenu('users')">
-        <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
-        <span>Gestions des users</span>
-        <span class="pull-right-container">
-          <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.users }]"></i>
-        </span>
-      </router-link>
-      <ul v-show="openMenus.users" class="submenu">
-        <li><router-link to="/sim/utilisateurs">Utilisateurs</router-link></li>
-        <li><router-link to="/sim/droits">Droits</router-link></li>
-      </ul>
     </li> -->
-    
-      <!-- <li>
-        <a href="extra_calendar.html">
-          <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
-          <span>Calendar</span>
-        </a>
-      </li>   -->
+     
+      
     </ul>
   </section>
 </aside>
@@ -152,7 +138,7 @@
       <router-view />
     </div>
 </div>
-<footer class="footer p-3 text-center text-white" style="background-color: #ffca08 !important;">
+<footer class="main-footer p-3 text-center text-white" style="background-color: #ffca08 !important;">
     
 	  &copy; 2024 <a href="https://www.cosit-mali.com/">COSIT-SARL</a>. Tout droit reservé.
   </footer>

@@ -38,7 +38,7 @@
 					<div class="tab-content tabcontent-border">
 						<div class="tab-pane active" id="produit" role="tabpanel">
 							<div class="p-15">
-								<Naturelle></Naturelle>
+								<Produits></Produits>
 							</div>
 						</div>
 						<div class="tab-pane" id="categorie" role="tabpanel">
@@ -85,9 +85,10 @@ import Formes from "@/components/parametrages/produits/formes.vue"
 import Origines from "@/components/parametrages/produits/origines.vue"
 import Familles from "@/components/parametrages/produits/familles.vue"
 import Categories from "@/components/parametrages/produits/categorie.vue"
+import Produits from "@/components/parametrages/produits/produits.vue"
 export default {
     components:{
-        Unite ,Formes , Origines , Familles , Categories
+        Unite ,Formes , Origines , Familles , Categories , Produits
     },
     data() {
         return {

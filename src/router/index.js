@@ -6,9 +6,9 @@ import Login from '../views/auth/Login.vue'
 import Dashboard from '../views/dashboad/default.vue'
 import Accueil from '../views/dashboad/index.vue'
 
-import Users from '../views/users/default.vue'
-import Droits from '../views/users/droits.vue'
-import Profil from '../views/users/profil.vue'
+import Users from '../views/parametrage/users/default.vue'
+import Droits from '../views/parametrage/users/droits.vue'
+import Profil from '../views/parametrage/users/profil.vue'
 
 
 import Localite from '../views/parametrage/localites/default.vue'
@@ -19,7 +19,7 @@ import Marches from '../views/parametrage/marches/default.vue'
 
 import Magasins from '../views/parametrage/magasins/default.vue'
 
-import Unites from '../views/parametrage/unites/default.vue'
+
 
 import Debarcaderes from '../views/parametrage/debarcaderes/default.vue'
 
@@ -76,12 +76,7 @@ const router = createRouter({
             meta: { requiresAuth: true },
              component: Localite
           },
-          {
-            path: 'unites',
-            name: 'unites',
-            meta: { requiresAuth: true },
-             component: Unites
-          },
+         
           {
             path: 'collectes',
             name: 'collectes',

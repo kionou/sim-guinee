@@ -12236,7 +12236,7 @@ Height property
   .sidebar-collapse .content-wrapper, .sidebar-collapse .main-footer {
     margin-left: 0; } }
 .content-wrapper {
-  min-height: 100%;
+  min-height: 100vh !important;
   background-color: transparent;
   -moz-transition: all 0.5s ease-in-out;
   -o-transition: all 0.5s ease-in-out;
@@ -12401,7 +12401,7 @@ Height property
     -moz-transition: -moz-transform .3s ease-in-out, width .3s ease-in-out;
     -o-transition: -o-transform .3s ease-in-out, width .3s ease-in-out;
     transition: transform .3s ease-in-out, width .3s ease-in-out;
-    background: #272e48; }
+    background: #fff; }
   .main-header .push-btn, .main-header .full-screen, .main-header .svg-bt-icon {
     height: 45px;
     width: 45px;

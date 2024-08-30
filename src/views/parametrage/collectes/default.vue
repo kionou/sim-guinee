@@ -756,18 +756,7 @@ export default {
               this.loading =  false
         }
       } catch (error) {
-        console.log('errornaturelle',error.response)
-       
-        if (error) {
-          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+		this.handleErrors(error);
       }
     },
 	async fetchCommunes() {
@@ -791,16 +780,7 @@ export default {
         }
       } catch (error) {
 
-        if (error) {
-          if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+		this.handleErrors(error);
       }
     },
     async SubmitCollecteur(modalId) {
@@ -840,27 +820,7 @@ export default {
           } else {
           }
         } catch (error) {
-				console.log('error',error)
-
-			this.loading = false;
-          if (error) {
-            if (error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401) {
-              await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-              this.$router.push("/"); //a revoir
-            }else {
-			console.log('error',error.response.data.detail)
-
-            this.triggerToast(error.response.data.detail);
-            this.loading = false;
-            return false;
-          }
-          } else {
-			console.log('error',error)
-
-            
-            this.loading = false;
-           
-          }
+			this.handleErrors(error);
         }
       } else {
       
@@ -902,16 +862,7 @@ export default {
         }
       } catch (error) {
       
-        if (error) {
-          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+		this.handleErrors(error);
       }
 
     },
@@ -960,16 +911,7 @@ export default {
           
         } 
       } catch (error) {
-        if (error) {
-          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+		this.handleErrors(error);
       }
     } else {
   
@@ -1019,24 +961,10 @@ export default {
    
            } else {
         
-            if (error) {
-          if (  error.response.data.detail === "Vous n'êtes pas autorisé." || error.response.status === 401 ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+            this.handleErrors(error);
            }
          } catch (error) {
-           console.error('Erreur lors de la suppression:', error);
-          
-        //    if (error.response.data.message==="Vous n'êtes pas autorisé." || error.response.status === 401) {
-        //         await this.$store.dispatch('auth/clearMyAuthenticatedUser');
-        //       this.$router.push("/");  //a revoir
-        //     }
+            this.handleErrors(error);
            
          }
    
@@ -1062,6 +990,41 @@ this.CollecteursOptions = [...this.data];
 }
 
 },
+triggerToast(errorMessage) {
+      this.toast.error(errorMessage, {
+        position: "top-right",
+        timeout: 8000,
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+        rtl: false,
+        className: 'toast-error'
+      });
+    },
+    async handleErrors(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+        this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
 closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");
@@ -1073,23 +1036,7 @@ closeModal(modalId) {
         modalBackdrop.parentNode.removeChild(modalBackdrop);
       }
     },
-	triggerToast(errorMessage) {
-  this.toast.error(errorMessage, {
-    position: "top-right",
-    timeout: 5000,
-    closeOnClick: true,
-    pauseOnFocusLoss: true,
-    pauseOnHover: true,
-    draggable: true,
-    draggablePercent: 0.6,
-    showCloseButtonOnHover: false,
-    hideProgressBar: true,
-    closeButton: "button",
-    icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
-    rtl: false,
-    className: 'toast-error'
-  });
-},
+	
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 
