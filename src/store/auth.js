@@ -33,7 +33,12 @@ const actions = {
     const tokenExpiration = now + user.expires_in;
    
     const userSessionData = {
-      
+      nom: user.firstname,
+      prenom: user.lastname,
+      email: user.email,
+      username:user.username,
+      whatsapp: user.whatsapp,
+      commune:user?.commune_relation?.nom_commune,
       token: user.access_token,
       tokenExpiration: tokenExpiration,
      

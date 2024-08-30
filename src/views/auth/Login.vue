@@ -26,57 +26,6 @@
                    
                 </div>
                 
-                   
-				 
-                       <!-- <div class="swiper mySwiper keyboard-control slide">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail h-350  w-500" alt="">
-                                </div>
-                                
-                              
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail    h-350  w-500" alt="">
-
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
-                                
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
-                                </div>
-               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             
-                <div class="swiper-pagination"></div>
-                        </div>   -->
 
     <div class="swiper">
   <!-- Additional required wrapper -->
@@ -225,11 +174,11 @@ console.log('response.login', response.data);
 if (response.data) {
     console.log('ffsc<',response.data)
  this.InfoUser = response.data
- this.setMyAuthenticatedUser(this.InfoUser);
-// this.fetchUserDetail(this.InfoUser)
+//  this.setMyAuthenticatedUser(this.InfoUser);
+ this.fetchUserDetail(this.InfoUser)
  this.loading = false
 
-     this.$router.push('/sim'); 
+    
 
 } else {
 
@@ -258,23 +207,21 @@ return this.error = "L'authentification a échoué"
 
 async fetchUserDetail(data) {
 
-  
       try {
-        const response = await axios.get("/auth-user", {
+        const response = await axios.get("/parametrages/profile", {
           headers: {
             Authorization: `Bearer ${data.access_token}`,
           },
         });
-          console.log('role/id',response.data.data.roles[0])
-        if (response.data.status === "success") {
-          const selectedActualites = response.data.data.roles[0].menus;
-          const selectedPermissions = response.data.data.roles[0].permissions
-          data.menus = selectedActualites;
-          data.permissions = selectedPermissions;
-          data.user_role = response.data.data.roles[0].id
-          this.setMyAuthenticatedUser(data);
-
-   
+          console.log('role/id',response.data)
+        if (response.status === 200) {
+          console.log('role',response.data)
+          const userProfile = {
+            ...response.data,
+            access_token: data.access_token, 
+          };
+           this.setMyAuthenticatedUser(userProfile);
+          this.$router.push('/sim'); 
           this.loading = false;
         }
       } catch (error) {

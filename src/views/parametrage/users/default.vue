@@ -80,9 +80,9 @@
 					<td>
 					  <div class="widget-user-image">
 						<img
-						  class="rounded-circle"
+						  class="rounded-circle border-1"
 						  width="50"
-						  src="@/assets/img/logo_mobile.png"
+						  src="@/assets/img/user.png"
 						  alt="User Avatar"
 						  style="float: left; margin-right: 10px"
 						/>

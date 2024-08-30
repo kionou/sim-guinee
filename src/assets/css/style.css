@@ -12662,7 +12662,7 @@ Height property
       line-height: 25px;
       margin: 7px 5px; }
   .navbar-custom-menu .navbar-nav > li:last-child > a {
-    padding: 10px;
+    padding: 5px;
     vertical-align: middle;
     display: block;
     font-size: 1.5rem;
@@ -12671,7 +12671,7 @@ Height property
     text-align: center;
     width: 45px;
     line-height: 25px;
-    margin: 7px 5px; }
+    margin: 0px; }
   .navbar-custom-menu .navbar-nav > .search-box > a {
     padding: 10px;
     vertical-align: middle;

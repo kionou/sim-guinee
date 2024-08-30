@@ -37,9 +37,11 @@
     <div class="navbar-custom-menu r-side">
       <ul class="nav navbar-nav">	
         <!-- User Account-->
-        <li class="custom-dropdown user user-menu" @click="toggleDropdown">
+        <li style="cursor: pointer !important;" class="custom-dropdown user user-menu d-flex flex-row-reverse align-items-center " @click="toggleDropdown">
+          <span class="font-size-16" style="font-weight:bolder !important; margin-right:10px !important ; "> {{ loggedInUser.username }}</span>
   <a href="#" class="custom-dropdown-toggle" title="User">
-    <i class="icon-User"><span class="path1"></span><span class="path2"></span></i>
+    <!-- <i class="icon-User"><span class="path1"></span><span class="path2"></span></i> -->
+    <img src="@/assets/img/user.png" alt="" class="rounded-circle" style="width:45px !important; height:45px important">
   </a>
   <ul v-if="isOpen" class="custom-dropdown-menu">
     <li class="user-body">
