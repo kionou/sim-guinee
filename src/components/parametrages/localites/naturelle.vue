@@ -282,6 +282,7 @@ import Loading from "@/components/others/loading.vue";
 import axios from "@/lib/axiosConfig";
 import useVuelidate from "@vuelidate/core";
 import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
+<<<<<<< HEAD
 import { successmsg } from "@/lib/modal.js";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import Swal from "sweetalert2";
@@ -291,6 +292,21 @@ export default {
     Loading,
   },
   computed: {
+=======
+import {successmsg} from "@/lib/modal.js"
+import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
+  import Swal from 'sweetalert2'
+  import { useToast } from "vue-toastification";
+export default {
+  setup() {
+   const toast = useToast();
+   return { toast }
+ },
+    components:{
+        Pag , Loading
+    },
+    computed: {
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
     loggedInUser() {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
@@ -378,6 +394,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
+<<<<<<< HEAD
         console.log("errornaturelle", error.response);
 
         if (error) {
@@ -393,6 +410,9 @@ export default {
           this.loading = false;
           return false;
         }
+=======
+        this.handleErrors(error);
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
       }
     },
     async SubmitNaturelle(modalId) {
@@ -419,6 +439,7 @@ export default {
           } else {
           }
         } catch (error) {
+<<<<<<< HEAD
           console.log("erroor", error);
 
           this.loading = false;
@@ -427,6 +448,9 @@ export default {
           //   } else {
           //     this.formatValidationErrors(error.response.data.errors);
           //   }
+=======
+          this.handleErrors(error);
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
         }
       } else {
       }
@@ -453,6 +477,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
+<<<<<<< HEAD
         if (error) {
           if (
             error.response.data.detail === "Vous n'êtes pas autorisé." ||
@@ -466,6 +491,10 @@ export default {
           this.loading = false;
           return false;
         }
+=======
+      
+        this.handleErrors(error);
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
       }
     },
     async submitUpdate(modalId) {
@@ -495,6 +524,7 @@ export default {
               "Votre région naturelle a été mise à jour avec succès !"
             );
             await this.fetchRegionNaturelle();
+<<<<<<< HEAD
           }
         } catch (error) {
           if (error) {
@@ -513,6 +543,13 @@ export default {
         }
       } else {
         this.loading = false;
+=======
+         
+          
+        } 
+      } catch (error) {
+        this.handleErrors(error);
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
       }
     },
     async HandleIdDelete(id) {
@@ -568,6 +605,7 @@ export default {
             return false;
           }
         }
+<<<<<<< HEAD
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
 
@@ -577,6 +615,15 @@ export default {
         //     }
       }
     },
+=======
+           }
+         } catch (error) {
+          this.handleErrors(error);
+           
+         }
+   
+       },
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
     filterByName() {
       this.currentPage = 1;
       // Vérifier si searchNaturelle est null, vide ou contient uniquement des espaces
@@ -596,7 +643,53 @@ export default {
       }
     },
 
+<<<<<<< HEAD
     closeModal(modalId) {
+=======
+} else {
+this.RegionsNaturelleOptions = [...this.data];
+ 
+}
+
+},
+
+triggerToast(errorMessage) {
+  this.toast.error(errorMessage, {
+    position: "top-right",
+    timeout: 8000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: true,
+    closeButton: "button",
+    icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+    rtl: false,
+    className: 'toast-error'
+  });
+},
+async handleErrors(error) {
+    console.log('Error:', error);
+    if (error.response?.status === 500) {
+      // Logique pour une erreur serveur
+    //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+    }
+    if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+      this.$router.push("/"); // Redirection vers la page de connexion
+    } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+      this.loading = false;
+      this.data = [];
+    } else {
+      this.triggerToast(error.response?.data.detail);
+      this.loading = false;
+      return false;
+    }
+  },
+closeModal(modalId) {
+>>>>>>> 58984713d0f775fddc6780afe6364aa18412a3ca
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");
       modalElement.style.display = "none";

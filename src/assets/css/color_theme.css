@@ -1114,7 +1114,8 @@ Theme Primary Color
 
 /*---modal---*/
 .theme-primary .modal-primary .modal-footer, .theme-primary .modal-primary .modal-header {
-  border-color: #8950fc; }
+  border-color: #8950fc;
+ }
 .theme-primary .modal-primary .modal-body {
   background-color: #8950fc !important; }
 .theme-primary .modal-info .modal-footer, .theme-primary .modal-info .modal-header {
@@ -1817,10 +1818,10 @@ Theme Primary Color
   .theme-primary .form-element .form-control:focus {
     background-image: linear-gradient(45deg, #8950fc, #6993ff), linear-gradient(#67759e, #67759e); }
 .theme-primary .form-control:focus {
-  border-color: #8950fc; }
+  border-color: var(--color-primary); }
 .theme-primary [type=checkbox]:checked.chk-col-primary + label:before {
-  border-right: 2px solid #8950fc;
-  border-bottom: 2px solid #8950fc; }
+  border-right: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary); }
 .theme-primary [type=checkbox]:checked.chk-col-info + label:before {
   border-right: 2px solid #6993ff;
   border-bottom: 2px solid #6993ff; }

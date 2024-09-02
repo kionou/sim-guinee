@@ -13,31 +13,24 @@
                 <div class="app-menu">
                   <div class="search-bx mx-5">
                     <form>
-                      <div class="input-group">
-                        <input
-                          type="search"
-                          class="form-control"
-                          placeholder="Search"
-                          aria-label="Search"
-                          aria-describedby="button-addon2"
-                        />
+							<div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                          aria-describedby="button-addon2" v-model="searchDebarcadere" @input="filterByName">
                         <div class="input-group-append">
-                          <button class="btn border border-1">
-                            <i class="ti-search"></i>
-                          </button>
+                          <button class="btn border border-1"><i class="ti-search"></i></button>
                         </div>
                       </div>
-                    </form>
+					       	</form>
                   </div>
                 </div>
               </li>
               <li class="h-40">
                 <button
                   type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"
+                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
-                  data-target="#modal-center"
-                  @click="stepModal = 'add'"
+                  data-target="#add-debarcadere"
+                 
                 >
                   <i class="mdi mdi-plus"></i>
                 </button>
@@ -51,12 +44,13 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th class="text-center">N°</th>
+              
                   <th>Code</th>
                   <th>Nom</th>
-                  <th>Description</th>
-                  <th>Collecteur</th>
+                  <th>Type</th>
                   <th>Commune</th>
+                  <th>Collecteur(e)</th>
+                  <th>Description</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -70,15 +64,17 @@
                 </tr>
               </tbody>
               <tbody v-else>
-                <tr v-for="(data, index) in paginatedItems" :key="data.id_debarcadere">
-                  <td style="width: 50px" class="text-center">
-                    {{ index + 1 }}
-                  </td>
-                  <td>{{ data.code_debarcadere }}</td>
-                  <td>{{ data.nom_debarcadere }}</td>
+                <tr v-for="(data) in paginatedItems" :key="data.id_debarcadere">
+                
+                  <td>{{ data?.code_debarcadere ?? "-"}}</td>
+                  <td>{{ data.nom_debarcadere ?? "-" }}</td>
+                  <td>{{ (data.type === true) ? 'Debarcadère' : 'Port' }}</td>
+                  <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
+                  <td style="width: 170px;" class="text-center">
+                      <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
+                      <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
+                   </td>
                   <td>{{ data.description }}</td>
-                  <td>{{ data.collecteur_relation.nom_collecteur }}</td>
-                  <td>{{ data.commune_relation.nom_commune }}</td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
                       <a
@@ -88,7 +84,7 @@
                         @click="HandleIdUpdate(data.code_debarcadere)"
                         data-original-title="Update"
                         data-toggle="modal"
-                        data-target="#modal-center"
+                        data-target="#update-debarcadere"
                         ><i class="ti-marker-alt"></i
                       ></a>
                       <a
@@ -124,17 +120,17 @@
 
     <div
       class="modal center-modal fade"
-      id="modal-center"
-      ref="modal-center"
+      id="add-debarcadere"
+      ref="add-debarcadere"
       tabindex="-1"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              {{ stepModal === "add" ? "Ajouter" : "Modifier" }} un debarcadère
+              Ajouter un debarcadère
             </h5>
-            <button type="button" class="close" data-dismiss="modal">
+            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -182,47 +178,24 @@
                   </small>
                 </div>
               </div>
-              <div class="col-12">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.description"
-                    color="secondary"
-                    name="step1.description"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
-                  <small v-if="v$.step1.description.$error">{{
-                    v$.step1.description.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['description']">
-                    {{ resultError["description"] }}
-                  </small>
-                </div>
-              </div>
+             
 
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Commune <span class="text-danger">*</span>
                   </label>
-                  <select
-                    v-model="step1.commune"
-                    class="form-select"
-                    name="step1.commune"
-                  >
-                    <option value="" disabled>Sélectionnez une commune</option>
-                    <option
-                      v-for="commune in dataCommunes"
-                      :key="commune.id_commune"
-                      :value="commune.id_commune"
-                    >
-                      {{ commune.nom_commune }}
-                    </option>
-                  </select>
+                  <MazSelect
+                              v-model="step1.commune"
+                              color="secondary"
+                              name="step1.commune"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CommunesOptions"
+                              
+                              
+                            />
                   <small v-if="v$.step1.commune.$error">{{
                     v$.step1.commune.$errors[0].$message
                   }}</small>
@@ -234,22 +207,19 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Collecteur <span class="text-danger">*</span>
+                    Collecteur(e) <span class="text-danger">*</span>
                   </label>
-                  <select
-                    v-model="step1.collecteur"
-                    class="form-select"
-                    name="step1.collecteur"
-                  >
-                    <option value="" disabled>Sélectionnez un collecteur</option>
-                    <option
-                      v-for="collecteur in dataCollecteurs"
-                      :key="collecteur.id_collecteur"
-                      :value="collecteur.id_collecteur"
-                    >
-                      {{ collecteur.nom_collecteur }}
-                    </option>
-                  </select>
+                  <MazSelect
+                              v-model="step1.collecteur"
+                              color="secondary"
+                              name="step1.collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CollectionOptions"
+                              
+                              
+                            />
                   <small v-if="v$.step1.collecteur.$error">{{
                     v$.step1.collecteur.$errors[0].$message
                   }}</small>
@@ -258,23 +228,221 @@
                   </small>
                 </div>
               </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step1.type"
+                              color="secondary"
+                              name="step1.type"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="type"
+                              
+                              
+                            />
+                  <small v-if="v$.step1.type.$error">{{
+                    v$.step1.type.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type']">
+                    {{ resultError["type"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Description <span class="text-danger">*</span></label
+                  >
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
+
+                  <small v-if="v$.step1.description.$error">{{
+                    v$.step1.description.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
+              </div>
             </div>
-            <div class="row justify-content-center mt-10">
-              <div class="col-4">
-                <button
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
                   type="button"
-                  @click="SubmitDebarcaderes('modal-center')"
-                  class="waves-effect waves-light btn btn-secondary"
+                  @click="SubmitDebarcaderes('add-debarcadere')"
+                  class="waves-effect waves-light btn btn-primary"
                 >
                   Valider
                 </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal center-modal fade"
+      id="update-debarcadere"
+      ref="update-debarcadere"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Modifier un debarcadère
+            </h5>
+            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Code <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.code_debarcadere"
+                    color="secondary"
+                    name="step2.code_debarcadere"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.code_debarcadere.$error">{{
+                    v$.step2.code_debarcadere.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['code_debarcadere']">
+                    {{ resultError["code_debarcadere"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Nom <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.nom_debarcadere"
+                    color="secondary"
+                    name="step2.nom_debarcadere"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.nom_debarcadere.$error">{{
+                    v$.step2.nom_debarcadere.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['nom_debarcadere']">
+                    {{ resultError["nom_debarcadere"] }}
+                  </small>
+                </div>
+              </div>
+             
+
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Commune <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.commune"
+                              color="secondary"
+                              name="step2.commune"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CommunesOptions"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.commune.$error">{{
+                    v$.step2.commune.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['commune']">
+                    {{ resultError["commune"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Collecteur(e) <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.collecteur"
+                              color="secondary"
+                              name="step2.collecteur"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="CollectionOptions"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.collecteur.$error">{{
+                    v$.step2.collecteur.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['collecteur']">
+                    {{ resultError["collecteur"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type <span class="text-danger">*</span>
+                  </label>
+                  <MazSelect
+                              v-model="step2.type"
+                              color="secondary"
+                              name="step2.type"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+							               :options="type"
+                              
+                              
+                            />
+                  <small v-if="v$.step2.type.$error">{{
+                    v$.step2.type.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type']">
+                    {{ resultError["type"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Description <span class="text-danger">*</span></label
+                  >
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+
+                  <small v-if="v$.step2.description.$error">{{
+                    v$.step2.description.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
               </div>
             </div>
+           
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Fermer
-            </button>
+            <button
+                  type="button"
+                  @click="submitUpdate('update-debarcadere')"
+                  class="waves-effect waves-light btn btn-primary"
+                >
+                  Valider
+                </button>
           </div>
         </div>
       </div>
@@ -290,7 +458,12 @@ import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
 import { successmsg } from "@/lib/modal.js";
 import MazPhoneNumberInput from "maz-ui/components/MazPhoneNumberInput";
 import Swal from "sweetalert2";
+import { useToast } from "vue-toastification";
 export default {
+  setup() {
+   const toast = useToast();
+   return { toast }
+ },
   components: {
     Pag,
     Loading,
@@ -312,8 +485,9 @@ export default {
     return {
       loading: true,
       DebarcaderesOptions: [],
-      dataCommunes: [],
-      dataCollecteurs: [],
+      searchDebarcadere:"",
+      CommunesOptions: [],
+      CollectionOptions: [],
       data: [],
       currentPage: 1,
       itemsPerPage: 10,
@@ -326,7 +500,21 @@ export default {
         description: "",
         collecteur: "",
         commune: "",
+        type:"",
       },
+      step2: {
+        code_debarcadere: "",
+        nom_debarcadere: "",
+        description: "",
+        collecteur: "",
+        commune: "",
+        type:"",
+      },
+      type:[
+        {label:"Debarcadère" , value:1 },
+        {label:"Port" , value:0 },
+
+      ],
       v$: useVuelidate(),
       error: "",
       resultError: {},
@@ -339,6 +527,15 @@ export default {
       description: { require },
       collecteur: { require },
       commune: { require },
+      type: { require },
+    },
+    step2: {
+      code_debarcadere: { require },
+      nom_debarcadere: { require },
+      description: { require },
+      collecteur: { require },
+      commune: { require },
+      type: { require },
     },
   },
   async mounted() {
@@ -351,7 +548,7 @@ export default {
 
     async fetchDebarcaderes() {
       try {
-        const response = await axios.get("/debarcaderes", {
+        const response = await axios.get("/parametrages/debarcaderes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -364,24 +561,12 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+        this.handleErrors(error);
       }
     },
     async fetchCommunes() {
       try {
-        const response = await axios.get("/localites/communes", {
+        const response = await axios.get("/parametrages/localites/communes", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -389,28 +574,21 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.dataCommunes = response.data;
+          response.data.map(item => this.CommunesOptions.push({
+				label: item.nom_commune,
+				value: item.id_commune
+				}))
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+        this.handleErrors(error);
+        
+       
       }
     },
     async fetchCollecteurs() {
       try {
-        const response = await axios.get("/collecteurs", {
+        const response = await axios.get("/parametrages/collecteurs", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -418,27 +596,18 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.dataCollecteurs = response.data;
-          console.log("data_coll", this.dataCollecteurs);
+          response.data.map(item => this.CollectionOptions.push({
+            label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
+            value: item.id_collecteur 
+				}))
           this.loading = false;
         }
       } catch (error) {
-        if (error.response.data.status === "error") {
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          }
-        } else {
-          this.formatValidationErrors(error.response.data.errors);
-          this.loading = false;
-          return false;
-        }
+        this.handleErrors(error);
       }
     },
-    async SubmitDebarcaderes() {
+    async SubmitDebarcaderes(modalId) {
+      console.log('decere')
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
@@ -449,58 +618,39 @@ export default {
           description: this.step1.description,
           collecteur: this.step1.collecteur,
           commune: this.step1.commune,
-          type:true
+          type:this.step1.type
         };
-        let url;
-        let title = "";   
-        let message = "";
-        if (this.stepModal === "add") {
-          url = await axios.post("/debarcaderes", data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
-            });
-            title = "Création de debarcadère";  
-          message = "Votre debarcadère a été crée avec succès !";
-        } else {
-          url = await axios.put(`/debarcaderes/${this.ToId}`, data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` },
-          });
-          title = "Mise à jour de debarcadère";     
-          message = "Les données du debarcadère ont été mises à jour avec succès !";
-        }
-
+       
+        console.log('data',data)
         try {
-          const response = url;
-          console.log("qfs", response);
-
-          if (response.status === 200) {
-            this.closeModal("modal-center");
+          const response = await axios.post("/parametrages/debarcaderes", data, {
+            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
+          }
+          });
+		  console.log('qfs', response)
+		  if (response.status === 200) {
+            this.closeModal(modalId);
             this.successmsg(
-              title,
-              message
-            );
+                  "Création du débarcadère",
+                  "Votre débarcadère a été créé avec succès !"
+              );
+
             await this.fetchDebarcaderes();
           } else {
-            this.loading = false;
           }
         } catch (error) {
-          console.log("erroor", error);
-
-          this.loading = false;
-          //   if (error.response.data.status === "error") {
-          //     return (this.error = error.response.data.message);
-          //   } else {
-          //     this.formatValidationErrors(error.response.data.errors);
-          //   }
+          this.handleErrors(error);
         }
+      
       } else {
       }
     },
     async HandleIdUpdate(id) {
-      this.stepModal = "update";
+     
       this.loading = true;
 
       try {
-        const response = await axios.get(`/debarcaderes/${id}`, {
+        const response = await axios.get(`/parametrages/debarcaderes/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -510,11 +660,12 @@ export default {
           console.log("Slbvlkjbv", response);
 
           let data = response.data;
-          (this.step1.code_debarcadere = data.code_debarcadere),
-            (this.step1.nom_debarcadere = data.nom_debarcadere),
-            (this.step1.description = data.description),
-            (this.step1.commune = data.commune),
-            (this.step1.collecteur = data.collecteur),
+          (this.step2.code_debarcadere = data.code_debarcadere),
+            (this.step2.nom_debarcadere = data.nom_debarcadere),
+            (this.step2.description = data.description),
+            (this.step2.commune = data.commune),
+            (this.step2.collecteur = data.collecteur),
+            (this.step2.type = (data.type === true) ? 1 :0),
             (this.ToId = data.code_debarcadere);
           this.loading = false;
         }
@@ -531,10 +682,11 @@ export default {
           description: this.step2.description,
           collecteur: this.step2.collecteur,
           commune: this.step2.commune,
+          type:this.step2.type,
         };
 
         try {
-          const response = await axios.put(`/debarcaderes/${this.ToId}`, data, {
+          const response = await axios.put(`/parametrages/debarcaderes/${this.ToId}`, data, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -543,24 +695,14 @@ export default {
           if (response.status === 200) {
             this.closeModal(modalId);
             this.successmsg(
-              "Données du financement mises à jour",
-              "Les données du financement ont été mises à jour avec succès !"
-            );
+                  "Mise à jour du débarcadère",
+                  "Votre débarcadère a été mis à jour avec succès !"
+              );
+            this.step1 = {}
             await this.fetchDebarcaderes();
           }
         } catch (error) {
-          console.error("Erreur lors du téléversement :", error);
-
-          if (
-            error.response.data.message === "Vous n'êtes pas autorisé." ||
-            error.response.status === 401
-          ) {
-            await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
-          } else {
-            this.formatValidationErrors(error.response.data.errors);
-            this.loading = false;
-          }
+          this.handleErrors(error);
         }
       } else {
         this.loading = false;
@@ -588,7 +730,7 @@ export default {
         
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/debarcaderes/${id}`, {
+        const response = await axios.delete(`/parametrages/debarcaderes/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -596,34 +738,71 @@ export default {
 
         if (response.status === 200) {
           this.loading = false;
-          this.successmsg(
-            "Données du debarcadère supprimées",
-            "Les données du debarcadère ont été supprimées avec succès !"
+                    this.successmsg(
+              "Suppression du débarcadère",
+              "Votre débarcadère a été supprimé avec succès !"
           );
           await this.fetchDebarcaderes();
         } else {
           this.loading = false;
         }
       } catch (error) {
-        console.error("Erreur lors de la suppression:", error);
+        this.handleErrors(error);
       }
     },
     filterByName() {
       this.currentPage = 1;
-      if (this.control.name !== null) {
-        const tt = this.control.name;
+      if (this.searchDebarcadere !== null) {
+        const tt = this.searchDebarcadere;
         const searchValue = tt.toLowerCase();
-        this.ClientOptions = this.data.filter((user) => {
-          const Nom = user.duty_name || "";
-          const Descriptions = user.descriptions || "";
+        this.DebarcaderesOptions = this.data.filter((user) => {
+          const Nom = user.code_debarcadere || "";
+          const Descriptions = user.nom_debarcadere || "";
+          const Commune = user.commune_relation?.nom_commune || "";
 
           return (
             Nom.toLowerCase().includes(searchValue) ||
-            Descriptions.toLowerCase().includes(searchValue)
+            Descriptions.toLowerCase().includes(searchValue) ||
+            Commune.toLowerCase().includes(searchValue) 
           );
         });
       } else {
-        this.ClientOptions = [...this.data];
+        this.DebarcaderesOptions = [...this.data];
+      }
+    },
+    triggerToast(errorMessage) {
+      this.toast.error(errorMessage, {
+        position: "top-right",
+        timeout: 8000,
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+        rtl: false,
+        className: 'toast-error'
+      });
+    },
+    async handleErrors(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+        this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
       }
     },
     closeModal(modalId) {
@@ -636,6 +815,7 @@ export default {
         modalBackdrop.parentNode.removeChild(modalBackdrop);
       }
     },
+
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 

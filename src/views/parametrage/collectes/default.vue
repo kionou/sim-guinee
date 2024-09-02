@@ -763,6 +763,7 @@ export default {
         modalBackdrop.parentNode.removeChild(modalBackdrop);
       }
     },
+
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 

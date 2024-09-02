@@ -6,7 +6,7 @@
         <div
           class="box-header with-border d-flex justify-content-between align-items-center p-3"
         >
-          <h3 class="box-title mb-0">Liste des magasins</h3>
+          <h3 class="box-title mb-0">Liste des produits</h3>
           <div class="navbar-custom-menu r-side">
             <ul class="nav navbar-nav justify-content-end">
               <li class="btn-group d-lg-inline-flex d-none h-40">
@@ -14,7 +14,7 @@
                   <div class="search-bx mx-5">
                     <form>
 							<div class="input-group">
-							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchMagasin" @input="filterByName">
+							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchProduit" @input="filterByName">
 							  <div class="input-group-append">
 								<button class="btn border border-1" ><i class="ti-search"></i></button>
 							  </div>
@@ -28,7 +28,7 @@
                   type="button"
                   class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
                   data-toggle="modal"
-                  data-target="#add-magasin"
+                  data-target="#add-produit"
                   
                 >
                   <i class="mdi mdi-plus"></i>
@@ -44,13 +44,14 @@
               <thead>
                 <tr>
                  
-                  <th>Code</th>
-                  <th>Nom</th>
-                  <th>Capacité</th>
-                  <th>Geo local.</th>
-                  <th>Commune</th>
-                  <th>Collecteur(e)</th>
-                  <th>Description</th>
+                  <th>Nom & Code</th>
+                  <th>Catégorie</th>
+                  <th>Famille</th>
+                  <th>Origine</th>
+                  <th>Forme</th>
+
+                  <th>Filière</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -65,26 +66,38 @@
               </tbody>
               <tbody v-else>
                 <tr v-for="(data) in paginatedItems" :key="data.id_magasin">
-                 
-                  <td style="width: 50px;" class="text-center">{{ data.code_magasin }}</td>
-                  <td>{{ data.nom_magasin }}</td>
-                  <td style="width: 50px;">{{ data.capacite }}</td>
+                  <td>
+                    <div class="widget-user-image">
+                      <img v-if="data?.image === '' || data?.image === null" class="rounded-circle " width="45"  src="@/assets/img/logo_mobile.png"
+                        alt="User Avatar" style="float: left; margin-right: 10px"/>
+
+                        <img v-else class="rounded-circle " width="45"  :src="data?.image"
+                        alt="User Avatar" style="float: left; margin-right: 10px"/>
+                      <div style="display: inline-block">
+                        <span style="font-weight: 600; font-size: 1.1em; display: block"
+                          >{{ data.nom_produit }} </span
+                        >
+                        <span class="text-danger" style="display: block;">{{ data.code_produit }}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>{{ data?.categorie?.nom_categorie_produit ?? "-" }}</td>
+                  <td>{{ data?.famille?.nom_famille_produit ?? "-" }}</td>
+                  <td style="width: 50px;">{{ data?.origine?.nom_origine_produit ?? "-" }}</td>
                   <td style="width: 100px;" class="text-center">
-                    {{ data?.longitude ?? "-"}} , {{ data?.latitude ?? "-"}}
+                    {{ data?.forme?.nom_forme_produit ?? "-"}} 
                    </td>
-                  <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
-                  <td style="width: 170px;" class="text-center">
-                      <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
-                      <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
-                   </td>
-                  <td>{{ data.description }}</td>
+
+                  <td>{{ data?.filiere }}</td>
+                  <td>{{ data?.affichage_ecran }}</td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
                       <a
                         href="javascript:void(0)"
                         class="btn btn-circle btn-info btn-xs"
                         title=""
-                        @click="HandleIdUpdate(data.code_magasin)"
+                        @click="HandleIdUpdate(data.id_produit)"
                         data-original-title="Update"
                         data-toggle="modal"
                         data-target="#update-magasin"
@@ -93,7 +106,7 @@
                       <a
                         href="javascript:void(0)"
                         class="btn btn-circle btn-danger btn-xs"
-                        @click="HandleIdDelete(data.code_magasin)"
+                        @click="HandleIdDelete(data.code_produit)"
                         title=""
                         data-toggle="tooltip"
                         data-original-title="Delete"
@@ -123,15 +136,15 @@
 
     <div
       class="modal center-modal fade"
-      id="add-magasin"
-      ref="add-magasin"
+      id="add-produit"
+      ref="add-produit"
       tabindex="-1"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              Ajouter un magasin
+              Ajouter un produit
             </h5>
             <button type="button" class="btn btn-danger close py-1 px-3 close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
@@ -145,18 +158,18 @@
                     Code <span class="text-danger">*</span></label
                   >
                   <MazInput
-                    v-model="step1.code_magasin"
+                    v-model="step1.code_produit"
                     color="secondary"
-                    name="step1.code_magasin"
+                    name="step1.code_produit"
                     size="sm"
                     rounded-size="sm"
                     type="text"
                   />
-                  <small v-if="v$.step1.code_magasin.$error">{{
-                    v$.step1.code_magasin.$errors[0].$message
+                  <small v-if="v$.step1.code_produit.$error">{{
+                    v$.step1.code_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['code_magasin']">
-                    {{ resultError["code_magasin"] }}
+                  <small v-if="resultError['code_produit']">
+                    {{ resultError["code_produit"] }}
                   </small>
                 </div>
               </div>
@@ -166,18 +179,18 @@
                     Nom <span class="text-danger">*</span></label
                   >
                   <MazInput
-                    v-model="step1.nom_magasin"
+                    v-model="step1.nom_produit"
                     color="secondary"
-                    name="step1.nom_magasin"
+                    name="step1.nom_produit"
                     size="sm"
                     rounded-size="sm"
                     type="text"
                   />
-                  <small v-if="v$.step1.nom_magasin.$error">{{
-                    v$.step1.nom_magasin.$errors[0].$message
+                  <small v-if="v$.step1.nom_produit.$error">{{
+                    v$.step1.nom_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['nom_magasin']">
-                    {{ resultError["nom_magasin"] }}
+                  <small v-if="resultError['nom_produit']">
+                    {{ resultError["nom_produit"] }}
                   </small>
                 </div>
               </div>
@@ -185,63 +198,88 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Capacité <span class="text-danger">*</span></label
+                    Catégorie <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step1.capacite"
+                  <MazSelect
+                    v-model="step1.categorie_produit"
                     color="secondary"
-                    name="step1.capacite"
+                    name="step1.categorie_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="CategoriesOptions"
                   />
-                  <small v-if="v$.step1.capacite.$error">{{
-                    v$.step1.capacite.$errors[0].$message
+                  <small v-if="v$.step1.categorie_produit.$error">{{
+                    v$.step1.categorie_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['capacite']">
-                    {{ resultError["capacite"] }}
+                  <small v-if="resultError['categorie_produit']">
+                    {{ resultError["categorie_produit"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Longitude <span class="text-danger">*</span></label
+                    Famille <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step1.longitude"
+                  <MazSelect
+                    v-model="step1.famille_produit"
                     color="secondary"
-                    name="step1.longitude"
+                    name="step1.famille_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="FamillesOptions"
                   />
-                  <small v-if="v$.step1.longitude.$error">{{
-                    v$.step1.longitude.$errors[0].$message
+                  <small v-if="v$.step1.famille_produit.$error">{{
+                    v$.step1.famille_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['longitude']">
-                    {{ resultError["longitude"] }}
+                  <small v-if="resultError['famille_produit']">
+                    {{ resultError["famille_produit"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Latitude <span class="text-danger">*</span></label
+                    Origine <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step1.latitude"
+                  <MazSelect
+                    v-model="step1.origine_produit"
                     color="secondary"
-                    name="step1.latitude"
+                    name="step1.origine_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="OriginesOptions"
                   />
-                  <small v-if="v$.step1.latitude.$error">{{
-                    v$.step1.latitude.$errors[0].$message
+                  <small v-if="v$.step1.origine_produit.$error">{{
+                    v$.step1.origine_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['latitude']">
-                    {{ resultError["latitude"] }}
+                  <small v-if="resultError['origine_produit']">
+                    {{ resultError["origine_produit"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Forme <span class="text-danger">*</span></label
+                  >
+                  <MazSelect
+                    v-model="step1.forme_produit"
+                    color="secondary"
+                    name="step1.forme_produit"
+                    size="sm"
+                    rounded-size="sm"
+                    search
+                    :options="FormesOptions"
+                  />
+                  <small v-if="v$.step1.forme_produit.$error">{{
+                    v$.step1.forme_produit.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['forme_produit']">
+                    {{ resultError["forme_produit"] }}
                   </small>
                 </div>
               </div>
@@ -249,63 +287,61 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Commune <span class="text-danger">*</span>
+                    Filière <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step1.commune"
+                  <MazInput
+                              v-model="step1.filiere"
                               color="secondary"
-                              name="step1.commune"
+                              name="step1.filiere"
                               size="sm"
                               rounded-size="sm"
-                              search
-							               :options="CommunesOptions"
+                             type="text"
                               
                               
                             />
-                  <small v-if="v$.step1.commune.$error">{{
-                    v$.step1.commune.$errors[0].$message
+                  <small v-if="v$.step1.filiere.$error">{{
+                    v$.step1.filiere.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['commune']">
-                    {{ resultError["commune"] }}
+                  <small v-if="resultError['filiere']">
+                    {{ resultError["filiere"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Collecteur(e) <span class="text-danger">*</span>
+                    Visibilité <span class="text-danger">*</span>
                   </label>
                   <MazSelect
-                              v-model="step1.collecteur"
+                              v-model="step1.affichage_ecran"
                               color="secondary"
-                              name="step1.collecteur"
+                              name="step1.affichage_ecran"
                               size="sm"
                               rounded-size="sm"
                               search
-							               :options="CollectionOptions"
+							               :options="choix"
                               
                               
                             />
-                  <small v-if="v$.step1.collecteur.$error">{{
-                    v$.step1.collecteur.$errors[0].$message
+                  <small v-if="v$.step1.affichage_ecran.$error">{{
+                    v$.step1.affichage_ecran.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['collecteur']">
-                    {{ resultError["collecteur"] }}
+                  <small v-if="resultError['affichage_ecran']">
+                    {{ resultError["affichage_ecran"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
-
-                  <small v-if="v$.step1.description.$error">{{
-                    v$.step1.description.$errors[0].$message
+                    Image <span class="text-danger">*</span></label >
+              
+                  <input type="file" class="form-control" id="contact-mail" @change="handleFileUploadLogo($event,'add')"  accept="image/*" >
+                  <small v-if="v$.step1.image.$error">{{
+                    v$.step1.image.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['description']">
-                    {{ resultError["description"] }}
+                  <small v-if="resultError['image']">
+                    {{ resultError["image"] }}
                   </small>
                 </div>
               </div>
@@ -316,7 +352,7 @@
           <div class="modal-footer modal-footer-uniform text-end">
             <button
                   type="button"
-                  @click="SubmitMagasins('add-magasin')"
+                  @click="SubmitProduit('add-produit')"
                   class="waves-effect waves-light btn btn-primary"
                 >
                   Valider
@@ -336,7 +372,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              Modifier un magasin
+              Modifier un produit
             </h5>
             <button type="button" class="close btn btn-danger close py-1 px-3" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
@@ -350,18 +386,18 @@
                     Code <span class="text-danger">*</span></label
                   >
                   <MazInput
-                    v-model="step2.code_magasin"
+                    v-model="step2.code_produit"
                     color="secondary"
-                    name="step2.code_magasin"
+                    name="step2.code_produit"
                     size="sm"
                     rounded-size="sm"
                     type="text"
                   />
-                  <small v-if="v$.step2.code_magasin.$error">{{
-                    v$.step2.code_magasin.$errors[0].$message
+                  <small v-if="v$.step2.code_produit.$error">{{
+                    v$.step2.code_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['code_magasin']">
-                    {{ resultError["code_magasin"] }}
+                  <small v-if="resultError['code_produit']">
+                    {{ resultError["code_produit"] }}
                   </small>
                 </div>
               </div>
@@ -371,18 +407,18 @@
                     Nom <span class="text-danger">*</span></label
                   >
                   <MazInput
-                    v-model="step2.nom_magasin"
+                    v-model="step2.nom_produit"
                     color="secondary"
-                    name="step2.nom_magasin"
+                    name="step2.nom_produit"
                     size="sm"
                     rounded-size="sm"
                     type="text"
                   />
-                  <small v-if="v$.step2.nom_magasin.$error">{{
-                    v$.step2.nom_magasin.$errors[0].$message
+                  <small v-if="v$.step2.nom_produit.$error">{{
+                    v$.step2.nom_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['nom_magasin']">
-                    {{ resultError["nom_magasin"] }}
+                  <small v-if="resultError['nom_produit']">
+                    {{ resultError["nom_produit"] }}
                   </small>
                 </div>
               </div>
@@ -390,63 +426,88 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Capacité <span class="text-danger">*</span></label
+                    Catégorie <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step2.capacite"
+                  <MazSelect
+                    v-model="step2.categorie_produit"
                     color="secondary"
-                    name="step2.capacite"
+                    name="step2.categorie_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="CategoriesOptions"
                   />
-                  <small v-if="v$.step2.capacite.$error">{{
-                    v$.step2.capacite.$errors[0].$message
+                  <small v-if="v$.step2.categorie_produit.$error">{{
+                    v$.step2.categorie_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['capacite']">
-                    {{ resultError["capacite"] }}
+                  <small v-if="resultError['categorie_produit']">
+                    {{ resultError["categorie_produit"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Longitude <span class="text-danger">*</span></label
+                    Famille <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step2.longitude"
+                  <MazSelect
+                    v-model="step2.famille_produit"
                     color="secondary"
-                    name="step2.longitude"
+                    name="step2.famille_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="FamillesOptions"
                   />
-                  <small v-if="v$.step2.longitude.$error">{{
-                    v$.step2.longitude.$errors[0].$message
+                  <small v-if="v$.step2.famille_produit.$error">{{
+                    v$.step2.famille_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['longitude']">
-                    {{ resultError["longitude"] }}
+                  <small v-if="resultError['famille_produit']">
+                    {{ resultError["famille_produit"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Latitude <span class="text-danger">*</span></label
+                    Origine <span class="text-danger">*</span></label
                   >
-                  <MazInput
-                    v-model="step2.latitude"
+                  <MazSelect
+                    v-model="step2.origine_produit"
                     color="secondary"
-                    name="step2.latitude"
+                    name="step2.origine_produit"
                     size="sm"
                     rounded-size="sm"
-                    type="text"
+                    search
+                    :options="OriginesOptions"
                   />
-                  <small v-if="v$.step2.latitude.$error">{{
-                    v$.step2.latitude.$errors[0].$message
+                  <small v-if="v$.step2.origine_produit.$error">{{
+                    v$.step2.origine_produit.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['latitude']">
-                    {{ resultError["latitude"] }}
+                  <small v-if="resultError['origine_produit']">
+                    {{ resultError["origine_produit"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Forme <span class="text-danger">*</span></label
+                  >
+                  <MazSelect
+                    v-model="step2.forme_produit"
+                    color="secondary"
+                    name="step2.forme_produit"
+                    size="sm"
+                    rounded-size="sm"
+                    search
+                    :options="FormesOptions"
+                  />
+                  <small v-if="v$.step2.forme_produit.$error">{{
+                    v$.step2.forme_produit.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['forme_produit']">
+                    {{ resultError["forme_produit"] }}
                   </small>
                 </div>
               </div>
@@ -454,63 +515,61 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Commune <span class="text-danger">*</span>
+                    Filière <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step2.commune"
+                  <MazInput
+                              v-model="step2.filiere"
                               color="secondary"
-                              name="step2.commune"
+                              name="step2.filiere"
                               size="sm"
                               rounded-size="sm"
-                              search
-							               :options="CommunesOptions"
+                             type="text"
                               
                               
                             />
-                  <small v-if="v$.step2.commune.$error">{{
-                    v$.step2.commune.$errors[0].$message
+                  <small v-if="v$.step2.filiere.$error">{{
+                    v$.step2.filiere.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['commune']">
-                    {{ resultError["commune"] }}
+                  <small v-if="resultError['filiere']">
+                    {{ resultError["filiere"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Collecteur(e) <span class="text-danger">*</span>
+                    Visibilité <span class="text-danger">*</span>
                   </label>
                   <MazSelect
-                              v-model="step2.collecteur"
+                              v-model="step2.affichage_ecran"
                               color="secondary"
-                              name="step2.collecteur"
+                              name="step2.affichage_ecran"
                               size="sm"
                               rounded-size="sm"
                               search
-							               :options="CollectionOptions"
+							               :options="choix"
                               
                               
                             />
-                  <small v-if="v$.step2.collecteur.$error">{{
-                    v$.step2.collecteur.$errors[0].$message
+                  <small v-if="v$.step2.affichage_ecran.$error">{{
+                    v$.step2.affichage_ecran.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['collecteur']">
-                    {{ resultError["collecteur"] }}
+                  <small v-if="resultError['affichage_ecran']">
+                    {{ resultError["affichage_ecran"] }}
                   </small>
                 </div>
               </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
-
-                  <small v-if="v$.step2.description.$error">{{
-                    v$.step2.description.$errors[0].$message
+                    Image <span class="text-danger">*</span></label >
+              
+                  <input type="file" class="form-control" id="contact-mail" @change="handleFileUploadLogo($event,'update')"  accept="image/*" >
+                  <small v-if="v$.step2.image.$error">{{
+                    v$.step2.image.$errors[0].$message
                   }}</small>
-                  <small v-if="resultError['description']">
-                    {{ resultError["description"] }}
+                  <small v-if="resultError['image']">
+                    {{ resultError["image"] }}
                   </small>
                 </div>
               </div>
@@ -557,46 +616,54 @@ export default {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
     totalPages() {
-      return Math.ceil(this.MagasinsOptions.length / this.itemsPerPage);
+      return Math.ceil(this.ProduitsOptions.length / this.itemsPerPage);
     },
     paginatedItems() {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       const endIndex = startIndex + this.itemsPerPage;
-      return this.MagasinsOptions.slice(startIndex, endIndex);
+      return this.ProduitsOptions.slice(startIndex, endIndex);
     },
   },
   data() {
     return {
       loading: true,
-      searchMagasin:"",
-      MagasinsOptions: [],
-      CommunesOptions: [],
-      CollectionOptions: [],
+      searchProduit:"",
+      ProduitsOptions: [],
+      CategoriesOptions: [],
+      FamillesOptions: [],
+      OriginesOptions: [],
+      FormesOptions: [],
       data: [],
       currentPage: 1,
       itemsPerPage: 10,
       ToId: "",
       totalPageArray: [],
       step1: {
-        code_magasin: "",
-        nom_magasin: "",
-        longitude: "",
-        latitude: "",
-        capacite: "",
-        description: "",
-        collecteur: "",
-        commune: "",
+        code_produit: "",
+        nom_produit: "",
+        categorie_produit: "",
+        forme_produit: "",
+        famille_produit: "",
+        origine_produit: "",
+        affichage_ecran: "",
+        filiere:"",
+        image: "",
       },
       step2: {
-        code_magasin: "",
-        nom_magasin: "",
-        longitude: "",
-        latitude: "",
-        capacite: "",
-        description: "",
-        collecteur: "",
-        commune: "",
+        code_produit: "",
+        nom_produit: "",
+        categorie_produit: "",
+        forme_produit: "",
+        famille_produit: "",
+        origine_produit: "",
+        affichage_ecran: "",
+        filiere:"",
+        image: "",
       },
+      choix:[
+        {label: 'Oui' , value:true},
+        {label: 'Non' , value:false},
+      ],
       v$: useVuelidate(),
       error: "",
       resultError: {},
@@ -604,36 +671,41 @@ export default {
   },
   validations: {
     step1: {
-      code_magasin: { require },
-      nom_magasin: { require },
-      longitude: { require },
-      latitude: { require },
-      capacite: { require },
-      description: { require },
-      collecteur: { require },
-      commune: { require },
+      
+       code_produit: { require },
+        nom_produit: { require },
+        categorie_produit: { require },
+        forme_produit: { require },
+        famille_produit: { require },
+        origine_produit: { require },
+        affichage_ecran: { require },
+        filiere:{ require },
+        image: {  },
     },
     step2: {
-      code_magasin: { require },
-      nom_magasin: { require },
-      longitude: { require },
-      latitude: { require },
-      capacite: { require },
-      description: { require },
-      collecteur: { require },
-      commune: { require },
+      code_produit: { require },
+        nom_produit: { require },
+        categorie_produit: { require },
+        forme_produit: { require },
+        famille_produit: { require },
+        origine_produit: { require },
+        affichage_ecran: { require },
+        filiere:{ require },
+        image: {  },
     },
   },
   async mounted() {
-    await this.fetchMagasins();
-    await this.fetchCommunes();
-    await this.fetchCollecteurs();
+    await this.fetchProduits();
+    await this.fetchCategorie();
+    await this.fetchFamille();
+    await this.fetchOrigines();
+    await this.fetchFormes();
   },
   methods: {
     successmsg: successmsg,
-    async fetchCommunes() {
+    async fetchCategorie() {
       try {
-        const response = await axios.get("/parametrages/localites/communes", {
+        const response = await axios.get("/parametrages/categories", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -641,9 +713,9 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          response.data.map(item => this.CommunesOptions.push({
-				label: item.nom_commune,
-				value: item.id_commune
+          response.data.map(item => this.CategoriesOptions.push({
+				label: item.nom_categorie_produit,
+				value: item.id_categorie_produit
 				}))
           this.loading = false;
         }
@@ -651,9 +723,9 @@ export default {
         this.handleErrors(error);
       }
     },
-    async fetchCollecteurs() {
+    async fetchFamille() {
       try {
-        const response = await axios.get("/parametrages/collecteurs", {
+        const response = await axios.get("/parametrages/familles", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -661,9 +733,9 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          response.data.map(item => this.CollectionOptions.push({
-            label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-            value: item.id_collecteur 
+          response.data.map(item => this.FamillesOptions.push({
+            label: item.nom_famille_produit,
+            value: item.id_famille_produit
 				}))
           this.loading = false;
         }
@@ -671,9 +743,49 @@ export default {
         this.handleErrors(error);
       }
     },
-    async fetchMagasins() {
+    async fetchOrigines() {
       try {
-        const response = await axios.get("/parametrages/magasins", {
+        const response = await axios.get("/parametrages/origines", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("response", response);
+        if (response.status === 200) {
+          response.data.map(item => this.OriginesOptions.push({
+            label: item.nom_origine_produit,
+            value: item.id_origine_produit
+				}))
+          this.loading = false;
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
+    async fetchFormes() {
+      try {
+        const response = await axios.get("/parametrages/formes", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("response", response);
+        if (response.status === 200) {
+          response.data.map(item => this.FormesOptions.push({
+            label: item.nom_forme_produit,
+            value: item.id_forme_produit
+				}))
+          this.loading = false;
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
+    async fetchProduits() {
+      try {
+        const response = await axios.get("/parametrages/produits", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -682,49 +794,50 @@ export default {
         console.log("response", response);
         if (response.status === 200) {
           this.data = response.data;
-          this.MagasinsOptions = this.data;
+          this.ProduitsOptions = this.data;
           this.loading = false;
         }
       } catch (error) {
         this.handleErrors(error);
       }
     },
-    async SubmitMagasins(modalId) {
+    async SubmitProduit(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
 
         let data = {
-          code_magasin: this.step1.code_magasin,
-          nom_magasin: this.step1.nom_magasin,
-          latitude: this.step1.latitude,
-          longitude: this.step1.longitude,
-          capacite: this.step1.capacite,
-          description: this.step1.description,
-          collecteur: this.step1.collecteur,
-          commune: this.step1.commune,
+          code_produit: this.step1.code_produit,
+          nom_produit: this.step1.nom_produit,
+          categorie_produit: this.step1.categorie_produit,
+          forme_produit: this.step1.forme_produit,
+          famille_produit: this.step1.famille_produit,
+          origine_produit: this.step1.origine_produit,
+          affichage_ecran: this.step1.affichage_ecran,
+          filiere: this.step1.filiere,
+          image: this.step1.image,
         };
        
         console.log('data',data)
         try {
-          const response = await axios.post("/parametrages/magasins", data, {
+          const response = await axios.post("/parametrages/produits", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
           }
           });
 		  console.log('qfs', response)
 		  if (response.status === 200) {
             this.closeModal(modalId);
-			this.successmsg(
-				"Création du magasin",
-				"Votre magasin a été créé avec succès !"
-			);
+            this.successmsg(
+                  "Création du produit",
+                  "Votre produit a été créé avec succès !"
+              );
 
 
-            await this.fetchMagasins();
+            await this.fetchProduits();
           } else {
           }
         } catch (error) {
-				  this.handleErrors(error);
+          this.handleErrors(error);
         }
        
       
@@ -736,7 +849,7 @@ export default {
       this.loading = true;
 
       try {
-        const response = await axios.get(`/parametrages/magasins/${id}`, {
+        const response = await axios.get(`/parametrages/produits/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -746,15 +859,15 @@ export default {
           console.log("Slbvlkjbv", response);
 
           let data = response.data;
-          (this.step2.code_magasin = data.code_magasin),
-            (this.step2.nom_magasin = data.nom_magasin),
-            (this.step2.description = data.description),
-            (this.step2.longitude = data.longitude),
-            (this.step2.latitude = data.latitude),
-            (this.step2.capacite = data.capacite),
-            (this.step2.commune = data.commune),
-            (this.step2.collecteur = data.collecteur),
-            (this.ToId = data.code_magasin);
+          (this.step2.code_produit = data.code_produit),
+            (this.step2.nom_produit = data.nom_produit),
+            (this.step2.categorie_produit = data.categorie?.id_categorie_produit),
+            (this.step2.forme_produit = data.forme?.id_forme_produit),
+            (this.step2.famille_produit = data.famille?.id_famille_produit),
+            (this.step2.origine_produit = data.origine?.id_origine_produit),
+            (this.step2.affichage_ecran = data.affichage_ecran),
+            (this.step2.filiere = data.filiere),
+            (this.ToId = data.id_produit);
           this.loading = false;
         }
       } catch (error) {
@@ -767,18 +880,21 @@ export default {
       if (this.v$.$errors.length == 0) {
         this.loading = true;
         let data = {
-          code_magasin: this.step2.code_magasin,
-          nom_magasin: this.step2.nom_magasin,
-          latitude: this.step2.latitude,
-          longitude: this.step2.longitude,
-          capacite: this.step2.capacite,
-          description: this.step2.description,
+          code_produit: this.step2.code_produit,
+          nom_produit: this.step2.nom_produit,
+          categorie_produit: this.step2.categorie_produit,
+          forme_produit: this.step2.forme_produit,
+          famille_produit: this.step2.famille_produit,
+          origine_produit: this.step2.origine_produit,
           collecteur: this.step2.collecteur,
-          commune: this.step2.commune,
+          affichage_ecran: this.step2.affichage_ecran,
+          filiere: this.step2.filiere,
+          image: this.step2.image,
         };
+        console.log('data',data)
 
         try {
-          const response = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
+          const response = await axios.put(`/parametrages/produits/${this.ToId}`, data, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -787,10 +903,10 @@ export default {
           if (response.status === 200) {
             this.closeModal(modalId);
             this.successmsg(
-              "Données du magasin mises à jour",
-              "Les données du magasin ont été mises à jour avec succès !"
-            );
-            await this.fetchMagasins();
+                      "Mise à jour du produit",
+                      "Votre produit a été mis à jour avec succès !"
+                  )
+             await this.fetchProduits();
           }
         } catch (error) {
           this.handleErrors(error);
@@ -821,7 +937,7 @@ export default {
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/parametrages/magasins/${id}`, {
+        const response = await axios.delete(`/parametrages/produits/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -830,10 +946,10 @@ export default {
         if (response.status === 200) {
           this.loading = false;
           this.successmsg(
-            "Données du magasin supprimées",
-            "Les données du magasin ont été supprimées avec succès !"
+              "Suppression du produit",
+              "Votre produit a été supprimé avec succès !"
           );
-          await this.fetchMagasins();
+          await this.fetchProduits();
         } else {
           this.loading = false;
         }
@@ -841,12 +957,56 @@ export default {
         this.handleErrors(error);
       }
     },
+    handleFileUploadLogo(event , operationType) {
+    console.log("File input change");
+    const file = event.target.files[0];
+    console.log("handleFileUploadLogo Selected file:", file);
+    console.log('test ima',operationType)
+     this.submitFile(file , operationType)
+    
+
+  },
+  async submitFile(file , operationType ){
+  const formData = new FormData();
+    formData.append('image',file);
+
+
+try {
+const response = await axios.post('/parametrages/produits/upload/image-produit' , formData, {
+     headers: { 
+     
+            'Content-Type': 'multipart/form-data'
+    }});
+  console.log('Réponse du téléversement :', response);
+  if (response.status === 200) { 
+    if (operationType === 'add') {
+      this.step1.image =  response.data
+
+        } else if (operationType === 'update') {
+          this.step2.image =  response.data
+
+        }
+      
+       
+       
+
+       } else {
+
+       }
+ } catch (error) {
+  this.handleErrors(error);
+
+  } 
+
+
+},
+
     filterByName() {
       this.currentPage = 1;
-      if (this.searchMagasin !== null) {
-        const tt = this.searchMagasin;
+      if (this.searchProduit !== null) {
+        const tt = this.searchProduit;
         const searchValue = tt.toLowerCase();
-        this.MagasinsOptions = this.data.filter((user) => {
+        this.ProduitsOptions = this.data.filter((user) => {
           const Nom = user.code_magasin || "";
           const Descriptions = user.nom_magasin || "";
           const Commune = user.commune_relation?.nom_commune  || "";
@@ -861,7 +1021,7 @@ export default {
           );
         });
       } else {
-        this.MagasinsOptions = [...this.data];
+        this.ProduitsOptions = [...this.data];
       }
     },
     triggerToast(errorMessage) {
@@ -933,7 +1093,7 @@ export default {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
 
       const endIndex = startIndex + this.itemsPerPage;
-      return this.MagasinsOptions.slice(startIndex, endIndex);
+      return this.ProduitsOptions.slice(startIndex, endIndex);
     },
   },
 };

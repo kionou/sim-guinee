@@ -13,64 +13,19 @@
               <div class=" d-none d-sm-block d-lg-block ">
                 <div class="row justify-content-center text-center">
                     <h2> <b>BIENVENUE SUR</b> </h2>
+                    <div class="col-lg-12 col-md-12">
                     <img src="@/assets/img/logo.png" class="text-center" alt="" style="width: 150px; height: auto ">
-                    <p>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6" style="width:600px !important">
+                      <p>
                         Les SIM sont des dispositifs (ou services) qui ont pour objectif de collecter régulièrement 
                         sur les marchés (marchés de collecte, de gros ou de détail) des informations sur les prix des produits agricoles,
                     </p>
+                    </div>
+                   
                 </div>
                 
-                   
-				 
-                       <!-- <div class="swiper mySwiper keyboard-control slide">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail h-350  w-500" alt="">
-                                </div>
-                                
-                              
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail    h-350  w-500" alt="">
-
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
-                                
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="text-fixed-white text-center p-5 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="mb-5">
-                                    <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-350  w-500" alt="">
-                                </div>
-               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             
-                <div class="swiper-pagination"></div>
-                        </div>   -->
 
     <div class="swiper">
   <!-- Additional required wrapper -->
@@ -219,11 +174,11 @@ console.log('response.login', response.data);
 if (response.data) {
     console.log('ffsc<',response.data)
  this.InfoUser = response.data
- this.setMyAuthenticatedUser(this.InfoUser);
-// this.fetchUserDetail(this.InfoUser)
+//  this.setMyAuthenticatedUser(this.InfoUser);
+ this.fetchUserDetail(this.InfoUser)
  this.loading = false
 
-     this.$router.push('/sim'); 
+    
 
 } else {
 
@@ -252,23 +207,21 @@ return this.error = "L'authentification a échoué"
 
 async fetchUserDetail(data) {
 
-  
       try {
-        const response = await axios.get("/auth-user", {
+        const response = await axios.get("/parametrages/profile", {
           headers: {
             Authorization: `Bearer ${data.access_token}`,
           },
         });
-          console.log('role/id',response.data.data.roles[0])
-        if (response.data.status === "success") {
-          const selectedActualites = response.data.data.roles[0].menus;
-          const selectedPermissions = response.data.data.roles[0].permissions
-          data.menus = selectedActualites;
-          data.permissions = selectedPermissions;
-          data.user_role = response.data.data.roles[0].id
-          this.setMyAuthenticatedUser(data);
-
-   
+          console.log('role/id',response.data)
+        if (response.status === 200) {
+          console.log('role',response.data)
+          const userProfile = {
+            ...response.data,
+            access_token: data.access_token, 
+          };
+           this.setMyAuthenticatedUser(userProfile);
+          this.$router.push('/sim'); 
           this.loading = false;
         }
       } catch (error) {
@@ -556,11 +509,18 @@ async ChangePassword(){
 }
 
 .slide{
-
-   
+  
     height: 310px;
 }
 
+@media (max-width: 1200px) {
+  .loginHeader{
+    height: auto !important;
+  }
+  .formulaire{
+    margin-top: 10px !important;
+  }
+ }
 
 
 
