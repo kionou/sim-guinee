@@ -37,10 +37,11 @@
                         <input
                           type="search"
                           class="form-control"
-                          placeholder="Search"
-                          aria-label="Search"
+                          placeholder="Recherchez..."
+                          aria-label="Recherchez..."
                           aria-describedby="button-addon2"
-                          v-model="searchQuery"
+                          v-model="searchNaturelle"
+                          @input="filterByName"
                         />
                         <div class="input-group-append">
                           <button class="btn border border-1">
@@ -417,8 +418,9 @@ export default {
       itemsPerPage: 10,
       ToId: "",
       dataEdit: false,
-      searchQuery: "",
+      searchNaturelle: "",
       totalPageArray: [],
+      dataCo: [],
       step1: {
         nom_collecteur: "",
         prenom_collecteur: "",
@@ -493,8 +495,8 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.data = response.data;
-          this.CommunesOptions = this.data;
+          this.dataCo = response.data;
+          this.CommunesOptions = this.dataCo;
           this.loading = false;
         }
       } catch (error) {
@@ -504,7 +506,7 @@ export default {
             error.response.status === 401
           ) {
             await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-            this.$router.push("/"); //a revoir
+            this.$router.push("/");
           }
         } else {
           this.formatValidationErrors(error.response.data.errors);
@@ -733,22 +735,24 @@ export default {
     },
     filterByName() {
       this.currentPage = 1;
-      if (this.control.name !== null) {
-        const tt = this.control.name;
-        const searchValue = tt.toLowerCase();
-        this.ClientOptions = this.data.filter((user) => {
-          const Nom = user.duty_name || "";
-          const Descriptions = user.descriptions || "";
-
+      // Vérifier si searchNaturelle est null, vide ou contient uniquement des espaces
+      if (this.searchNaturelle && this.searchNaturelle.trim() !== "") {
+        const searchValue = this.searchNaturelle.toLowerCase();
+        this.CollecteursOptions = this.data.filter((user) => {
+          const nom = user.nom_collecteur || "";
+          const prenom = user.prenom_collecteur || "";
           return (
-            Nom.toLowerCase().includes(searchValue) ||
-            Descriptions.toLowerCase().includes(searchValue)
+            nom.toLowerCase().includes(searchValue) ||
+            prenom.toLowerCase().includes(searchValue)
           );
         });
       } else {
-        this.ClientOptions = [...this.data];
+        // Réinitialiser la liste si la recherche est vide ou null
+        this.CollecteursOptions = [...this.data];
       }
+      console.log("Voici mon appercu", this.CollecteursOptions);
     },
+
     closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");

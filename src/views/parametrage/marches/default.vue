@@ -40,7 +40,8 @@
                           placeholder="Search"
                           aria-label="Search"
                           aria-describedby="button-addon2"
-                          v-model="searchQuery"
+                          v-model="searchNaturelle"
+                          @input="filterByName"
                         />
                         <div class="input-group-append">
                           <button class="btn border border-1">
@@ -98,7 +99,9 @@
                     {{ index + 1 }}
                   </td>
                   <td>{{ data.nom_marche }}</td>
-                  <td style="width: 150px">{{ data.type_marche }}</td>
+                  <td style="width: 150px">
+                    {{ returnType(data.type_marche) }}
+                  </td>
                   <td style="width: 180px">{{ data.superficie }}</td>
                   <td style="width: 150px">
                     {{ searchCommune(data.commune) }}
@@ -395,12 +398,15 @@ export default {
       CommunesOptions: [],
       CollecteursOptions: [],
       data: [],
+      dataCo: [],
+      dataCol: [],
       currentPage: 1,
       itemsPerPage: 10,
       ToId: "",
       dataEdit: false,
       searchQuery: "",
       totalPageArray: [],
+      searchNaturelle: "",
       step1: {
         nom_marche: "",
         type_marche: "",
@@ -475,8 +481,8 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.data = response.data;
-          this.CommunesOptions = this.data;
+          this.dataCo = response.data;
+          this.CommunesOptions = this.dataCo;
           this.loading = false;
         }
       } catch (error) {
@@ -505,8 +511,8 @@ export default {
 
         console.log("response", response);
         if (response.status === 200) {
-          this.data = response.data;
-          this.CollecteursOptions = this.data;
+          this.dataCol = response.data;
+          this.CollecteursOptions = this.dataCol;
           this.loading = false;
         }
       } catch (error) {
@@ -704,6 +710,17 @@ export default {
       }
       return "-";
     },
+    returnType(num) {
+      if (num == 1) {
+        return "Marché de collecte";
+      } else if (num == 2) {
+        return "Marché de consommation";
+      } else if (num == 3) {
+        return "Marché de grossiste";
+      } else if (num == 4) {
+        return "Marché de détail";
+      }
+    },
     async HandleIdDelete(id) {
       console.log(id);
       // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
@@ -754,22 +771,19 @@ export default {
     },
     filterByName() {
       this.currentPage = 1;
-      if (this.control.name !== null) {
-        const tt = this.control.name;
-        const searchValue = tt.toLowerCase();
-        this.ClientOptions = this.data.filter((user) => {
-          const Nom = user.duty_name || "";
-          const Descriptions = user.descriptions || "";
-
-          return (
-            Nom.toLowerCase().includes(searchValue) ||
-            Descriptions.toLowerCase().includes(searchValue)
-          );
+      console.log(this.MarchesOptions);
+      if (this.searchNaturelle && this.searchNaturelle.trim() !== "") {
+        const searchValue = this.searchNaturelle.toLowerCase();
+        this.MarchesOptions = this.data.filter((user) => {
+          const nom = user.nom_marche || "";
+          return nom.toLowerCase().includes(searchValue);
         });
       } else {
-        this.ClientOptions = [...this.data];
+        // Réinitialiser la liste si la recherche est vide ou null
+        this.MarchesOptions = [...this.data];
       }
     },
+
     closeModal(modalId) {
       let modalElement = this.$refs[modalId];
       modalElement.classList.remove("show");
