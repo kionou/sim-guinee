@@ -582,7 +582,7 @@ export default {
             (this.step1.adresse = data.adresse),
             (this.step1.telephone_collecteur = data.telephone_collecteur),
             (this.step1.code_collecteur = data.code_collecteur),
-            (this.step1.sexe_collecteur = data.sexe_collecteur),
+            (this.step1.sexe_collecteur = data.sexe_collecteur[0]),
             (this.step1.whatsapp_collecteur = data.whatsapp_collecteur),
             (this.step1.relai = data.relai),
             (this.step1.description = data.description),

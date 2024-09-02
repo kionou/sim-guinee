@@ -321,6 +321,7 @@
                     :value="collecteur.id_collecteur"
                   >
                     {{ collecteur.nom_collecteur }}
+                    {{ collecteur.prenom_collecteur }}
                   </option>
                 </select>
               </div>
