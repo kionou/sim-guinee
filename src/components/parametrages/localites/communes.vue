@@ -25,7 +25,7 @@
               </li>
               <li class="h-40">
                 <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                  data-toggle="modal" data-target="#add-commune"><i class="mdi mdi-plus"></i></button>
+                @click="openModal('add-commune')"  ><i class="mdi mdi-plus"></i></button>
               </li>
   
   
@@ -72,8 +72,8 @@
                   <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
                       <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title=""
-                        @click="HandleIdUpdate(data.code_commune)" data-original-title="Update" data-toggle="modal"
-                        data-target="#update-commune"><i class="ti-marker-alt"></i></a>
+                        @click="HandleIdUpdate(data.code_commune ,'update-commune')" 
+                        ><i class="ti-marker-alt"></i></a>
                       <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs"
                         @click="HandleIdDelete(data.code_commune)" title="" data-toggle="tooltip"
                         data-original-title="Delete"><i class="ti-trash"></i></a>
@@ -102,7 +102,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Ajouter des communes </h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('add-commune')"  >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -197,7 +197,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Modifier une préfecture</h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('update-commune')" >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -264,7 +264,7 @@
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
             <button type="button" @click="submitUpdate('update-commune')"
-              class="waves-effect waves-light btn btn-secondary ">Valider</button>
+              class="waves-effect waves-light btn btn-primary ">Valider</button>
   
   
           </div>
@@ -314,7 +314,7 @@ export default {
       CommunesOptions: [],
       data: [],
       currentPage: 1,
-      itemsPerPage: 10,
+      itemsPerPage: 20,
       ToId: "",
       totalPageArray: [],
       v$: useVuelidate(),
@@ -439,6 +439,7 @@ export default {
         if (response.status === 200) {
           this.data = response.data;
           this.CommunesOptions = this.data
+          this.$emit('commune-count', this.data.length)
           this.loading = false
         }
       } catch (error) {
@@ -462,6 +463,8 @@ export default {
 
 
           if (response.status === 200) {
+      this.Communes = [{ code_commune: "", nom_commune: "", abrege_commune: "", prefecture: "", }];
+
             this.closeModal(modalId);
             this.successmsg(
               "Création de communes",
@@ -479,7 +482,8 @@ export default {
 
       }
     },
-    async HandleIdUpdate(id) {
+    async HandleIdUpdate(id ,modalId) {
+      this.openModal(modalId)
       this.loading = true;
 
       try {
@@ -656,7 +660,15 @@ export default {
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
@@ -668,16 +680,34 @@ export default {
         return false;
       }
     },
-    closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      modalElement.style.opacity = "";
-      document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
     async formatValidationErrors(errors) {
       const formattedErrors = {};

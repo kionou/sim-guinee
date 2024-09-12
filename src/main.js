@@ -1,14 +1,3 @@
-// import './assets/main.css'
-
-// import { createApp } from 'vue'
-// import App from './App.vue'
-// import router from './router'
-
-// const app = createApp(App)
-
-// app.use(router)
-
-// app.mount('#app')
 
 import './assets/main.css'
 
@@ -39,6 +28,10 @@ import MazSwitch from 'maz-ui/components/MazSwitch'
  import MazInputCode from 'maz-ui/components/MazInputCode'
  import MazRadioButtons from 'maz-ui/components/MazRadioButtons'
  import 'sweetalert2/dist/sweetalert2.min.css';
+//  import DataTable from 'datatables.net-vue3';
+import 'datatables.net-bs5'
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css'
+
 
 // import AOS from 'aos'
 // import 'aos/dist/aos.css'

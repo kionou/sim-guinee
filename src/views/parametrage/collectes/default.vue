@@ -4,13 +4,13 @@
         <div class="content-header">
 			<div class="d-flex align-items-center justify-content-between">
 				
-					<h3 class="page-title"> Collecteurs </h3>
+					<h3 class="page-title"> Agents de collecte </h3>
 					<div class="d-inline-block align-items-center">
 						<nav>
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item"><router-link to="/"><i class="mdi mdi-home-outline"></i></router-link></li>
 								<li class="breadcrumb-item" aria-current="page">SIM</li>
-								<li class="breadcrumb-item active" aria-current="page">Collecteurs</li>
+								<li class="breadcrumb-item active" aria-current="page">Agents de collecte</li>
 							</ol>
 						</nav>
 					</div>
@@ -40,7 +40,7 @@
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#add-collecteur" ><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"  @click="openModal('add-collecteur')"   ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
@@ -50,7 +50,7 @@
 		</div>
 <div class="box mx-2">
 	<div class="box-header with-border">
-		<h3 class="box-title mb-0">Liste des Collecteurs </h3>
+		<h3 class="box-title mb-0">Liste des agents de collecte </h3>
 	</div>
 	
 	<div class="box-body">
@@ -62,7 +62,7 @@
                    <th>Nom & Prenoms</th>
                    <th>Coordonnees</th>
                    <th>Commune</th>
-                   <th>Relai</th>
+                   <th>Superviseur</th>
                    <th>Description</th>
                    <th>Actions</th>
                   
@@ -87,28 +87,31 @@
                    </td>
                    <td>
 					<div>
-					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-16">{{data.nom_collecteur}} {{data.prenom_collecteur}}</span>
+					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data.nom_collecteur}} {{data.prenom_collecteur}}</span>
 					<span style="font-size:12px !important" class="text-danger  d-block">{{data.sexe_collecteur[0]}} </span>
 				  </div>
 				   </td>
                    <td >
 					<div>
-					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-16">{{data.adresse}}</span>
+					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data.adresse}}</span>
 					<span class="text-secondary d-block">{{data.telephone_collecteur}} / <b class="text-primary">{{data.whatsapp_collecteur}}</b> </span>
 				  </div>
 				   </td>
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.commune?.nom_commune ?? "-"}}
                    </td>
-				   <td style="width: 100px;" class="text-center">
-                    {{ data?.relai ?? "-"}}
-                   </td>
+				   <td>
+					<div>
+					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relai?.nom_collecteur}} {{data?.collecteur_relai?.prenom_collecteur}}</span>
+					<span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relai?.whatsapp_collecteur}} </span>
+				  </div>
+				   </td>
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.description ?? "-"}}
                    </td>
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_collecteur)"  data-original-title="Update" data-toggle="modal" data-target="#update-collecteur"><i class="ti-marker-alt"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_collecteur , 'update-collecteur')"><i class="ti-marker-alt"></i></a>
                         <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_collecteur)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
@@ -136,10 +139,10 @@
 	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title">Ajouter un(e) collecteur(e)</h5>
-			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
-			  <span aria-hidden="true">&times;</span>
-			</button>
+			<h5 class="modal-title">Ajouter un(e) Agent collecte</h5>
+			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-collecteur')" >
+              <span aria-hidden="true">&times;</span>
+            </button>
 		  </div>
 		  <div class="modal-body">
 			<div class="row mt-3 content-group">
@@ -326,15 +329,16 @@
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              >Relai <span class="text-danger">*</span></label
+                              >Superviseur <span class="text-danger">*</span></label
                             >
-                            <MazInput
+                            <MazSelect
                               v-model="step1.relai"
                               color="secondary"
                               name="step1.relai"
                               size="sm"
                               rounded-size="sm"
-                              type="text"
+                              search
+							  :options="SuperviseurOptions"
                               
                               
                             />
@@ -381,7 +385,7 @@
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier un(e) collcteur(e)</h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-collecteur')" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -568,18 +572,19 @@
                       
             </div>
 			<div class="row mt-3 content-group">
-                        <div class="col">
+				<div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              >Relai <span class="text-danger">*</span></label
+                              >Superviseur <span class="text-danger">*</span></label
                             >
-                            <MazInput
+                            <MazSelect
                               v-model="step2.relai"
                               color="secondary"
                               name="step2.relai"
                               size="sm"
                               rounded-size="sm"
-                              type="text"
+                              search
+							  :options="SuperviseurOptions"
                               
                               
                             />
@@ -661,10 +666,11 @@ export default {
             searchCollect:"",
             isModalUpdate:"",
             CollecteursOptions: [],
-			CommunesOptions:[],
+			      SuperviseurOptions:[],
+			       CommunesOptions:[],
             data:[],
             currentPage: 1,
-            itemsPerPage: 10,
+            itemsPerPage: 20,
             ToId:"",
             totalPageArray: [],
 			choix: [
@@ -753,6 +759,10 @@ export default {
         if (response.status === 200) {
               this.data  = response.data ;
               this.CollecteursOptions = this.data
+			  response.data.map(item => this.SuperviseurOptions.push({
+				label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
+					value: item.id_collecteur 
+				})) 
               this.loading =  false
         }
       } catch (error) {
@@ -810,6 +820,19 @@ export default {
 		  console.log('qfs', response)
 		  if (response.status === 200) {
             this.closeModal(modalId);
+            this.step1 = {
+              code_collecteur:"",
+              nom_collecteur:"",
+              prenom_collecteur:"",
+              sexe_collecteur:"",
+              whatsapp_collecteur:"",
+              telephone_collecteur:"",
+              commune_collecteur:"",
+              adresse:"",
+              relai:"",
+              description:"",
+        };
+        this.v$.step1.$reset();
 			this.successmsg(
 				"Création du collecteur",
 				"Votre collecteur a été créé avec succès !"
@@ -826,7 +849,8 @@ export default {
       
       }
     },
-    async  HandleIdUpdate(id){
+    async  HandleIdUpdate(id , modalId){
+      this.openModal(modalId)
     this.loading = true;
 
       try {
@@ -875,7 +899,7 @@ export default {
     
        this.loading = true;
        let data = {
-		code_collecteur:this.step2.code_collecteur,
+	        	code_collecteur:this.step2.code_collecteur,
             nom_collecteur:this.step2.nom_collecteur,
             prenom_collecteur:this.step2.prenom_collecteur,
             sexe_collecteur:this.step2.sexe_collecteur,
@@ -1007,13 +1031,21 @@ triggerToast(errorMessage) {
         className: 'toast-error'
       });
     },
-    async handleErrors(error) {
+	async handleErrors(error) {
       console.log('Error:', error);
       if (error.response?.status === 500) {
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
@@ -1025,16 +1057,34 @@ triggerToast(errorMessage) {
         return false;
       }
     },
-closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      modalElement.style.opacity = "";
-       document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
 	
     async formatValidationErrors(errors) {

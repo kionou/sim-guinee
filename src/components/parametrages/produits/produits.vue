@@ -27,8 +27,8 @@
                 <button
                   type="button"
                   class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                  data-toggle="modal"
-                  data-target="#add-produit"
+               
+                  @click="openModal('add-produit')" 
                   
                 >
                   <i class="mdi mdi-plus"></i>
@@ -47,7 +47,7 @@
                   <th>Nom & Code</th>
                   <th>Catégorie</th>
                   <th>Famille</th>
-                  <th>Origine</th>
+                  <!-- <th>Origine</th> -->
                   <th>Forme</th>
 
                   <th>Filière</th>
@@ -67,12 +67,16 @@
               <tbody v-else>
                 <tr v-for="(data) in paginatedItems" :key="data.id_magasin">
                   <td>
-                    <div class="widget-user-image">
-                      <img v-if="data?.image === '' || data?.image === null" class="rounded-circle " width="45"  src="@/assets/img/logo_mobile.png"
-                        alt="User Avatar" style="float: left; margin-right: 10px"/>
+                    <div class="widget-user-image" >
+                        <div  style="cursor: pointer;"  data-original-title="picture"     @click="handleImageClick(data , 'update-picture')">
+                          <img v-if="data?.image === '' || data?.image === null" class="rounded-circle " width="45"  src="@/assets/img/logo_mobile.png"
+                        alt="User Avatar" style="float: left; margin-right: 10px ;  height:45px !important"/>
 
                         <img v-else class="rounded-circle " width="45"  :src="data?.image"
-                        alt="User Avatar" style="float: left; margin-right: 10px"/>
+                        alt="User Avatar" style="float: left; margin-right: 10px ; height:45px !important"/>
+                        </div>
+              
+
                       <div style="display: inline-block">
                         <span style="font-weight: 600; font-size: 1.1em; display: block"
                           >{{ data.nom_produit }} </span
@@ -84,7 +88,7 @@
 
                   <td>{{ data?.categorie?.nom_categorie_produit ?? "-" }}</td>
                   <td>{{ data?.famille?.nom_famille_produit ?? "-" }}</td>
-                  <td style="width: 50px;">{{ data?.origine?.nom_origine_produit ?? "-" }}</td>
+                  <!-- <td style="width: 50px;">{{ data?.origine?.nom_origine_produit ?? "-" }}</td> -->
                   <td style="width: 100px;" class="text-center">
                     {{ data?.forme?.nom_forme_produit ?? "-"}} 
                    </td>
@@ -97,10 +101,9 @@
                         href="javascript:void(0)"
                         class="btn btn-circle btn-info btn-xs"
                         title=""
-                        @click="HandleIdUpdate(data.id_produit)"
+                        @click="HandleIdUpdate(data.id_produit ,'update-produit')"
                         data-original-title="Update"
-                        data-toggle="modal"
-                        data-target="#update-magasin"
+                       
                         ><i class="ti-marker-alt"></i
                       ></a>
                       <a
@@ -146,7 +149,7 @@
             <h5 class="modal-title">
               Ajouter un produit
             </h5>
-            <button type="button" class="btn btn-danger close py-1 px-3 close" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('add-produit')" >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -239,7 +242,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
+              <!-- <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Origine <span class="text-danger">*</span></label
@@ -260,7 +263,7 @@
                     {{ resultError["origine_produit"] }}
                   </small>
                 </div>
-              </div>
+              </div> -->
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
@@ -334,7 +337,7 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Image <span class="text-danger">*</span></label >
+                    Image </label >
               
                   <input type="file" class="form-control" id="contact-mail" @change="handleFileUploadLogo($event,'add')"  accept="image/*" >
                   <small v-if="v$.step1.image.$error">{{
@@ -364,8 +367,8 @@
 
     <div
       class="modal center-modal fade"
-      id="update-magasin"
-      ref="update-magasin"
+      id="update-produit"
+      ref="update-produit"
       tabindex="-1"
     >
       <div class="modal-dialog modal-lg">
@@ -374,7 +377,7 @@
             <h5 class="modal-title">
               Modifier un produit
             </h5>
-            <button type="button" class="close btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-produit')" >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -467,7 +470,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
+              <!-- <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Origine <span class="text-danger">*</span></label
@@ -488,7 +491,7 @@
                     {{ resultError["origine_produit"] }}
                   </small>
                 </div>
-              </div>
+              </div> -->
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
@@ -559,20 +562,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
-                <div class="input-groupe">
-                  <label for="userpassword">
-                    Image <span class="text-danger">*</span></label >
               
-                  <input type="file" class="form-control" id="contact-mail" @change="handleFileUploadLogo($event,'update')"  accept="image/*" >
-                  <small v-if="v$.step2.image.$error">{{
-                    v$.step2.image.$errors[0].$message
-                  }}</small>
-                  <small v-if="resultError['image']">
-                    {{ resultError["image"] }}
-                  </small>
-                </div>
-              </div>
             
             </div>
            
@@ -580,12 +570,60 @@
           <div class="modal-footer modal-footer-uniform text-end">
             <button
                   type="button"
-                  @click="submitUpdate('update-magasin')"
+                  @click="submitUpdate('update-produit')"
                   class="waves-effect waves-light btn btn-primary"
                 >
                   Valider
                 </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal center-modal fade"
+      id="update-picture"
+      ref="update-picture"
+      tabindex="-1"
+    >
+      <div class="modal-dialog ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Modifier l'image du produit
+            </h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-picture')" >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+    <div class="row mt-3 content-group">
+      <div class="col-xl-12 col-md-12 col-sm-12">
+        <div class="image-container">
+          <div class="image-wrapper">
+            <img
+              :src="selectedImage"
+              alt="Image"
+              class="img-thumbnail mb-2"
+              @click="triggerFileInput"
+            >
+            <div class="overlay">
+              <span class="change-text">Changer</span>
+            </div>
+            <input
+              type="file"
+              id="input-file"
+              accept="image/*"
+              @change="handleFileUploadImagesUpdate"
+              class="file-input"
+              ref="fileInput"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        
         </div>
       </div>
     </div>
@@ -633,6 +671,9 @@ export default {
       FamillesOptions: [],
       OriginesOptions: [],
       FormesOptions: [],
+      selectedImage:"",
+      dataFile:"",
+      dataImage:"",
       data: [],
       currentPage: 1,
       itemsPerPage: 10,
@@ -644,7 +685,7 @@ export default {
         categorie_produit: "",
         forme_produit: "",
         famille_produit: "",
-        origine_produit: "",
+        // origine_produit: "",
         affichage_ecran: "",
         filiere:"",
         image: "",
@@ -655,10 +696,10 @@ export default {
         categorie_produit: "",
         forme_produit: "",
         famille_produit: "",
-        origine_produit: "",
+        // origine_produit: "",
         affichage_ecran: "",
         filiere:"",
-        image: "",
+
       },
       choix:[
         {label: 'Oui' , value:true},
@@ -677,7 +718,7 @@ export default {
         categorie_produit: { require },
         forme_produit: { require },
         famille_produit: { require },
-        origine_produit: { require },
+        // origine_produit: { require },
         affichage_ecran: { require },
         filiere:{ require },
         image: {  },
@@ -688,10 +729,9 @@ export default {
         categorie_produit: { require },
         forme_produit: { require },
         famille_produit: { require },
-        origine_produit: { require },
+        // origine_produit: { require },
         affichage_ecran: { require },
         filiere:{ require },
-        image: {  },
     },
   },
   async mounted() {
@@ -795,6 +835,7 @@ export default {
         if (response.status === 200) {
           this.data = response.data;
           this.ProduitsOptions = this.data;
+          this.$emit('produit-count', this.data.length)
           this.loading = false;
         }
       } catch (error) {
@@ -812,7 +853,7 @@ export default {
           categorie_produit: this.step1.categorie_produit,
           forme_produit: this.step1.forme_produit,
           famille_produit: this.step1.famille_produit,
-          origine_produit: this.step1.origine_produit,
+          // origine_produit: this.step1.origine_produit,
           affichage_ecran: this.step1.affichage_ecran,
           filiere: this.step1.filiere,
           image: this.step1.image,
@@ -827,6 +868,16 @@ export default {
 		  console.log('qfs', response)
 		  if (response.status === 200) {
             this.closeModal(modalId);
+            this.step1 = {
+          code_produit: "",
+          nom_produit: "",
+          categorie_produit: "",
+          forme_produit: "",
+          famille_produit: "",
+          affichage_ecran: "",
+          filiere: "",
+        };
+        this.v$.step1.$reset();
             this.successmsg(
                   "Création du produit",
                   "Votre produit a été créé avec succès !"
@@ -844,7 +895,8 @@ export default {
       } else {
       }
     },
-    async HandleIdUpdate(id) {
+    async HandleIdUpdate(id , modalId) {
+      this.openModal(modalId)
       this.stepModal = "update";
       this.loading = true;
 
@@ -864,7 +916,8 @@ export default {
             (this.step2.categorie_produit = data.categorie?.id_categorie_produit),
             (this.step2.forme_produit = data.forme?.id_forme_produit),
             (this.step2.famille_produit = data.famille?.id_famille_produit),
-            (this.step2.origine_produit = data.origine?.id_origine_produit),
+            this.dataImage = data?.image,
+            // (this.step2.origine_produit = data.origine?.id_origine_produit),
             (this.step2.affichage_ecran = data.affichage_ecran),
             (this.step2.filiere = data.filiere),
             (this.ToId = data.id_produit);
@@ -885,11 +938,11 @@ export default {
           categorie_produit: this.step2.categorie_produit,
           forme_produit: this.step2.forme_produit,
           famille_produit: this.step2.famille_produit,
-          origine_produit: this.step2.origine_produit,
+          // origine_produit: this.step2.origine_produit,
           collecteur: this.step2.collecteur,
           affichage_ecran: this.step2.affichage_ecran,
           filiere: this.step2.filiere,
-          image: this.step2.image,
+          image: this.dataImage,
         };
         console.log('data',data)
 
@@ -907,6 +960,7 @@ export default {
                       "Votre produit a été mis à jour avec succès !"
                   )
              await this.fetchProduits();
+             this.step2.image = ""
           }
         } catch (error) {
           this.handleErrors(error);
@@ -974,7 +1028,7 @@ export default {
 try {
 const response = await axios.post('/parametrages/produits/upload/image-produit' , formData, {
      headers: { 
-     
+            Authorization: `Bearer ${this.loggedInUser.token}`,
             'Content-Type': 'multipart/form-data'
     }});
   console.log('Réponse du téléversement :', response);
@@ -983,7 +1037,8 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
       this.step1.image =  response.data
 
         } else if (operationType === 'update') {
-          this.step2.image =  response.data
+         
+          await this.submitUpdateFile(response.data , 'update-picture')
 
         }
       
@@ -1000,6 +1055,65 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
 
 
 },
+handleImageClick(data , modalId) {
+  this.openModal(modalId)
+      this.selectedImage = data.image || '@/assets/img/logo_mobile.png';
+      this.dataFile = data
+      console.log('Image sélectionnée:', this.dataFile);
+      // Vous pouvez ajouter ici d'autres actions à effectuer lors du clic sur l'image
+    },
+triggerFileInput() {
+      console.log('Triggering file input');
+      this.$refs.fileInput.click();
+    },
+    handleFileUploadImagesUpdate(event) {
+      console.log("File input change");
+      const file = event.target.files[0]; // Prendre le premier fichier sélectionné
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        this.selectedImage = imageUrl;
+     this.submitFile(file , 'update')
+      
+      }
+    },
+    async submitUpdateFile(url , modalId) {
+     
+        this.loading = true;
+        let data = {
+          code_produit: this.dataFile.code_produit,
+          nom_produit: this.dataFile.nom_produit,
+          categorie_produit: this.dataFile.categorie_produit,
+          forme_produit: this.dataFile.forme_produit,
+          famille_produit: this.dataFile.famille_produit,
+          // origine_produit: this.dataFile.origine_produit,
+          collecteur: this.dataFile.collecteur,
+          affichage_ecran: this.dataFile.affichage_ecran,
+          filiere: this.dataFile.filiere,
+          image: url,
+        };
+        console.log('data',data)
+
+        try {
+          const response = await axios.put(`/parametrages/produits/${this.dataFile.id_produit}`, data, {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+
+          if (response.status === 200) {
+            this.closeModal(modalId);
+            this.successmsg(
+                      "Mise à jour du produit",
+                      "Votre produit a été mis à jour avec succès !"
+                  )
+             await this.fetchProduits();
+             
+          }
+        } catch (error) {
+          this.handleErrors(error);
+        }
+     
+    },
 
     filterByName() {
       this.currentPage = 1;
@@ -1007,17 +1121,21 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
         const tt = this.searchProduit;
         const searchValue = tt.toLowerCase();
         this.ProduitsOptions = this.data.filter((user) => {
-          const Nom = user.code_magasin || "";
-          const Descriptions = user.nom_magasin || "";
-          const Commune = user.commune_relation?.nom_commune  || "";
-          const Collecteur = user.collecteur_relation?.nom_collecteur || "";
+          const Nom = user.code_produit || "";
+          const Descriptions = user.nom_produit || "";
+          const Commune = user.categorie?.nom_categorie_produit  || "";
+          const Forme = user.forme?.nom_forme_produit || "";
+          const Famille = user.famille?.nom_famille_produit || "";
+          const Unite = user.filiere || "";
          
 
           return (
             Nom.toLowerCase().includes(searchValue) ||
             Descriptions.toLowerCase().includes(searchValue) ||
             Commune.toLowerCase().includes(searchValue) ||
-            Collecteur.toLowerCase().includes(searchValue) 
+            Forme.toLowerCase().includes(searchValue) ||
+            Famille.toLowerCase().includes(searchValue) ||
+            Unite.toLowerCase().includes(searchValue) 
           );
         });
       } else {
@@ -1047,7 +1165,15 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
@@ -1059,15 +1185,34 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
         return false;
       }
     },
-    closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
     async formatValidationErrors(errors) {
       const formattedErrors = {};
@@ -1098,4 +1243,128 @@ const response = await axios.post('/parametrages/produits/upload/image-produit' 
   },
 };
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-wrapper {
+  position: relative;
+  margin: 10px;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  /* border-radius: 50%; */
+  border: 3px solid ;
+  display: inline-block;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  /* border-radius: 50%; */
+  border: 1px solid var(--primary-color);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.change-text {
+  color: white;
+  font-weight: bold;
+}
+
+.image-wrapper:hover .overlay {
+  opacity: 1;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* .add-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.plus-icon {
+  font-size: 40px;
+  color: #666;
+}
+
+.add-image:hover .plus-icon {
+  color: #333;
+}
+
+.add-image .file-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+} */
+
+
+
+
+/* .image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+} */
+
+.image-wrapper:hover .overlay {
+  opacity: 1;
+}
+
+.change-text {
+  color: white;
+  font-weight: bold;
+}
+
+/* .file-input {
+  display: none;
+} */
+
+</style>

@@ -12290,7 +12290,7 @@ Height property
   transition: none; }
 
 .content {
-  min-height: 250px;
+  min-height: 0px;
   padding: 20px 20px 0px 20px;
   margin-right: auto;
   margin-left: auto; }
@@ -14262,7 +14262,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
 
 @media (max-width: 575px) {
   .hidden-xs-down {
-    display: none !important; } }
+    display: block !important; } }
 @media (min-width: 576px) {
   .hidden-sm-up {
     display: none !important; } }
@@ -14406,7 +14406,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
         width: auto;
         text-align: center;
         position: relative;
-        padding: 0.5rem 2.5rem;
+        padding: 0.5rem 1rem;
         border-radius: 5px;
         margin: 0 10px;
         background-color: #d5dfea;
@@ -14468,8 +14468,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
     .wizard-content .wizard > .content > .title {
       position: absolute;
       left: -99999px; }
-    .wizard-content .wizard > .content > .body {
-      padding: 20px 20px; }
+    
     .wizard-content .wizard > .content > iframe {
       border: 0;
       width: 100%;
@@ -14478,7 +14477,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
     position: relative;
     display: block;
     text-align: right;
-    padding: 20px 20px 20px; }
+    padding: 10px; }
     .wizard-content .wizard > .actions > ul {
       float: right;
       list-style: none;
@@ -18183,12 +18182,7 @@ form p {
 form p:last-child {
   margin-bottom: 0; }
 
-/* Remove default checkbox */
-[type="checkbox"]:not(:checked),
-[type="checkbox"]:checked {
-  position: absolute;
-  left: -9999px;
-  opacity: 0; }
+
 
 [type="checkbox"] {
   /* checkbox aspect */ }
@@ -18724,7 +18718,7 @@ textarea.form-control {
     width: 100%;
     height: 100%; }
   .box .overlay {
-    z-index: 50;
+    /* z-index: 50; */
     background: rgba(255, 255, 255, 0.7);
     border-radius: 5px; }
     .box .overlay > .fa {
@@ -19542,7 +19536,7 @@ textarea.form-control {
     border: none; }
 
 .modal {
-  background: rgba(0, 0, 0, 0.3); }
+  background: rgba(0, 0, 0, 0.5); }
   .modal.modal-fill {
     background: rgba(255, 255, 255, 0.97); }
   .modal .panel-body {

@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import Magasins from "@/components/parametrages/magasins.vue";
+import Magasins from "@/components/parametrages/magasin/magasins.vue";
 export default {
   components: {
     Magasins,

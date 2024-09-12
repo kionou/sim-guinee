@@ -1,9 +1,25 @@
 <template >
     <div>
+		<Loading v-if="loading" style="z-index: 99999"></Loading>
+
         <div class="content-header">
 			<div class="d-flex align-items-center justify-content-between">
 				
 					<h3 class="page-title"> Tableau de bord </h3>
+					<!-- <div class=" row  w-300">
+
+<div class="col-9">
+  <div class=" position-relative">
+   
+	<MazInput type="date" label="" v-model="date" color="seconday" no-radius  size="sm" />
+  </div>
+</div>
+<div class="col-3" >
+   
+	<button class="btn btn-primary" style="margin-top:0px !important" @click="handleProjetChange()">Valider</button>
+   
+</div>
+                    </div> -->
 					<div class="d-inline-block align-items-center">
 						<nav>
 							<ol class="breadcrumb">
@@ -17,39 +33,245 @@
 				
 			</div>
 		</div>
-		<div class="box">
-				<div class="box-header with-border p-2">
-				  	
-					<div class="navbar-custom-menu r-side">
-        <ul class="nav navbar-nav justify-content-end">	
-				  
-			<li class="btn-group d-lg-inline-flex d-none h-40">
-				<div class="app-menu">
-					<div class="search-bx mx-5">
-						<form>
-							<div class="input-group">
-							  <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-							  <div class="input-group-append">
-								<button class="btn border border-1" ><i class="ti-search"></i></button>
+			<!-- Main content -->
+			<section class="content">
+			<div class="row">				
+				<div class="col-md-6 col-lg-3">
+				   <div class="box pull-up">
+					  <div class="box-body">
+						<div class="d-flex align-items-end justify-content-start">
+							  <div class="progress vertical progress-xxs h-100 mb-0">
+								<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="height: 70%">
+								</div>
 							  </div>
-							</div>
-						</form>
-					</div>
+							  <div class="ml-15">
+								  <span class="l-h-14">Date : <b class=" text-danger px-2 border-raduis">{{ getYear(data.collecte?.date_enquete)  }}</b></span> <br>
+								  <span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">{{parseInt(data.collecte?.invalid_fiches)  + parseInt(data.collecte?.valid_fiches) }}</b></span>
+								  <h4 class="my-10 font-size-14 font-weight-bold">Collectes</h4>
+								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">{{ parseInt(data.collecte?.valid_fiches) }}</b></p> 
+							  </div>
+						  </div>
+					  </div>
+				   </div>
+				</div>				
+				<div class="col-md-6 col-lg-3">
+				   <div class="box pull-up">
+					  <div class="box-body">
+						  <div class="d-flex align-items-end justify-content-start">
+							  <div class="progress vertical progress-xxs h-100 mb-0">
+								<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="height: 70%">
+								</div>
+							  </div>
+							  <div class="ml-15">
+								  <span class="l-h-14">Date : <b class=" text-danger px-2 border-raduis">{{getYear(data.consommation?.date_enquete)  }}</b></span> <br>
+								  <span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">{{parseInt(data.consommation?.invalid_fiches)  + parseInt(data.consommation?.valid_fiches) }}</b></span>
+								  <h4 class="my-10 font-size-14 font-weight-bold">Consommations</h4>
+								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">{{ parseInt(data.consommation?.valid_fiches) }}</b></p> 
+							  </div>
+						  </div>
+					  </div>
+				   </div>
+				</div>				
+				<div class="col-md-6 col-lg-3">
+				   <div class="box pull-up">
+					  <div class="box-body">
+						  <div class="d-flex align-items-end justify-content-start">
+							  <div class="progress vertical progress-xxs h-100 mb-0">
+								<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="height: 70%">
+								</div>
+							  </div>
+							  <div class="ml-15">
+								  <span class="l-h-14">Date : <b class=" text-danger px-2 border-raduis">{{getYear(data.grossiste?.date_enquete)  }}</b></span> <br>
+								  <span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">{{parseInt(data.grossiste?.invalid_fiches)  + parseInt(data.grossiste?.valid_fiches) }}</b></span>
+								  <h4 class="my-10 font-size-14 font-weight-bold">Grossistes</h4>
+								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">{{ parseInt(data.grossiste?.valid_fiches) }}</b></p> 
+							  </div>
+						  </div>
+					  </div>
+				   </div>
+				</div>				
+				<div class="col-md-6 col-lg-3">
+				   <div class="box pull-up">
+					  <div class="box-body">
+						  <div class="d-flex align-items-end justify-content-start">
+							  <div class="progress vertical progress-xxs h-100 mb-0">
+								<div class="progress-bar progress-bar-info " role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="height: 70%">
+								</div>
+							  </div>
+							  <div class="ml-15">
+								<span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">1</b></span>
+								  <h4 class="my-10 font-size-14 font-weight-bold">Debarcaderes</h4>
+								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">0</b></p> 
+							  </div>
+						  </div>
+					  </div>
+				   </div>
 				</div>
-			</li>
-			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-secondary mb-5"><i class="mdi mdi-plus"></i></button>
-			</li>
-
+				
+				
 			
-        </ul>
-                  </div>        
+
+				<div class="col-xl-12">
+					<TableauPrix></TableauPrix>
 				</div>
-			  </div>
+			</div>
+		</section>
+		<!-- /.content -->
     </div>
 </template>
 <script>
+import Pag from "@/components/others/pagination.vue";
+import Loading from "@/components/others/loading.vue";
+
+import axios from "@/lib/axiosConfig";
+import { useToast } from "vue-toastification";
+import TableauPrix from '@/components/dashboard/tableauPrix.vue';
+
 export default {
+	setup() {
+   const toast = useToast();
+   return { toast }
+ },
+  components: {
+    
+    Pag,
+    Loading, TableauPrix
+  },
+
+	data() {
+		return {
+			loading:true,
+			data:"",
+			dataProduits:[],
+			currentPage: 1,
+      itemsPerPage: 10,
+      ToId: "",
+      totalPageArray: [],
+			
+		}
+	},
+	computed: {
+    loggedInUser() {
+      return this.$store.getters["auth/myAuthenticatedUser"];
+	  
+    },
+	totalPages() {
+      return Math.ceil(this.dataProduits.length / this.itemsPerPage);
+    },
+    paginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.dataProduits.slice(startIndex, endIndex);
+    },
+	
+	
+  },
+async	mounted() {
+    await this.fetchStatistic();
+    await this.fetchStatisticProduits();
+		
+	},
+	methods: {
+		async fetchStatistic() {
+      try {
+        const response = await axios.get("/statistiques/fiches/enquetes", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("responsedata", response);
+        if (response.status === 200) {
+        this.data =  response.data
+         
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
+
+	async fetchStatisticProduits() {
+      try {
+        const response = await axios.get("/parametrages/produits/produits/les-plus-consommer", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("responsedata", response);
+        if (response.status === 200) {
+        this.dataProduits =  response.data
+         this.loading = false; 
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
+	updateCurrentPage(pageNumber) {
+      this.currentPage = pageNumber;
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth", // Utilisez 'auto' pour un défilement instantané
+      });
+    },
+    updatePaginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.dataProduits.slice(startIndex, endIndex);
+    },
+	getYear(date) {
+   const d = new Date(date);
+    const day =String(d.getDate()).padStart(2 , '0')
+    const month =String(d.getMonth() + 1).padStart(2 , '0')
+    const year =String(d.getFullYear()) 
+    
+    return `${day}/${month}/${year}`
+},
+	triggerToast(errorMessage) {
+      this.toast.error(errorMessage, {
+        position: "top-right",
+        timeout: 8000,
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+        draggable: true,
+        draggablePercent: 0.6,
+        showCloseButtonOnHover: false,
+        hideProgressBar: true,
+        closeButton: "button",
+        icon: "mdi mdi-alert-circle-outline", // Modifier l'icône pour une icône d'erreur
+        rtl: false,
+        className: 'toast-error'
+      });
+    },
+    async handleErrors(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+        this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+	},
     
 }
 </script>

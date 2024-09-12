@@ -2074,11 +2074,15 @@ Theme Primary Color
 
 /*---wizard---*/
 .theme-primary .wizard-content .wizard > .steps > ul > li.current {
-  border: 2px solid #8950fc;
-  background-color: #8950fc; }
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-primary); }
 .theme-primary .wizard-content .wizard > .steps > ul > li.done {
-  border-color: #671efb;
-  background-color: #671efb; }
+  border-color: var(--color-secondary);
+  background-color: var(--color-secondary); }
+  .theme-primary .wizard-content .wizard > .steps > ul > li.done a:hover {
+    border-color: var(--color-secondary);
+    background-color: var(--color-secondary);
+  color: #fff !important; }
 .theme-primary .wizard-content .wizard > .actions > ul > li > a {
   background-color: #8950fc; }
 .theme-primary .wizard-content .wizard.wizard-circle > .steps > ul > li:after {
@@ -2137,7 +2141,7 @@ Theme Secondary Color
   background: linear-gradient(45deg, #e5eaee, #6993ff); }
 
 .bg-light-body, .theme-primary.fixed .main-header, .theme-primary .main-header, .theme-secondary.fixed .main-header, .theme-secondary .main-header, .theme-info.fixed .main-header, .theme-info .main-header, .theme-success.fixed .main-header, .theme-success .main-header, .theme-danger.fixed .main-header, .theme-danger .main-header, .theme-warning.fixed .main-header, .theme-warning .main-header {
-  background: #f2f4f4; }
+  background: var(--color-primary); }
 
 .theme-secondary.onlyheader .art-bg {
   background-image: none; }
@@ -3823,7 +3827,7 @@ Theme Info Color
   background: linear-gradient(45deg, #6993ff, #8950fc); }
 
 .bg-light-body, .theme-primary.fixed .main-header, .theme-primary .main-header, .theme-secondary.fixed .main-header, .theme-secondary .main-header, .theme-info.fixed .main-header, .theme-info .main-header, .theme-success.fixed .main-header, .theme-success .main-header, .theme-danger.fixed .main-header, .theme-danger .main-header, .theme-warning.fixed .main-header, .theme-warning .main-header {
-  background: #f2f4f4; }
+  background: var(--color-primary); }
 
 .theme-info.onlyheader .art-bg {
   background-image: none; }
@@ -7195,7 +7199,7 @@ Theme Danger Color
   background: linear-gradient(45deg, #f64e60, #6993ff); }
 
 .bg-light-body, .theme-primary.fixed .main-header, .theme-primary .main-header, .theme-secondary.fixed .main-header, .theme-secondary .main-header, .theme-info.fixed .main-header, .theme-info .main-header, .theme-success.fixed .main-header, .theme-success .main-header, .theme-danger.fixed .main-header, .theme-danger .main-header, .theme-warning.fixed .main-header, .theme-warning .main-header {
-  background: #f2f4f4; }
+  background: var(--color-primary); }
 
 .theme-danger.onlyheader .art-bg {
   background-image: none; }
@@ -8881,7 +8885,7 @@ Theme Warning Color
   background: linear-gradient(45deg, #ffa800, #6993ff); }
 
 .bg-light-body, .theme-primary.fixed .main-header, .theme-primary .main-header, .theme-secondary.fixed .main-header, .theme-secondary .main-header, .theme-info.fixed .main-header, .theme-info .main-header, .theme-success.fixed .main-header, .theme-success .main-header, .theme-danger.fixed .main-header, .theme-danger .main-header, .theme-warning.fixed .main-header, .theme-warning .main-header {
-  background: #f2f4f4; border-bottom: 1px solid var(--color-primary);}
+  background: var(--color-primary); border-bottom: 1px solid var(--color-primary); color: #fff;}
 
 .theme-warning.onlyheader .art-bg {
   background-image: none; }

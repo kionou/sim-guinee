@@ -64,7 +64,7 @@
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_origine_produit)"  data-original-title="Update" data-toggle="modal" data-target="#update-origine"><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_origine_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_origine_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
                </tr>
@@ -94,9 +94,9 @@
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h5 class="modal-title">Ajouter des Origines</h5>
-			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
-			  <span aria-hidden="true">&times;</span>
-			</button>
+      <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+              <span aria-hidden="true">&times;</span>
+            </button>
 		  </div>
 		  <div class="modal-body">
          <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
@@ -177,7 +177,7 @@
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier un origine</h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -372,6 +372,8 @@ export default {
         if (response.status === 200) {
               this.data  = response.data ;
               this.OriginesOptions = this.data
+          this.$emit('origine-count', this.data.length)
+
               this.loading =  false
         }
       } catch (error) {
@@ -394,6 +396,8 @@ export default {
 
       
           if (response.status === 200) {
+     this.Origines  = [{code_origine_produit:"", nom_origine_produit:"", }];
+
              this.closeModal(modalId);
              this.successmsg(
                 "Création de formes",
@@ -568,7 +572,15 @@ triggerToast(errorMessage) {
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {

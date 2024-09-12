@@ -16,7 +16,7 @@ File: scss
 .light-skin .main-header .navbar .res-only-view {
   color: #ffffff; }
 .light-skin .main-header .navbar .nav > li > a {
-  color: var(--color-primary); }
+  color: #fff; }
   .light-skin .main-header .navbar .nav > li > a:hover, .light-skin .main-header .navbar .nav > li > a:active, .light-skin .main-header .navbar .nav > li > a:focus {
     background-color: rgba(0, 0, 0, 0.03);
     color: var(--color-secondary); }

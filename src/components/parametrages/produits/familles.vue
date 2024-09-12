@@ -96,9 +96,9 @@
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h5 class="modal-title">Ajouter des familles</h5>
-			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
-			  <span aria-hidden="true">&times;</span>
-			</button>
+			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+              <span aria-hidden="true">&times;</span>
+            </button>
 		  </div>
 		  <div class="modal-body">
          <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
@@ -199,7 +199,7 @@
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier une famille</h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -431,6 +431,7 @@ export default {
         if (response.status === 200) {
               this.data  = response.data ;
               this.FamillesOptions = this.data
+            this.$emit('famille-count', this.data.length)
               this.loading =  false
         }
       } catch (error) {
@@ -459,6 +460,8 @@ export default {
 
       
           if (response.status === 200) {
+     this.Familles = [{code_famille_produit:"", nom_famille_produit:"",affichage_ecran:"", }];
+
              this.closeModal(modalId);
              this.successmsg(
                 "Création de familles",
@@ -636,7 +639,15 @@ triggerToast(errorMessage) {
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {

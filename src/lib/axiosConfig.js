@@ -8,7 +8,7 @@ import axios from 'axios';
 // https://cors-proxy.fringe.zone/
 
 const axiosInstance = axios.create({
-  baseURL: ' http://92.112.194.154:8000/api/',
+  baseURL: 'https://cors-proxy.fringe.zone/http://92.112.194.154:8000/api/',
   headers: {
     // 'Content-Type': 'application/json', 
     // 'Content-Type': 'multipart/form-data',

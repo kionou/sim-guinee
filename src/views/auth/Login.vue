@@ -1,9 +1,9 @@
 <template >
       <Loading v-if="loading" style="z-index: 99999"></Loading>
     <div class="bg-white" style="height: 100vh !important;">
-        <header class="main-header" style="background-color: #369f4a !important ; border-bottom: 1px solid #369f4a !important ; box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06);">
+        <header class="p-2" style="background-color: #369f4a !important ; border-bottom: 1px solid #369f4a !important ; box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06);">
 		 
-          <h3 class="text-center " style="color:var(--color-secondary)"> <b>Système d'Informations sur les Marchés</b> </h3>
+          <h3 class="text-center m-0 " style="color:var(--color-secondary)"> <b>Système d'Informations sur les Marchés</b> </h3>
 		
   </header>
         <div class="loginHeader">
@@ -107,10 +107,12 @@
     
         </div>
     </div>
-        <footer class="footer p-3 text-center text-white" style="background-color: #ffca08 !important;">
+
+    <footer class=" p-3 text-center text-white" style="background-color: #ffca08 !important;">
     
-	  &copy; 2024 <a href="https://www.cosit-mali.com/">COSIT-SARL</a>. Tout droit reservé.
-  </footer>
+    &copy; 2024 <a href="https://www.cosit-mali.com/">COSIT-SARL</a>. Tout droit reservé.
+</footer> 
+      
     </div>
    
 </template>
@@ -388,17 +390,17 @@ async ChangePassword(){
 }
 .loginHeader {
     width: 100%;
-    height: 92vh;
+    height: 100%;
     padding: 10px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
 }
 
 .containerHeader {
 
     width: 100%;
-    height: 80%;
+    height: 00%;
     /* border: 1px solid red; */
     display: flex;
     flex-direction: row;

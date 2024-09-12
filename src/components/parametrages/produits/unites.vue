@@ -61,7 +61,24 @@
                    <td style="width: 50px;" class="text-center">
                     {{ index+1 }}
                    </td>
-                   <td>{{ data?.nom_unite }}</td>
+                   <td>
+                    <div class="widget-user-image" >
+                        <div  style="cursor: pointer;"  data-original-title="picture"  data-toggle="modal"  data-target="#update-picture"   @click="handleImageClick(data)">
+                          <img v-if="data?.image === '' || data?.image === null" class="rounded-circle " width="45"  src="@/assets/img/logo_mobile.png"
+                        alt="Avatar" style="float: left; margin-right: 10px ;  height:45px !important"/>
+
+                        <img v-else class="rounded-circle " width="45"  :src="data?.image"
+                        alt="Avatar" style="float: left; margin-right: 10px ; height:45px !important"/>
+                        </div>
+              
+
+                      <div style="display: inline-block">
+                        <span style="font-weight: 600; font-size: 1.1em; display: block"
+                          >{{ data.nom_unite }} </span
+                        >
+                      </div>
+                    </div>
+                  </td>
                    <td>{{ data?.definition }}</td>
                    <td>{{ data?.poids_indicatif }}</td>
                    
@@ -98,9 +115,9 @@
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h5 class="modal-title">Ajouter des Unités</h5>
-			<button  class=" btn btn-danger close py-1 px-3" data-dismiss="modal">
-			  <span aria-hidden="true">&times;</span>
-			</button>
+			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+              <span aria-hidden="true">&times;</span>
+            </button>
 		  </div>
 		  <div class="modal-body">
          <!-- <div class="btn-list" style="position:relative ; right: 7px; top: 5px;" > -->
@@ -203,7 +220,7 @@
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier une unité</h5>
-            <button type="button" class="btn btn-danger close py-1 px-3" data-dismiss="modal">
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -425,6 +442,8 @@ export default {
         if (response.status === 200) {
               this.data  = response.data ;
               this.UnitesOptions = this.data
+          this.$emit('unite-count', this.data.length)
+
               this.loading =  false
         }
       } catch (error) {
@@ -446,6 +465,8 @@ export default {
 
       
           if (response.status === 200) {
+     this.Unites = [{ nom_unite:"", definition:"", poids_indicatif:0,}];
+
              this.closeModal(modalId);
              this.successmsg(
                 "Création d'unités",
@@ -622,7 +643,15 @@ triggerToast(errorMessage) {
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
-      if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
