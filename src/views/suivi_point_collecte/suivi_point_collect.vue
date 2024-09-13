@@ -110,7 +110,7 @@ export default {
   data() {
       return {
         loading: true,
-    activeTab: '#produit',
+    activeTab: '',
     marketCounts: {},
     MarchesOptions:[],
       }
@@ -119,12 +119,12 @@ export default {
 async mounted() {
   this.restoreActiveTab();
   await this.fetchTypesMarches()
-  const savedTab = localStorage.getItem("PointCollecte");
+  const savedTab = localStorage.getItem("SuiviPointCollecte");
     if (savedTab) {
       this.activeTab = savedTab;
     } else {
       this.activeTab = `#tab-${this.MarchesOptions[0].id_type_marche}`;
-      localStorage.setItem("PointCollecte", this.activeTab);
+      localStorage.setItem("SuiviPointCollecte", this.activeTab);
     }
 },
 methods: {
@@ -135,10 +135,10 @@ methods: {
  
   handleTabClick(tabId) {
       this.activeTab = tabId;
-      localStorage.setItem("PointCollecte", tabId);
+      localStorage.setItem("SuiviPointCollecte", tabId);
     },
   restoreActiveTab() {
-    const savedTab = localStorage.getItem('PointCollecte');
+    const savedTab = localStorage.getItem('SuiviPointCollecte');
     if (savedTab) {
       this.activeTab = savedTab;
     }
@@ -220,7 +220,7 @@ beforeRouteLeave(to, from, next) {
   console.log('kiter');
   
   // Supprimer l'onglet actif du localStorage si on quitte cette page
-  localStorage.removeItem('PointCollecte');
+  localStorage.removeItem('SuiviPointCollecte');
   next();
 },
   

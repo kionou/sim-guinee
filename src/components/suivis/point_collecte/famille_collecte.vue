@@ -23,10 +23,7 @@
                 </div>
               </div>
             </li>
-            <li class="h-40">
-              <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                @click="openModal('add-marche')"><i class="mdi mdi-plus"></i></button>
-            </li>
+         
   
   
           </ul>
@@ -70,7 +67,13 @@
                 </td>
                 <td>
                   <div>
-                    {{ data?.nom_marche ?? "-"}}
+                    <router-link 
+                      :to="{ name: 'fiches-enquetes-type-marche-collecte', params: { id: data.id_marche , nom:data.nom_marche }}"
+                      style="color: #0d6efd !important; text-decoration: underline;  font-style: italic;">
+                      {{ data?.nom_marche ?? "-"}}
+  
+                    </router-link>
+  
   
                   </div>
                 </td>
@@ -149,29 +152,29 @@
             </div>
             <div class="row mt-3 content-group">
               <!-- <div class="col">
-                            <div class="input-groupe">
-                              <label for="userpassword"
-                                > Type marché <span class="text-danger">*</span></label
-                              >
-                              <MazSelect
-                                v-model="step1.type_marche"
-                                color="secondary"
-                                name="step1.type_marche"
-                                size="sm"
-                                rounded-size="sm"
-                                search
-                               :options="TypesOptions"
-                                
-                                
-                              />
-                              <small v-if="v$.step1.type_marche.$error">{{
-                                v$.step1.type_marche.$errors[0].$message
-                              }}</small>
-                              <small v-if="resultError['type_marche']">
-                                {{ resultError["type_marche"] }}
-                              </small>
-                            </div>
-                          </div> -->
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Type marché <span class="text-danger">*</span></label
+                                >
+                                <MazSelect
+                                  v-model="step1.type_marche"
+                                  color="secondary"
+                                  name="step1.type_marche"
+                                  size="sm"
+                                  rounded-size="sm"
+                                  search
+                                 :options="TypesOptions"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step1.type_marche.$error">{{
+                                  v$.step1.type_marche.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['type_marche']">
+                                  {{ resultError["type_marche"] }}
+                                </small>
+                              </div>
+                            </div> -->
               <div class="col">
                 <div class="input-groupe">
                   <label for="userpassword"> Jours marché <span class="text-danger">*</span></label>
@@ -199,29 +202,29 @@
                 </div>
               </div>
               <!-- <div class="col">
-                            <div class="input-groupe">
-                              <label for="userpassword"
-                                > Superficie <span class="text-danger">*</span></label
-                              >
-                              <MazInput
-                                v-model="step1.superficie"
-                                color="secondary"
-                                name="step1.superficie"
-                                size="sm"
-                                rounded-size="sm"
-                               type="number"
-                 :min="0"
-                                
-                                
-                              />
-                              <small v-if="v$.step1.superficie.$error">{{
-                                v$.step1.superficie.$errors[0].$message
-                              }}</small>
-                              <small v-if="resultError['superficie']">
-                                {{ resultError["superficie"] }}
-                              </small>
-                            </div>
-                          </div> -->
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Superficie <span class="text-danger">*</span></label
+                                >
+                                <MazInput
+                                  v-model="step1.superficie"
+                                  color="secondary"
+                                  name="step1.superficie"
+                                  size="sm"
+                                  rounded-size="sm"
+                                 type="number"
+                   :min="0"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step1.superficie.$error">{{
+                                  v$.step1.superficie.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['superficie']">
+                                  {{ resultError["superficie"] }}
+                                </small>
+                              </div>
+                            </div> -->
   
             </div>
             <div class="row mt-3 content-group">
@@ -343,29 +346,29 @@
             </div>
             <div class="row mt-3 content-group">
               <!-- <div class="col">
-                            <div class="input-groupe">
-                              <label for="userpassword"
-                                > Type marché <span class="text-danger">*</span></label
-                              >
-                              <MazSelect
-                                v-model="step2.type_marche"
-                                color="secondary"
-                                name="step2.type_marche"
-                                size="sm"
-                                rounded-size="sm"
-                                search
-                                :options="TypesOptions"
-                                
-                                
-                              />
-                              <small v-if="v$.step2.type_marche.$error">{{
-                                v$.step2.type_marche.$errors[0].$message
-                              }}</small>
-                              <small v-if="resultError['type_marche']">
-                                {{ resultError["type_marche"] }}
-                              </small>
-                            </div>
-                          </div> -->
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Type marché <span class="text-danger">*</span></label
+                                >
+                                <MazSelect
+                                  v-model="step2.type_marche"
+                                  color="secondary"
+                                  name="step2.type_marche"
+                                  size="sm"
+                                  rounded-size="sm"
+                                  search
+                                  :options="TypesOptions"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step2.type_marche.$error">{{
+                                  v$.step2.type_marche.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['type_marche']">
+                                  {{ resultError["type_marche"] }}
+                                </small>
+                              </div>
+                            </div> -->
               <div class="col">
                 <div class="input-groupe">
                   <label for="userpassword"> Jours marché <span class="text-danger">*</span></label>
@@ -393,29 +396,29 @@
                 </div>
               </div>
               <!-- <div class="col">
-                            <div class="input-groupe">
-                              <label for="userpassword"
-                                > Superficie <span class="text-danger">*</span></label
-                              >
-                              <MazInput
-                                v-model="step2.superficie"
-                                color="secondary"
-                                name="step2.superficie"
-                                size="sm"
-                                rounded-size="sm"
-                               type="number"
-                 :min="0"
-                                
-                                
-                              />
-                              <small v-if="v$.step2.superficie.$error">{{
-                                v$.step2.superficie.$errors[0].$message
-                              }}</small>
-                              <small v-if="resultError['superficie']">
-                                {{ resultError["superficie"] }}
-                              </small>
-                            </div>
-                          </div> -->
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Superficie <span class="text-danger">*</span></label
+                                >
+                                <MazInput
+                                  v-model="step2.superficie"
+                                  color="secondary"
+                                  name="step2.superficie"
+                                  size="sm"
+                                  rounded-size="sm"
+                                 type="number"
+                   :min="0"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step2.superficie.$error">{{
+                                  v$.step2.superficie.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['superficie']">
+                                  {{ resultError["superficie"] }}
+                                </small>
+                              </div>
+                            </div> -->
   
             </div>
             <div class="row mt-3 content-group">

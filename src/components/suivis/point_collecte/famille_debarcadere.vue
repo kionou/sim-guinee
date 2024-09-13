@@ -24,17 +24,7 @@
                     </div>
                   </div>
                 </li>
-                <li class="h-40">
-                  <button
-                    type="button"
-                    class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                   
-                    @click="openModal('add-debarcadere')"
-                   
-                  >
-                    <i class="mdi mdi-plus"></i>
-                  </button>
-                </li>
+             
               </ul>
             </div>
           </div>
@@ -47,11 +37,10 @@
                 
                     <th>Code</th>
                     <th>Nom</th>
-                    <th>Type</th>
                     <th>Commune</th>
                     <th>Agent collecte</th>
-                    <th>Description</th>
-                    <th>Actions</th>
+                    <th>Nb de fiches suiv.</th>
+                    <th> suivre</th>
                   </tr>
                 </thead>
                 <tbody v-if="paginatedItems.length === 0">
@@ -67,14 +56,25 @@
                   <tr v-for="(data) in paginatedItems" :key="data.id_debarcadere">
                   
                     <td>{{ data?.code_debarcadere ?? "-"}}</td>
-                    <td>{{ data.nom_debarcadere ?? "-" }}</td>
-                    <td>{{ (data.type === true) ? 'Debarcadère' : 'Port' }}</td>
+                    <td>
+                  <div>
+                    <router-link 
+                      :to="{ name: 'fiches-enquetes-type-marche-collecte', params: { id: data.id_debarcadere, nom:data.nom_debarcadere }}"
+                      style="color: #0d6efd !important; text-decoration: underline;  font-style: italic;">
+                      {{ data?.nom_debarcadere ?? "-"}}
+  
+                    </router-link>
+  
+  
+                  </div>
+                </td>
+                
                     <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
                     <td style="width: 170px;" class="text-center">
                         <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
                         <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
                      </td>
-                    <td>{{ data.description }}</td>
+                    
                    
                   </tr>
                 </tbody>
