@@ -79,7 +79,7 @@
 
                       <div style="display: inline-block">
                         <span style="font-weight: 600; font-size: 1.1em; display: block"
-                          >{{ data.nom_produit }} </span
+                          >{{ data.nom_produit }} / {{ data.nom_produit_en }} </span
                         >
                         <span class="text-danger" style="display: block;">{{ data.code_produit }}</span>
                       </div>
@@ -179,7 +179,7 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Nom <span class="text-danger">*</span></label
+                    Nom en français <span class="text-danger">*</span></label
                   >
                   <MazInput
                     v-model="step1.nom_produit"
@@ -194,6 +194,27 @@
                   }}</small>
                   <small v-if="resultError['nom_produit']">
                     {{ resultError["nom_produit"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Nom en anglais <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step1.nom_produit_en"
+                    color="secondary"
+                    name="step1.nom_produit_en"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step1.nom_produit_en.$error">{{
+                    v$.step1.nom_produit_en.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['nom_produit_en']">
+                    {{ resultError["nom_produit_en"] }}
                   </small>
                 </div>
               </div>
@@ -310,6 +331,30 @@
                   </small>
                 </div>
               </div>
+
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type de marché <span class="text-danger">*</span></label
+                  >
+                  <MazSelect
+                    v-model="step1.type_marche"
+                    color="secondary"
+                    name="step1.type_marche"
+                    size="sm"
+                    rounded-size="sm"
+                    search
+                    :options="TypesMarchesOptions"
+                    multiple
+                  />
+                  <small v-if="v$.step1.type_marche.$error">{{
+                    v$.step1.type_marche.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type_marche']">
+                    {{ resultError["type_marche"] }}
+                  </small>
+                </div>
+              </div>
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
@@ -383,7 +428,7 @@
           </div>
           <div class="modal-body">
             <div class="row mt-3 content-group">
-              <div class="col-6">
+              <div class="col-12">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Code <span class="text-danger">*</span></label
@@ -407,7 +452,7 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Nom <span class="text-danger">*</span></label
+                    Nom en français<span class="text-danger">*</span></label
                   >
                   <MazInput
                     v-model="step2.nom_produit"
@@ -422,6 +467,27 @@
                   }}</small>
                   <small v-if="resultError['nom_produit']">
                     {{ resultError["nom_produit"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Nom en anglais<span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.nom_produit_en"
+                    color="secondary"
+                    name="step2.nom_produit_en"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.step2.nom_produit_en.$error">{{
+                    v$.step2.nom_produit_en.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['nom_produit_en']">
+                    {{ resultError["nom_produit_en"] }}
                   </small>
                 </div>
               </div>
@@ -535,6 +601,29 @@
                   }}</small>
                   <small v-if="resultError['filiere']">
                     {{ resultError["filiere"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Type de marché <span class="text-danger">*</span></label
+                  >
+                  <MazSelect
+                    v-model="step2.type_marche"
+                    color="secondary"
+                    name="step2.type_marche"
+                    size="sm"
+                    rounded-size="sm"
+                    search
+                    :options="TypesMarchesOptions"
+                    multiple
+                  />
+                  <small v-if="v$.step2.type_marche.$error">{{
+                    v$.step2.type_marche.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['type_marche']">
+                    {{ resultError["type_marche"] }}
                   </small>
                 </div>
               </div>
@@ -671,6 +760,7 @@ export default {
       FamillesOptions: [],
       OriginesOptions: [],
       FormesOptions: [],
+      TypesMarchesOptions:[],
       selectedImage:"",
       dataFile:"",
       dataImage:"",
@@ -682,10 +772,11 @@ export default {
       step1: {
         code_produit: "",
         nom_produit: "",
+        nom_produit_en: "",
         categorie_produit: "",
         forme_produit: "",
         famille_produit: "",
-        // origine_produit: "",
+         type_marche: [],
         affichage_ecran: "",
         filiere:"",
         image: "",
@@ -693,10 +784,11 @@ export default {
       step2: {
         code_produit: "",
         nom_produit: "",
+        nom_produit_en: "",
         categorie_produit: "",
-        forme_produit: "",
+        forme_produit: [],
         famille_produit: "",
-        // origine_produit: "",
+        type_marche: "",
         affichage_ecran: "",
         filiere:"",
 
@@ -715,10 +807,11 @@ export default {
       
        code_produit: { require },
         nom_produit: { require },
+        nom_produit_en:  { require },
         categorie_produit: { require },
         forme_produit: { require },
         famille_produit: { require },
-        // origine_produit: { require },
+         type_marche: { require },
         affichage_ecran: { require },
         filiere:{ require },
         image: {  },
@@ -726,10 +819,11 @@ export default {
     step2: {
       code_produit: { require },
         nom_produit: { require },
+        nom_produit_en: { require },
         categorie_produit: { require },
         forme_produit: { require },
         famille_produit: { require },
-        // origine_produit: { require },
+        type_marche: { require },
         affichage_ecran: { require },
         filiere:{ require },
     },
@@ -739,6 +833,7 @@ export default {
     await this.fetchCategorie();
     await this.fetchFamille();
     await this.fetchOrigines();
+    await this.fetchTypesMarches();
     await this.fetchFormes();
   },
   methods: {
@@ -823,6 +918,26 @@ export default {
         this.handleErrors(error);
       }
     },
+    async fetchTypesMarches() {
+        try {
+          const response = await axios.get("/parametrages/type-marches", {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+  
+          console.log("response", response);
+          if (response.status === 200) {
+            response.data.map(item => this.TypesMarchesOptions.push({
+                  label: item.nom_type_marche,
+                  value: item.code_type_marche
+                  }))
+            this.loading = false;
+          }
+        } catch (error) {
+          this.handleErrors(error);
+        }
+      },
     async fetchProduits() {
       try {
         const response = await axios.get("/parametrages/produits", {
@@ -850,10 +965,11 @@ export default {
         let data = {
           code_produit: this.step1.code_produit,
           nom_produit: this.step1.nom_produit,
+          nom_produit_en: this.step1.nom_produit_en,
           categorie_produit: this.step1.categorie_produit,
           forme_produit: this.step1.forme_produit,
           famille_produit: this.step1.famille_produit,
-          // origine_produit: this.step1.origine_produit,
+           type_marche: this.step1.type_marche,
           affichage_ecran: this.step1.affichage_ecran,
           filiere: this.step1.filiere,
           image: this.step1.image,
@@ -876,6 +992,7 @@ export default {
           famille_produit: "",
           affichage_ecran: "",
           filiere: "",
+          type_marche:[],
         };
         this.v$.step1.$reset();
             this.successmsg(
@@ -913,11 +1030,12 @@ export default {
           let data = response.data;
           (this.step2.code_produit = data.code_produit),
             (this.step2.nom_produit = data.nom_produit),
+            (this.step2.nom_produit_en = data.nom_produit_en),
             (this.step2.categorie_produit = data.categorie?.id_categorie_produit),
             (this.step2.forme_produit = data.forme?.id_forme_produit),
             (this.step2.famille_produit = data.famille?.id_famille_produit),
             this.dataImage = data?.image,
-            // (this.step2.origine_produit = data.origine?.id_origine_produit),
+             (this.step2.type_marche = data?.type_marche),
             (this.step2.affichage_ecran = data.affichage_ecran),
             (this.step2.filiere = data.filiere),
             (this.ToId = data.id_produit);
@@ -935,10 +1053,11 @@ export default {
         let data = {
           code_produit: this.step2.code_produit,
           nom_produit: this.step2.nom_produit,
+          nom_produit_en: this.step2.nom_produit_en,
           categorie_produit: this.step2.categorie_produit,
           forme_produit: this.step2.forme_produit,
           famille_produit: this.step2.famille_produit,
-          // origine_produit: this.step2.origine_produit,
+           type_marche: this.step2.type_marche,
           collecteur: this.step2.collecteur,
           affichage_ecran: this.step2.affichage_ecran,
           filiere: this.step2.filiere,

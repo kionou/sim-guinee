@@ -26,26 +26,31 @@
 	
 				<div class="box-body">
 					<!-- Nav tabs -->
-					<ul class="nav nav-tabs justify-content-center" role="tablist">
-						<li v-for="marche in filteredMarches" :key="marche.value" class="nav-item">
-							<a :class="['nav-link', { active: marche.value === activeTab }]" data-toggle="tab"
-								@click="handleTabClick(`#${marche.label.toLowerCase().replace(/ /g, '')}`)"
-								:href="`#${marche.label.toLowerCase().replace(/ /g, '')}`" role="tab">
-								<span class="hidden-xs-down">{{ marche.label }}  <span class="badge ms-2 bg-warning fw-bolder font-size-16">
-                         {{ getCountForType(marche.value) }}
+					<ul class="nav nav-tabs " role="tablist"  style=" overflow-x: scroll;  overflow-y: hidden; flex-wrap: nowrap !important;">
+						<li style="width: auto;text-wrap: nowrap;" v-for="marche in filteredMarches" :key="marche?.type_marche?.id_type_marche" class="nav-item">
+							<a :class="['nav-link', { active: marche?.type_marche?.id_type_marche === activeTab }]" data-toggle="tab"
+								@click="handleTabClick(`#${marche.type_marche?.nom_type_marche.toLowerCase().replace(/ /g, '')}`)"
+								:href="`#${marche.type_marche?.nom_type_marche.toLowerCase().replace(/ /g, '')}`" role="tab">
+								<span class="hidden-xs-down">{{ marche.type_marche?.nom_type_marche }}  <span class="badge ms-2 bg-warning fw-bolder font-size-16">
+                         {{ marche.marches.length }}
             </span></span>
 							</a>
 						</li>
 					</ul>
 					<!-- Tab panes -->
 					<div class="tab-content tabcontent-border">
-						<div v-for="marche in filteredMarches" :key="marche.value"
-							:class="['tab-pane', { active: marche.value === activeTab }]"
-							:id="marche.label.toLowerCase().replace(/ /g, '')" role="tabpanel">
+						<div v-for="marche in filteredMarches" :key="marche?.type_marche?.id_type_marche"
+							:class="['tab-pane', { active: marche?.type_marche?.id_type_marche === activeTab }]"
+							:id="marche.type_marche?.nom_type_marche?.toLowerCase().replace(/ /g, '')" role="tabpanel">
 							<div class="p-15">
-								<!-- <Collecte v-if="marche.value === 1" :marches-data="getMarchesData(marche.value)" />
-                <Consommation v-if="marche.value === 3" :marches-data="getMarchesData(marche.value)" />
-                <Grossiste v-if="marche.value === 2" :marches-data="getMarchesData(marche.value)" /> -->
+								<Collecte v-if="marche?.type_marche?.id_type_marche === 1" :marches-data="marche.marches" :description="marche?.type_marche" />
+								<Grossiste v-if="marche?.type_marche?.id_type_marche === 2" :marches-data="marche.marches" :description="marche?.type_marche" />
+                <Consommation v-if="marche?.type_marche?.id_type_marche === 3" :marches-data="marche.marches"  :description="marche?.type_marche"/>
+                <Journaliere v-if="marche?.type_marche?.id_type_marche === 4" :marches-data="marche.marches"  :description="marche?.type_marche"/>
+                <Betail v-if="marche?.type_marche?.id_type_marche === 5" :marches-data="marche.marches"  :description="marche?.type_marche"/>
+                <Debarcaderes v-if="marche?.type_marche?.id_type_marche === 6" :marches-data="marche.marches"  :description="marche?.type_marche"/>
+                <Port v-if="marche?.type_marche?.id_type_marche === 7" :marches-data="marche.marches"  :description="marche?.type_marche"/>
+                <Frontaliere v-if="marche?.type_marche?.id_type_marche === 8" :marches-data="marche.marches"  :description="marche?.type_marche"/>
 							</div>
 						</div>
 					</div>
@@ -57,9 +62,14 @@
 	</div>
 </template>
 <script>
-// import Collecte from "@/components/parametrages/marches/collecte.vue"
-// import Consommation from "@/components/parametrages/marches/consommation.vue"
-// import Grossiste from "@/components/parametrages/marches/grossiste.vue"
+ import Collecte from "@/components/suivis/point_collecte/famille_collecte.vue"
+ import Debarcaderes from "@/components/suivis/point_collecte/famille_debarcadere.vue"
+ import Consommation from "@/components/parametrages/marches/consommation.vue"
+ import Betail from "@/components/suivis/point_collecte/famille_betail.vue"
+ import Grossiste from "@/components/suivis/point_collecte/famille_grossiste.vue"
+ import Journaliere from "@/components/suivis/point_collecte/famille_journaliere.vue"
+ import Frontaliere from "@/components/suivis/point_collecte/famille_frontaliere.vue"
+ import Port from "@/components/suivis/point_collecte/famille_port.vue"
 
 import { useToast } from "vue-toastification";
 import axios from '@/lib/axiosConfig'
@@ -71,7 +81,7 @@ export default {
     return { toast }
   },
   components: {
-     Loading 
+     Loading , Collecte , Consommation , Debarcaderes ,Betail , Grossiste , Journaliere ,Port , Frontaliere
   },
   computed: {
     loggedInUser() {
@@ -92,14 +102,16 @@ export default {
       activeTabMarche: null,
 	  loading:true,
 
-      Marches: [
-        { label: " Collecte", value: 1 },
-        { label: " Grossiste", value: 2 },
-        { label: "  Hebdomadaire", value: 3 },
-        { label: "  Journalière", value: 4 },
-        { label: " Bétail", value: 5 },
-        { label: " Transfrontalier", value: 8 },
-      ],
+      // Marches: [
+      //   { label: " Collecte", value: 1 },
+      //   { label: " Grossiste", value: 2 },
+      //   { label: "  Hebdomadaire", value: 3 },
+      //   { label: "  Journalière", value: 4 },
+      //   { label: " Bétail", value: 5 },
+      //   { label: " Debarcadère", value: 6 },
+      //   { label: " Port", value: 7 },
+      //   { label: " Transfrontalier", value: 8 },
+      // ],
       data: [], 
       filteredMarches: [],
 
@@ -130,15 +142,14 @@ export default {
   methods: {
 	handleTabClick(tabId) {
     localStorage.setItem("activeTabMarcheLocal", tabId);
-    this.activeTabMarche = this.Marches.find(
-      (marche) =>
-        `#${marche.label.toLowerCase().replace(/ /g, '')}` === tabId
-    )?.value;
+    // this.activeTabMarche = this.Marches.find(
+    //   (marche) =>
+    //     `#${marche.label.toLowerCase().replace(/ /g, '')}` === tabId
+    // )?.value;
   },
     async fetchMarchesTypes() {
       try {
-        const response = await axios.get(
-          "/parametrages/marches/par-type/marche",
+        const response = await axios.get("/parametrages/marches/par-type/marche",
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -148,9 +159,7 @@ export default {
 		  console.log('dataresponse',response)
         if (response.status === 200) {
           this.data = response.data;
-          this.filteredMarches = this.Marches.filter((marche) =>
-            this.data.some((item) => item.type_marche === marche.value)
-          );
+          this.filteredMarches = this.data
 		  this.loading = false
         }
       } catch (error) {
@@ -226,13 +235,13 @@ export default {
     },
 
   },
-  beforeRouteLeave(to, from, next) {
-    console.log('kiter');
+  // beforeRouteLeave(to, from, next) {
+  //   console.log('kiter');
 
-    // Supprimer l'onglet actif du localStorage si on quitte cette page
-    localStorage.removeItem('activeTabMarcheLocal');
-    next();
-  },
+  //   // Supprimer l'onglet actif du localStorage si on quitte cette page
+  //   localStorage.removeItem('activeTabMarcheLocal');
+  //   next();
+  // },
 
 }
 </script>

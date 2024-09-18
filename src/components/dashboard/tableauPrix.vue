@@ -16,7 +16,7 @@
                                 <div class="col-6">
                                     <div class="input-groupe">
                                         <label for="">Région</label>
-                                        <MazSelect v-model="Region" color="secondary" :options="regionsSelect" search
+                                        <MazSelect v-model="Region" color="secondary" secondary :options="regionsSelect" search
                                             v-slot="{ option }" size="sm" rounded-size="sm">
                                             <div class="flex items-center"
                                                 style="padding-top: 0.5rem; padding-bottom: 0.5rem; width: 100%; gap: 1rem"
@@ -76,6 +76,12 @@
                                             style="background-color: var(--color-primary) !important; color: white;">Marché
                                         </th>
                                         <th rowspan="2" class="fw-semibold"
+                                            style="background-color: var(--color-primary) !important; color: white;">Type Marché
+                                        </th>
+                                        <th rowspan="2" class="fw-semibold"
+                                          style="background-color: var(--color-primary) !important; color: white;">Agent de collecte
+                                        </th>
+                                        <th rowspan="2" class="fw-semibold"
                                             style="background-color: var(--color-primary) !important; color: white;">Produit
                                         </th>
                                         <th colspan="2" class="text-center fw-semibold"
@@ -111,23 +117,42 @@
                    
                                         <td :rowspan="m.produits.length" style="width:200px ;">
                                             <div style="display: inline-block">
-                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.prefecture }} </span>
+                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.nom_prefecture }} </span>
                                                
                                             </div>
     
                                         </td>
                                         <td :rowspan="m.produits.length" style="width:200px ;">
                                             <div style="display: inline-block">
-                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.commune }} </span>
+                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.localite }} </span>
                                                 
                                             </div>
     
                                         </td>
                                         <td :rowspan="m.produits.length" style="width:200px ;">
                                             <div style="display: inline-block">
-                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.nom }} </span>
+                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.nom_marche }} </span>
                                                 
                                             </div>
+    
+                                        </td>
+                                        <td :rowspan="m.produits.length" style="width:200px ;">
+                                            <div style="display: inline-block">
+                                                <span style="font-weight: 600; font-size: 1.1em; display: block">{{ m.marche.nom_type_marche }} </span>
+                                                
+                                            </div>
+    
+                                        </td>
+                                        <td :rowspan="m.produits.length" style="width:200px ;">
+                                          <div class="widget-user-image">
+						
+                                          <div style="display: inline-block" class="text-center">
+                                            <span style="font-weight: 600; font-size: 1.1em; display: block"
+                                            >{{m.marche?.nom_collecteur }} </span
+                                            >
+                                            <span style="display: block; color:red !important">{{ m.marche?.contact_collecteur }}</span>
+                                          </div>
+                                          </div>
     
                                         </td>
                                         
@@ -287,8 +312,7 @@ export default {
       ];
       try {
         const [famille, region] = await axios.all(endpoints.map((endpoint) => axioss.get(endpoint)));
-        console.log('famille', famille)
-        console.log('region', region)
+    
 
 
         this.FamillesOptions = famille.data
@@ -325,8 +349,6 @@ export default {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
         });
-
-        console.log("responsedata", response);
         if (response.status === 200) {
           //   this.ProduitsOptions = response.data
           this.ProduitsByFamille = response.data
@@ -351,15 +373,12 @@ export default {
         NomFamille = null
 
       } else {
-        console.log('famille.labelaa', famille)
         NomFamille = famille?.nom_famille_produit
 
       }
 
       //  const NomFamille = famille?.nom_famille_produit ? famille?.famille?.nom_famille_produit : famille.label
       const NomRegion = region?.nom_region ? region?.nom_region : region.label
-      console.log('famille', NomFamille)
-      console.log('NomRegion', NomRegion)
       let url = NomFamille ? `enquetes/marches-prix/prix-des-deux-dernieres/famille-region?nom_region=${NomRegion}&famille=${NomFamille}` : `enquetes/marches-prix/prix-des-deux-dernieres/famille-region?nom_region=${NomRegion}`
 
       try {
@@ -368,8 +387,6 @@ export default {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
         });
-
-        console.log("responsedataproduit", response);
         if (response.status === 200) {
           this.ProduitsOptions = response.data
 
@@ -405,21 +422,18 @@ formatBudget(value) {
     },
 
     getRowSpan(item) {
-      console.log('item', item)
       this.Global = item
       return item.prices.length;
     },
 
 
     handleOptionClickFamille(value) {
-      console.log('value', value)
       this.NomFamille = value
       this.fetchProduitByPrix(this.NomRegion, value)
 
 
     },
     handleOptionClickRegion(value) {
-      console.log('value', this.NomFamille)
       this.NomRegion = value
       this.fetchProduitByPrix(value, this.NomFamille)
 

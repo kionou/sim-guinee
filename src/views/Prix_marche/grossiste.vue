@@ -60,28 +60,26 @@
                                         class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">{{dataDetail?.collecteur_relation?.whatsapp_collecteur}}</span></div>
                             </div>
                         </div>
-                        <div  class="row mt-2">
-                            <div  class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                                <div  class="mt-1"><i 
-                                        class="ti-layout-column4 me-2 fs-14"></i>Nom marché : <span 
-                                        class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">{{dataDetail?.marche_relation?.nom_marche}}</span></div>
-                            </div>
-                            <div  class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                                <div  class="mt-1"><i 
-                                        class="ti-layout-column4 me-2 fs-14"></i>Type marché : <span class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">
-                                            {{dataDetail?.marche_relation?.type_marche === 1 ? "Marché de collecte" :
-                                               dataDetail?.marche_relation?.type_marche === 3 ? "Marché de consommation" :
-                                               dataDetail?.marche_relation?.type_marche === 2 ? "Marché de grossiste" :
-                                               dataDetail?.marche_relation?.type_marche === 4 ? "Marché de détail" : "-" }}
-                                        </span>
-                                </div>
-                            </div>
-                            <div  class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                                <div  class="mt-1"><i 
-                                        class="ti-layout-column4 me-2 fs-14"></i>Superficie marché: <span 
-                                        class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">{{dataDetail?.marche_relation?.superficie}} ha</span></div>
-                            </div>
-                        </div>
+                        <div class="row mt-2">
+              <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Nom marché : <span style="color:red"
+                    class="fw-semibold fs-16"
+                    :title="dataDetail?.marche_relation?.nom_marche">{{dataDetail?.marche_relation?.nom_marche}}</span>
+                </div>
+              </div>
+              <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Jour du marché : <span
+                    class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">
+                    {{dataDetail?.marche_relation?.jour_du_marche }}
+                  </span>
+                </div>
+              </div>
+              <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
+                <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
+                    class="fw-semibold fs-16" data-bs-toggle="tooltip"
+                    title="Current Salary">{{dataDetail?.personnel_relation?.firstname}} {{dataDetail?.personnel_relation?.lastname}}</span></div>
+              </div>
+            </div>
                     </div>
                 </div>
     

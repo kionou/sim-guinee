@@ -19,17 +19,19 @@ import TypeProduits from '../views/parametrage/type-produits/default.vue'
 
 
 
-import SuiviPointCollecte from '../views/suivi_point_collecte/suivi_point_collect.vue'
+import SuiviPointCollecte from '../views/parametrage/point_collecte/default.vue'
 import Types_marches from '../views/parametrage/point_collecte/types.vue'
 import point_collecte from '../views/parametrage/point_collecte/point_collecte.vue'
 
 
 
 
-import Fiches_Collectes from '../views/Fiche_collecte/default.vue'
-import Fiches_Collectes_Par_Marches_Collecte from '../views/Fiche_collecte/parmarchescollecte.vue'
-import Fiches_Collectes_Par_Marches_Con from '../views/Fiche_collecte/parmarchesconso.vue'
-import Fiches_Collectes_Par_Marches_Grossiste from '../views/Fiche_collecte/parmarchesgrossiste.vue'
+import Fiches_Collectes from '../views/Fiche_enquete/default.vue'
+import Fiches_Collectes_Par_Marches_Collecte from '../views/Fiche_enquete/parmarchescollecte.vue'
+import Fiches_Collectes_Par_Marches_Grossiste from '../views/Fiche_enquete/parmarchesgrossiste.vue'
+import Fiches_Collectes_Par_Marches_Herdomadaire from '../views/Fiche_enquete/parmarchesherdomadaire.vue'
+import Fiches_Collectes_Par_Marches_Journaliere from '../views/Fiche_enquete/parmarchejournaliere.vue'
+
 import Enquete_Prix_Par_Marches_Collecte from '../views/Prix_marche/collecte.vue'
 import Enquete_Prix_Par_Marches_Grossiste from '../views/Prix_marche/grossiste.vue'
 import Enquete_Prix_Par_Marches_Consommation from '../views/Prix_marche/consommation.vue'
@@ -147,19 +149,27 @@ const router = createRouter({
             meta: { requiresAuth: true },
              component: Fiches_Collectes_Par_Marches_Collecte
           },
-          {
-            path: 'fiches-enquetes/marche-consommation/:nom/:id',
-            name: 'fiches-enquetes-type-marche-consommation',
-            props:true,
-            meta: { requiresAuth: true },
-             component: Fiches_Collectes_Par_Marches_Con
-          },
+        
           {
             path: 'fiches-enquetes/marche-grossiste/:nom/:id',
             name: 'fiches-enquetes-type-marche-grossiste',
             props:true,
             meta: { requiresAuth: true },
              component: Fiches_Collectes_Par_Marches_Grossiste
+          },
+          {
+            path: 'fiches-enquetes/marche-hebdomadaire/:nom/:id',
+            name: 'fiches-enquetes-type-marche-hebdomadaire',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Fiches_Collectes_Par_Marches_Herdomadaire
+          },
+          {
+            path: 'fiches-enquetes/marche-journaliere/:nom/:id',
+            name: 'fiches-enquetes-type-marche-journaliere',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Fiches_Collectes_Par_Marches_Journaliere
           },
           {
             path: 'enquete-prix-par-marche/C/:nom/:id',

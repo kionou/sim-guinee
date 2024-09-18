@@ -35,8 +35,9 @@
 		</div>
 			<!-- Main content -->
 			<section class="content">
-			<div class="row">				
-				<div class="col-md-6 col-lg-3">
+			<div class="row">
+
+				<div class="col-md-6 col-lg-3" v-for="(item, index) in data" :key="index">
 				   <div class="box pull-up">
 					  <div class="box-body">
 						<div class="d-flex align-items-end justify-content-start">
@@ -45,16 +46,17 @@
 								</div>
 							  </div>
 							  <div class="ml-15">
-								  <span class="l-h-14">Date : <b class=" text-danger px-2 border-raduis">{{ getYear(data.collecte?.date_enquete)  }}</b></span> <br>
-								  <span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">{{parseInt(data.collecte?.invalid_fiches)  + parseInt(data.collecte?.valid_fiches) }}</b></span>
-								  <h4 class="my-10 font-size-14 font-weight-bold">Collectes</h4>
-								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">{{ parseInt(data.collecte?.valid_fiches) }}</b></p> 
+								  <span class="l-h-14">Date : <b class=" text-danger px-2 border-raduis">{{ getYear(item.statistic?.date_enquete)  }}</b></span> <br>
+								  <span class="l-h-14">Fiches : <b class="bg-info px-2 border-raduis">{{parseInt(item.statistic?.invalid_fiches)  + parseInt(item.statistic?.valid_fiches) }}</b></span>
+								  <h4 class="my-10 font-size-14 font-weight-bold">{{ item?.type_marche?.nom_type_marche }}</h4>
+								  <p class="mb-0 text-primary line-height font-weight-bold">Fiches validées : <b  class="bg-info px-2 border-raduis">{{ parseInt(item.statistic?.valid_fiches) }}</b></p> 
 							  </div>
 						  </div>
 					  </div>
 				   </div>
-				</div>				
-				<div class="col-md-6 col-lg-3">
+				</div>	
+
+				<!-- <div class="col-md-6 col-lg-3">
 				   <div class="box pull-up">
 					  <div class="box-body">
 						  <div class="d-flex align-items-end justify-content-start">
@@ -106,7 +108,7 @@
 						  </div>
 					  </div>
 				   </div>
-				</div>
+				</div> -->
 				
 				
 			
@@ -141,7 +143,7 @@ export default {
 	data() {
 		return {
 			loading:true,
-			data:"",
+			data:[],
 			dataProduits:[],
 			currentPage: 1,
       itemsPerPage: 10,
@@ -180,9 +182,9 @@ async	mounted() {
           },
         });
 
-        console.log("responsedata", response);
+        console.log("responsedatast", response);
         if (response.status === 200) {
-        this.data =  response.data
+			this.data = response.data.filter(item => item.statistic !== null);
          
         }
       } catch (error) {
@@ -198,7 +200,6 @@ async	mounted() {
           },
         });
 
-        console.log("responsedata", response);
         if (response.status === 200) {
         this.dataProduits =  response.data
          this.loading = false; 
@@ -252,7 +253,6 @@ async	mounted() {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       if (error.response?.data.detail.includes('204')) {
-        console.log('bonjour')
         this.loading = false;
         this.data = [];
         // Logique pour une erreur serveur

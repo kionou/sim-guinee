@@ -32,7 +32,7 @@
     </div>
     <div class="box mx-2">
       <div class="box-header with-border">
-        <h3 class="box-title mb-0"> {{ description }}</h3>
+        <h3 class="box-title mb-0"> {{ description.description }}</h3>
       </div>
   
       <div class="box-body">
@@ -43,10 +43,12 @@
                 <th class="text-center">Code</th>
                 <th>Nom </th>
                 <th>Geo local.</th>
+                <th>Région</th>
+                <th>Préfecture</th>
                 <th>Commune</th>
                 <th>Agent collecte</th>
                 <th>Jours du marché</th>
-                <th>Nb de fiches suiv.</th>
+                <th>Nb de fiches suivies</th>
                 <th> suivre</th>
   
               </tr>
@@ -63,37 +65,65 @@
             <tbody v-else>
               <tr v-for="data   in paginatedItems" :key="data.id">
                 <td style="width: 50px;" class="text-center">
-                  {{ data?.code_marche ?? "-"}}
+                  {{ data?.marche?.code_marche ?? "-"}}
                 </td>
+
                 <td>
                   <div>
-                    <router-link 
-                      :to="{ name: 'fiches-enquetes-type-marche-collecte', params: { id: data.id_marche , nom:data.nom_marche }}"
+                    <router-link  @click="HamdleData(data.marche?.commune_relation)"
+                      :to="{ name: 'fiches-enquetes-type-marche-collecte', params: { id: data.marche?.id_marche , nom:data.marche?.nom_marche }}"
                       style="color: #0d6efd !important; text-decoration: underline;  font-style: italic;">
-                      {{ data?.nom_marche ?? "-"}}
+                      {{ data?.marche?.nom_marche ?? "-"}}
   
                     </router-link>
   
   
                   </div>
                 </td>
+
                 <td style="width: 100px;" class="text-center">
-                  {{ data?.longitude ?? "-"}} , {{ data?.latitude ?? "-"}}
+                  {{ data?.marche?.longitude ?? "-"}} , {{ data?.marche?.latitude ?? "-"}}
+                </td>
+
+                <td style="width: 100px;" class="text-center">
+                  {{ data?.marche?.commune_relation?.prefecture_?.region_relation?.nom_region ?? "-"}}
                 </td>
                 <td style="width: 100px;" class="text-center">
-                  {{ data?.commune_relation?.nom_commune ?? "-"}}
+                  {{ data?.marche?.commune_relation?.prefecture_?.nom_prefecture ?? "-"}}
                 </td>
+                <td style="width: 100px;" class="text-center">
+                  {{ data?.marche?.commune_relation?.nom_commune ?? "-"}}
+                </td>
+
                 <td style="width: 170px;" class="text-center">
                   <span
                     class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur
-                    ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
+                    ?? "-"}} {{data?.marche?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
                   <span style="font-size:12px !important"
-                    class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
+                    class="text-danger  d-block">{{data?.marche?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
                 </td>
-                <td class="text-center" style="width: 70px !important;">
-                  {{ data?.jour_du_marche ?? "-"}}
+
+                <td   data-bs-toggle="tooltip"   data-bs-placement="top"
+             
+                    style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
+                    :title="data?.marche?.jour_du_marche">
+                  {{ data?.marche?.jour_du_marche ?? "-" }}
                 </td>
-  
+
+                <td   class="text-center"
+             
+             style="width: 50px; font-weight: bolder; color: red;" 
+             :title="data?.nbre_enquetes">
+           {{ data?.nbre_enquetes ?? "-" }}
+         </td>
+
+
+                 <td class="text-center" style="width: 70px !important;">
+                  <router-link @click="HamdleData(data.marche?.commune_relation)"  :to="{ name: 'fiches-enquetes-type-marche-collecte', params: { id: data.marche?.id_marche , nom:data.marche?.nom_marche }}" class="text-white btn btn-primary btn-sm">
+                  suivre
+                </router-link>
+                </td>
+               
               </tr>
             </tbody>
   
@@ -516,7 +546,11 @@ export default {
   props: {
     idTypeMarche: Number,
     marches: Array,
-    description: String
+    description: Object,
+    marchesData: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
     Pag, Loading, MazPhoneNumberInput
@@ -595,25 +629,35 @@ export default {
     }
   },
   watch: {
-
-    idTypeMarche: {
-      immediate: true,
-      handler(newValue, oldValue) {
-        console.log(`idTypeMarche a changé : ${oldValue} -> ${newValue}`);
-        // this.fetchMarches(newValue);
-        this.Code = newValue
-      },
-    },
-
-    marches: {
-      immediate: true,
+    marchesData: {
       handler(newData) {
-        console.log('Nouvelles données de marches :', newData);
+        console.log('azertycollecte',newData)
         this.MarchesOptions = [...newData];
         this.data = [...newData];
         this.updatePaginatedItems();
-      }
-    }
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    // idTypeMarche: {
+    //   immediate: true,
+    //   handler(newValue, oldValue) {
+    //     console.log(`idTypeMarche a changé : ${oldValue} -> ${newValue}`);
+    //      this.fetchMarches(newValue);
+    //     this.Code = newValue
+    //   },
+    // },
+
+    // marches: {
+    //   immediate: true,
+    //   handler(newData) {
+    //     console.log('Nouvelles données de marches :', newData);
+    //     this.MarchesOptions = [...newData];
+    //     this.data = [...newData];
+    //     this.updatePaginatedItems();
+    //   }
+    // }
   },
   validations: {
     step1: {
@@ -646,9 +690,20 @@ export default {
     await this.fetchCollecteurs()
     await this.fetchTypesMarches()
 
+  
+
+  //   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  //   return new bootstrap.Tooltip(tooltipTriggerEl);
+  // });
+
   },
   methods: {
     successmsg: successmsg,
+    HamdleData(data){
+      console.log('data',data)
+      localStorage.setItem('DataCommune', JSON.stringify(data));
+    },
 
 
     async fetchMarches(id) {
@@ -938,10 +993,10 @@ export default {
         this.MarchesOptions = this.data.filter(user => {
           console.log('searchValueUser', user)
 
-          const Code = user.code_marche || '';
-          const nom = user.nom_marche || '';
-          const Commune = user?.commune_relation?.nom_commune || '';
-          const Jour = user?.jour_du_marche || '';
+          const Code = user.marche?.code_marche || '';
+          const nom = user.marche?.nom_marche || '';
+          const Commune = user?.marche?.commune_relation?.nom_commune || '';
+          const Jour = user?.marche?.jour_du_marche || '';
 
 
           return Code.toLowerCase().includes(searchValue) || nom.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) || Jour.toLowerCase().includes(searchValue)
