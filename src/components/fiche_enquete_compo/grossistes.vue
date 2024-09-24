@@ -25,7 +25,7 @@
       </div>
     </li>
     <li class="h-40">
-      <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="openModal('add-fiche-collecte')"   ><i class="mdi mdi-plus"></i></button>
+      <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="openModal('add-fiche-grossiste')"   ><i class="mdi mdi-plus"></i></button>
     </li>
 
     
@@ -65,44 +65,44 @@
          <tbody v-else>
              <tr v-for="(data )  in paginatedItems" :key="data.id">
                <td class="text-center" style="width:70px !important">
-              <input type="checkbox" v-model="selectedItems" :value="data.id">
+              <input type="checkbox" v-model="selectedItems" :value="data.enquete?.id">
 
                </td>
                  
-                 <td style="width:100px !important">{{ data?.num_fiche }}</td>
+                 <td style="width:100px !important">{{ data?.enquete?.num_fiche }}</td>
                  <td>
           <div class="widget-user-image">
           
           <div style="display: inline-block">
             <span style="font-weight: 600; font-size: 1.1em; display: block"
-            >{{ data?.collecteur_relation?.nom_collecteur }} {{ data?.collecteur_relation?.prenom_collecteur }}</span
+            >{{ data?.enquete?.collecteur_relation?.nom_collecteur }} {{ data?.enquete?.collecteur_relation?.prenom_collecteur }}</span
             >
-            <span style="display: block; color:red !important">{{ data?.collecteur_relation?.whatsapp_collecteur }}</span>
+            <span style="display: block; color:red !important">{{ data?.enquete?.collecteur_relation?.whatsapp_collecteur }}</span>
           </div>
           </div>
                 </td>
-                <td class="text-center" style="width:50px !important">{{ data?.numero_point_collecte ?? "-" }}</td>
+                <td class="text-center" style="width:50px !important">{{ data?.enquete?.numero_point_collecte ?? "-" }}</td>
 
                 <td>
           <div class="widget-user-image">
           
           <div style="display: inline-block">
             <span style="font-weight: 600; font-size: 1.1em; display: block"
-            >{{ data?.nom_personne_enquete ?? "_"}} </span
+            >{{ data?.enquete?.nom_personne_enquete ?? "_"}} </span
             >
-            <span style="display: block; color:red !important">{{ data?.contact_personne_enquete  ?? "-"}}</span>
+            <span style="display: block; color:red !important">{{ data?.enquete?.contact_personne_enquete  ?? "-"}}</span>
           </div>
           </div>
                 </td>
             
-                 <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ getYear( data?.date_enquete) }}</td>
-                 <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ getYear( data?.date_enquete) }}</td>
+                 <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{  data?.nbre_produit }}</td>
+                 <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ getYear( data?.enquete?.date_enquete) }}</td>
                  
                  <td style="width: 130px;">
                   <div class="d-flex justify-content-evenly border-0">
-                      <router-link :to="{ name: 'enquete-prix-par-marche-grossiste', params: { id: data.id , nom:'GROSSISTE' }}" class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data)"  data-original-title="view" ><i class="ti-eye"></i></router-link>
-                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id , 'update-famille')"  ><i class="ti-marker-alt"></i></a>
-                      <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                      <router-link :to="{ name: 'enquete-prix-par-marche-grossiste', params: { id: data.enquete?.id , nom:'GROSSISTE' }}" class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"  data-original-title="view" ><i class="ti-eye"></i></router-link>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.enquete?.id , 'update-fiche-grossiste')"  ><i class="ti-marker-alt"></i></a>
+                      <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.enquete?.id , 'GROSSISTE')" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                   </div>   
         </td > 
              </tr>
@@ -122,17 +122,16 @@
             </div>
            </div>
  </div>
- <!-- /.box-body -->
 </div>
        
           </div>
 
-          <div class="modal center-modal fade"  id="add-fiche-collecte"  ref="add-fiche-collecte" tabindex="-1">
+          <div class="modal center-modal fade"  id="add-fiche-grossiste"  ref="add-fiche-grossiste" tabindex="-1">
         <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
           <h5 class="modal-title">Ajouter une Fiche</h5>
-          <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-fiche-collecte')" >
+          <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-fiche-grossiste')" >
             <span aria-hidden="true">&times;</span>
           </button>
           </div>
@@ -152,6 +151,7 @@
                             rounded-size="sm"
                             type="text"
                             readonly
+                            disabled
                             
                             
                           />
@@ -242,16 +242,13 @@
                           <label for="userpassword"
                             > Numero point collecte <span class="text-danger">*</span></label
                           >
-                          <MazInput
+                        
+                        <MazInput
                             v-model="step1.numero_point_collecte"
                             color="secondary"
                             name="step1.numero_point_collecte"
                             size="sm"
-                            rounded-size="sm"
-                          
-                            
-                            
-                          />
+                            rounded-size="sm" />
                           <small v-if="v$.step1.numero_point_collecte.$error">{{
                             v$.step1.numero_point_collecte.$errors[0].$message
                           }}</small>
@@ -291,17 +288,9 @@
                           <label for="userpassword"
                             >Contact<span class="text-danger">*</span></label
                           >
-                          <MazInput
-                            v-model="step1.contact_personne_enquete"
-                            color="secondary"
-                            name="step1.contact_personne_enquete"
-                            size="sm"
-                            rounded-size="sm"
-                            search
-                            :options="contact_personne_enquetesOptions"
-                            
-                            
-                          />
+                          <MazPhoneNumberInput v-model="step1.contact_personne_enquete" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
                           <small v-if="v$.step1.contact_personne_enquete.$error">{{
                             v$.step1.contact_personne_enquete.$errors[0].$message
                           }}</small>
@@ -316,7 +305,7 @@
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
         
-            <button type="button" @click="submitFicheCollecte('add-fiche-collecte')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+            <button type="button" @click="submitFicheCollecte('add-fiche-grossiste')" class="waves-effect waves-light btn btn-primary ">Valider</button>
         
 
           </div>
@@ -325,97 +314,190 @@
       </div>
 
   
-        <div class="modal center-modal fade"  id="update-famille"  ref="update-famille" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal center-modal fade"  id="update-fiche-grossiste"  ref="update-fiche-grossiste" tabindex="-1">
+        <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title">Modifier une famille</h5>
-          <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-famille')" >
+          <h5 class="modal-title">Modifier une fiche</h5>
+          <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-fiche-grossiste')" >
             <span aria-hidden="true">&times;</span>
           </button>
           </div>
           <div class="modal-body">
                 <div class="row mt-3 content-group">
                      
-                      <div class="col-12">
+                      <div class="col-6">
                         <div class="input-groupe">
                           <label for="userpassword"
-                            > Code <span class="text-danger">*</span></label
+                            > N° Fiche <span class="text-danger">*</span></label
                           >
                           <MazInput
-                            v-model="step2.code_famille_produit"
+                            v-model="step2.num_fiche"
                             color="secondary"
-                            name="step2.code_famille_produit"
+                            name="step2.num_fiche"
                             size="sm"
                             rounded-size="sm"
                             type="text"
+                            readonly
+                            disabled
                             
                             
                           />
-                          <small v-if="v$.step2.code_famille_produit.$error">{{
-                            v$.step2.code_famille_produit.$errors[0].$message
+                          <small v-if="v$.step2.num_fiche.$error">{{
+                            v$.step2.num_fiche.$errors[0].$message
                           }}</small>
-                          <small v-if="resultError['code_famille_produit']">
-                            {{ resultError["code_famille_produit"] }}
+                          <small v-if="resultError['num_fiche']">
+                            {{ resultError["num_fiche"] }}
                           </small>
                         </div>
                       </div>
-                      <div class="col-12">
+                      <div class="col-6">
                         <div class="input-groupe">
                           <label for="userpassword"
-                            > Nom <span class="text-danger">*</span></label
+                            > Date <span class="text-danger">*</span></label
                           >
                           <MazInput
-                            v-model="step2.nom_famille_produit"
+                            v-model="step2.date_enquete"
                             color="secondary"
-                            name="step2.nom_famille_produit"
+                            name="step2.date_enquete"
                             size="sm"
                             rounded-size="sm"
-                            type="text"
+                            type="date"
                             
                             
                           />
-                          <small v-if="v$.step2.nom_famille_produit.$error">{{
-                            v$.step2.nom_famille_produit.$errors[0].$message
+                          <small v-if="v$.step2.date_enquete.$error">{{
+                            v$.step2.date_enquete.$errors[0].$message
                           }}</small>
-                          <small v-if="resultError['nom_famille_produit']">
-                            {{ resultError["nom_famille_produit"] }}
+                          <small v-if="resultError['date_enquete']">
+                            {{ resultError["date_enquete"] }}
                           </small>
                         </div>
                       </div>
 
-                      <div class="col-12">
+                      <!-- <div class="col-6">
                         <div class="input-groupe">
                           <label for="userpassword"
-                            > Nom <span class="text-danger">*</span></label
+                            > Marché <span class="text-danger">*</span></label
                           >
                           <MazSelect
-                            v-model="step2.affichage_ecran"
+                            v-model="step2.marche"
                             color="secondary"
-                            name="step2.affichage_ecran"
+                            name="step2.marche"
                             size="sm"
                             rounded-size="sm"
                             search
-                            :options="choix"
+                            :options="MarchesOptions"
                             
                             
                           />
-                          <small v-if="v$.step2.affichage_ecran.$error">{{
-                            v$.step2.affichage_ecran.$errors[0].$message
+                          <small v-if="v$.step2.marche.$error">{{
+                            v$.step2.marche.$errors[0].$message
                           }}</small>
-                          <small v-if="resultError['affichage_ecran']">
-                            {{ resultError["affichage_ecran"] }}
+                          <small v-if="resultError['marche']">
+                            {{ resultError["marche"] }}
+                          </small>
+                        </div>
+                      </div> -->
+
+                      <div class="col-6">
+                        <div class="input-groupe">
+                          <label for="userpassword"
+                            > Agent collecte <span class="text-danger">*</span></label
+                          >
+                          <MazSelect
+                            v-model="step2.collecteur"
+                            color="secondary"
+                            name="step2.collecteur"
+                            size="sm"
+                            rounded-size="sm"
+                            search
+                            :options="CollecteursOptions"
+                            
+                            
+                          />
+                          <small v-if="v$.step2.collecteur.$error">{{
+                            v$.step2.collecteur.$errors[0].$message
+                          }}</small>
+                          <small v-if="resultError['collecteur']">
+                            {{ resultError["collecteur"] }}
+                          </small>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="input-groupe">
+                          <label for="userpassword"
+                            > Numero point collecte <span class="text-danger">*</span></label
+                          >
+                          <MazInput
+                            v-model="step2.numero_point_collecte"
+                            color="secondary"
+                            name="step2.numero_point_collecte"
+                            size="sm"
+                            rounded-size="sm"
+                           
+                            
+                            
+                          />
+                          <small v-if="v$.step2.numero_point_collecte.$error">{{
+                            v$.step2.numero_point_collecte.$errors[0].$message
+                          }}</small>
+                          <small v-if="resultError['numero_point_collecte']">
+                            {{ resultError["numero_point_collecte"] }}
+                          </small>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="input-groupe">
+                          <label for="userpassword"
+                            >Nom de la personne enquete <span class="text-danger">*</span></label
+                          >
+                          <MazInput
+                            v-model="step2.nom_personne_enquete"
+                            color="secondary"
+                            name="step2.nom_personne_enquete"
+                            size="sm"
+                            rounded-size="sm"
+                            search
+                            :options="nom_personne_enquetesOptions"
+                            
+                            
+                          />
+                          <small v-if="v$.step2.nom_personne_enquete.$error">{{
+                            v$.step2.nom_personne_enquete.$errors[0].$message
+                          }}</small>
+                          <small v-if="resultError['nom_personne_enquete']">
+                            {{ resultError["nom_personne_enquete"] }}
                           </small>
                         </div>
                       </div>
                      
+
+                      <div class="col-6">
+                        <div class="input-groupe">
+                          <label for="userpassword"
+                            >Contact<span class="text-danger">*</span></label
+                          >
+                        
+                          <MazPhoneNumberInput v-model="step2.contact_personne_enquete" size="sm" rounded-size="sm" show-code-on-list color="secondary"
+                        :ignored-countries="['AC']" defaultCountryCode="GN" update="results = $event"
+                        :success="results?.isValid" />
+                          <small v-if="v$.step2.contact_personne_enquete.$error">{{
+                            v$.step2.contact_personne_enquete.$errors[0].$message
+                          }}</small>
+                          <small v-if="resultError['contact_personne_enquete']">
+                            {{ resultError["contact_personne_enquete"] }}
+                          </small>
+                        </div>
+                      </div>
                     
                     </div>
                   
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
         
-            <button type="button" @click="submitUpdate('update-famille')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+            <button type="button" @click="submitUpdate('update-fiche-grossiste')" class="waves-effect waves-light btn btn-primary ">Valider</button>
         
 
           </div>
@@ -458,7 +540,7 @@ props: {
   }
 },
   components:{
-      Pag , Loading
+      Pag , Loading , MazPhoneNumberInput
   },
   computed: {
   loggedInUser() {
@@ -490,10 +572,10 @@ props: {
           totalPageArray: [],
           currentMarcheName: "",
           selectAll: false,
-    selectedItems: [],
+          selectedItems: [],
         
           step1: {
-              num_fiche:"",
+          num_fiche:"",
           date_enquete:"",
           collecteur:"",
           numero_point_collecte:"",
@@ -502,9 +584,12 @@ props: {
           
           },
           step2: {
-              code_famille_produit:"",
-          nom_famille_produit:"",
-          affichage_ecran:"",
+            num_fiche:"",
+          date_enquete:"",
+          collecteur:"",
+          numero_point_collecte:"",
+          nom_personne_enquete:"",
+          contact_personne_enquete:"",
           },
           v$: useVuelidate(),
           error: "",
@@ -526,18 +611,21 @@ props: {
           },
      
       step2: {
+
+        num_fiche:{require},
+          date_enquete:{require},
          
-        
-          code_famille_produit:{require},
-          nom_famille_produit:{require},
-          affichage_ecran:{require},
+          collecteur:{require},
+          numero_point_collecte:{require},
+          nom_personne_enquete:{require},
+          contact_personne_enquete:{require},
          
   },
 },
 async  mounted() {
-   await this.fetchNumberFiche()
   const code  =   await JSON.parse(localStorage.getItem('DataCommune'));
-   await this.fetchCommuneByCode(code )
+  await this.fetchCommuneByCode(code )
+   await this.fetchNumberFiche()
   await this.fetchCollecteurs()
   
   
@@ -659,6 +747,7 @@ async  mounted() {
   this.handleErrors(error);
     }
   },
+
   async submitFicheCollecte(modalId) {
       this.v$.step1.$touch();
     if (this.v$.$errors.length == 0) {
@@ -685,11 +774,14 @@ async  mounted() {
         if (response.status === 200) {
            this.closeModal(modalId);
            this.step1 = {
-        num_fiche: "",
-        date_enquete: "",
-        collecteur: "",
-       
-      };
+          
+          date_enquete:"",
+          collecteur:"",
+          numero_point_collecte:"",
+          nom_personne_enquete:"",
+          contact_personne_enquete:"",
+              
+              };
       this.v$.step1.$reset();
            this.successmsg(
               "Création de fiche enquête",
@@ -711,7 +803,7 @@ async  mounted() {
   this.loading = true;
 
     try {
-      const response = await axios.get(`/parametrages/familles/${id}`, {
+      const response = await axios.get(`/enquetes/Fiches/collectes/detail/${id}`, {
         headers: {
           Authorization: `Bearer ${this.loggedInUser.token}`
         }
@@ -722,12 +814,15 @@ async  mounted() {
           console.log('Slbvlkjbv',response)
       
         let data =  response.data
-        this.step2.code_famille_produit = data.code_famille_produit,
-        this.step2.nom_famille_produit = data.nom_famille_produit,
-        this.step2.affichage_ecran = (data.affichage_ecran === true) ? true : 'non',
+        this.step2.num_fiche = data.num_fiche,
+        this.step2.date_enquete = data.date_enquete,
+        this.step2.collecteur = data.collecteur,
+        this.step2.numero_point_collecte = data.numero_point_collecte,
+        this.step2.nom_personne_enquete = data.nom_personne_enquete,
+        this.step2.contact_personne_enquete = data.contact_personne_enquete,
         
      
-        this.ToId = data.id_famille_produit
+        this.ToId = data.id
         this.loading = false;
       
       }
@@ -746,14 +841,18 @@ async  mounted() {
   
      this.loading = true;
      let data = {
-          code_famille_produit:this.step2.code_famille_produit,
-          nom_famille_produit:this.step2.nom_famille_produit,
-          affichage_ecran: (this.step2.affichage_ecran === true) ? true : false,
+          num_fiche:this.step2.num_fiche,
+          date_enquete:this.step2.date_enquete,
+          marche: this.id,
+          collecteur: this.step2.collecteur,
+          numero_point_collecte: this.step2.numero_point_collecte,
+          nom_personne_enquete: this.step2.nom_personne_enquete,
+          contact_personne_enquete: this.step2.contact_personne_enquete,
           }
           console.log('data',data)
 
     try {
-      const response = await axios.put(`/parametrages/familles/${this.ToId}`,data, {
+      const response = await axios.put(`enquetes/Fiches/grossistes/${this.ToId}`,data, {
         headers: {
          
           Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -764,10 +863,11 @@ async  mounted() {
       if (response.status === 200) {
         this.closeModal(modalId);
         this.successmsg(
-              "Mise à jour de la famille",
-              "Votre famille a été mise à jour avec succès !"
-          );
-          await this.fetchFichesCollectes();
+          "Mise à jour de la fiche d'enquête",
+          "Votre fiche d'enquête a été mise à jour avec succès !"
+          )
+          this.$emit('enquete-updated');
+          this.loading = false
        
         
       } 
@@ -780,7 +880,7 @@ async  mounted() {
 
   }
  },
-  async HandleIdDelete(id) {
+  async HandleIdDelete(id , nom) {
    // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
    const result = await Swal.fire({
       title: 'Êtes-vous sûr ?',
@@ -794,15 +894,15 @@ async  mounted() {
 
    // Si l'utilisateur confirme la suppression
    if (result.isConfirmed) {
-     this.ConfirmeDelete(id);
+     this.ConfirmeDelete(id, nom);
    }
        },
-       async ConfirmeDelete(id) {
+       async ConfirmeDelete(id, nom) {
         this.loading = true
        
        try {
          // Faites une requête pour supprimer l'élément avec l'ID itemId
-         const response = await axios.delete(`/parametrages/familles/${id}`, {
+         const response = await axios.delete(`/enquetes/Fiches/collectes/${id}?type=${nom}`, {
            headers: {
              Authorization: `Bearer ${this.loggedInUser.token}`,
            },
@@ -812,11 +912,12 @@ async  mounted() {
      
          if (response.status === 200) {
            this.loading = false
-                      this.successmsg(
-              "Suppression de la famille",
-              "Votre famille a été supprimée avec succès !"
-          );
-          await this.fetchFichesCollectes();
+           this.successmsg(
+                "Suppression de la fiche d'enquête",
+                "Votre fiche d'enquête a été supprimée avec succès !"
+            );
+            this.$emit('enquete-updated');
+            this.loading = false
  
          } else {
       
@@ -843,17 +944,23 @@ if (this.searchFicheCollecteFiche !== null) {
  const tt = this.searchFicheCollecteFiche;
 const  searchValue = tt.toLowerCase()
 this.FichesCollOptions =this.data.filter(user => {
-  const Nom = user.num_fiche || '';
-  const definition = user.marche_relation?.nom_marche || '';
-  const collecte = user.collecteur_relation?.nom_collecteur || '';
-  const Prenom = user.collecteur_relation?.prenom_collecteur || '';
-  const Numero = user?.num_fiche || '';
-  return Nom.toLowerCase().includes(searchValue)  ||
-  collecte.toLowerCase().includes(searchValue)  ||
-  Prenom.toLowerCase().includes(searchValue)  ||
-  Numero.toLowerCase().includes(searchValue)  ||
-   definition.toLowerCase().includes(searchValue) 
-});
+    const Nom = user.enquete?.num_fiche || '';
+    const definition = user.enquete?.marche_relation?.nom_marche || '';
+    const collecte = user.enquete?.collecteur_relation?.nom_collecteur || '';
+    const Prenom = user.enquete?.collecteur_relation?.prenom_collecteur || '';
+    const Numero = user?.num_fiche || '';
+    const NumeroCollecte = user?.enquete?.numero_point_collecte  || '';
+    const Contact = user?.enquete?.contact_personne_enquete || '';
+    const nomEnquete = user?.enquete?.nom_personne_enquete || '';
+    return Nom.toLowerCase().includes(searchValue)  ||
+    collecte.toLowerCase().includes(searchValue)  ||
+    Prenom.toLowerCase().includes(searchValue)  ||
+    Numero.toLowerCase().includes(searchValue)  ||
+    NumeroCollecte.toLowerCase().includes(searchValue)  ||
+    Contact.toLowerCase().includes(searchValue)  ||
+    nomEnquete.toLowerCase().includes(searchValue)  ||
+     definition.toLowerCase().includes(searchValue) 
+  });
 
 } else {
 this.FichesCollOptions = [...this.data];

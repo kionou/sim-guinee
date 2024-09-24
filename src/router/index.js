@@ -23,6 +23,11 @@ import SuiviPointCollecte from '../views/parametrage/point_collecte/default.vue'
 import Types_marches from '../views/parametrage/point_collecte/types.vue'
 import point_collecte from '../views/parametrage/point_collecte/point_collecte.vue'
 
+import Suivi_All_marches from '../views/parametrage/point_collecte/all_marches.vue'
+
+
+
+
 
 
 
@@ -31,10 +36,15 @@ import Fiches_Collectes_Par_Marches_Collecte from '../views/Fiche_enquete/parmar
 import Fiches_Collectes_Par_Marches_Grossiste from '../views/Fiche_enquete/parmarchesgrossiste.vue'
 import Fiches_Collectes_Par_Marches_Herdomadaire from '../views/Fiche_enquete/parmarchesherdomadaire.vue'
 import Fiches_Collectes_Par_Marches_Journaliere from '../views/Fiche_enquete/parmarchejournaliere.vue'
+import Fiches_Collectes_Par_Marches_Debarcadere from '../views/Fiche_enquete/parmarchedebarcadere.vue'
+import Fiches_Collectes_Par_Marches_Port from '../views/Fiche_enquete/parmarcheport.vue'
 
 import Enquete_Prix_Par_Marches_Collecte from '../views/Prix_marche/collecte.vue'
 import Enquete_Prix_Par_Marches_Grossiste from '../views/Prix_marche/grossiste.vue'
-import Enquete_Prix_Par_Marches_Consommation from '../views/Prix_marche/consommation.vue'
+import Enquete_Prix_Par_Marches_Journaliere from '../views/Prix_marche/journaliere.vue'
+import Enquete_Prix_Par_Marches_Hebdomadaire from '../views/Prix_marche/hebdomadaire.vue'
+import Enquete_Prix_Par_Marches_Debarcadere from '../views/Prix_marche/debarcaderes.vue'
+import Enquete_Prix_Par_Marches_Port from '../views/Prix_marche/port.vue'
 
 
 import Test from '../views/test.vue'
@@ -117,11 +127,19 @@ const router = createRouter({
             meta: { requiresAuth: true },
              component: point_collecte
           },
+          // {
+          //   path: 'suivis-points-collecte',
+          //   name: 'suivis-points-collecte',
+          //   meta: { requiresAuth: true },
+          //    component: SuiviPointCollecte
+          // },
+
           {
-            path: 'suivis-points-collecte',
+            path: 'suivis-points-collecte/:id',
             name: 'suivis-points-collecte',
+            props:true,
             meta: { requiresAuth: true },
-             component: SuiviPointCollecte
+             component: Suivi_All_marches
           },
           {
             path: 'magasins',
@@ -172,6 +190,20 @@ const router = createRouter({
              component: Fiches_Collectes_Par_Marches_Journaliere
           },
           {
+            path: 'fiches-enquetes/marche-debarcadere/:nom/:id',
+            name: 'fiches-enquetes-type-marche-debarcadere',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Fiches_Collectes_Par_Marches_Debarcadere
+          },
+          {
+            path: 'fiches-enquetes/marche-port/:nom/:id',
+            name: 'fiches-enquetes-type-marche-port',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Fiches_Collectes_Par_Marches_Port
+          },
+          {
             path: 'enquete-prix-par-marche/C/:nom/:id',
             name: 'enquete-prix-par-marche-collecte',
             props:true,
@@ -186,11 +218,32 @@ const router = createRouter({
              component: Enquete_Prix_Par_Marches_Grossiste
           },
           {
-            path: 'enquete-prix-par-marche/CS/:nom/:id',
-            name: 'enquete-prix-par-marche-consommation',
+            path: 'enquete-prix-par-marche/J/:nom/:id',
+            name: 'enquete-prix-par-marche-journaliere',
             props:true,
             meta: { requiresAuth: true },
-             component: Enquete_Prix_Par_Marches_Consommation
+             component: Enquete_Prix_Par_Marches_Journaliere
+          },
+          {
+            path: 'enquete-prix-par-marche/H/:nom/:id',
+            name: 'enquete-prix-par-marche-hebdomadaire',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Enquete_Prix_Par_Marches_Hebdomadaire
+          },
+          {
+            path: 'enquete-prix-par-marche/D/:nom/:id',
+            name: 'enquete-prix-par-marche-debarcadere',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Enquete_Prix_Par_Marches_Debarcadere
+          },
+          {
+            path: 'enquete-prix-par-marche/P/:nom/:id',
+            name: 'enquete-prix-par-marche-port',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Enquete_Prix_Par_Marches_Port
           },
         ]
     }

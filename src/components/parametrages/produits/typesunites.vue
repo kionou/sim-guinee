@@ -904,10 +904,9 @@
     color: white;
     font-weight: bold;
   }
-  
-  /* .file-input {
-    display: none;
-  } */
-  
+  .table > thead > tr > td, .table > thead > tr > th {
+  border-top: 1px solid #d5dfea;
+  padding: 0 !important;
+  vertical-align: middle; }
   </style>
   

@@ -44,7 +44,7 @@
                 {{ marche.nom_type_marche }}
                 <span
                   class="badge ms-2 bg-warning fw-bolder font-size-16"
-                  >   {{ marche.id_type_marche === 6 || marche.id_type_marche === 7 ? marche.debarcaderes.length : marche.marches.length }}
+                  >   {{   marche.marches?.length }}
                   </span
                 >
               </span>
@@ -64,7 +64,8 @@
           >
             <div class="p-15">
               <!-- Composant lié au type de marché -->
-               <ComposantDebarcadere @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :debarcaderes="marche.debarcaderes"  v-if="marche.id_type_marche === 6 || marche.id_type_marche === 7" :id-type-marche="marche.id_type_marche" />
+               <ComposantDebarcadere @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :marches="marche.marches"  v-if="marche.id_type_marche === 6 " :id-type-marche="marche.id_type_marche" />
+               <ComposantPort @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :marches="marche.marches"  v-if=" marche.id_type_marche === 7" :id-type-marche="marche.id_type_marche" />
                 <ComposantMarche v-else :id-type-marche="marche.id_type_marche" :description="marche.description" @point-collecte-updated="handlePointCollecteUpdated"   :marches="marche.marches" />
 
                 
@@ -81,6 +82,7 @@
 <script>
   import Loading from "@/components/others/loading.vue";
 import ComposantDebarcadere from "@/components/parametrages/type_collecte/debarcaderes.vue"
+import ComposantPort from "@/components/parametrages/type_collecte/port.vue"
 import ComposantMarche from "@/components/parametrages/type_collecte/collectes.vue"
 
 import { useToast } from "vue-toastification";
@@ -91,7 +93,7 @@ export default {
  return { toast }
 },
   components:{
-    ComposantMarche ,  Loading , ComposantDebarcadere
+    ComposantMarche ,  Loading , ComposantDebarcadere , ComposantPort
   },
   computed: {
   loggedInUser() {

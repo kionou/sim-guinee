@@ -4,7 +4,7 @@
   
       <div class="content-header">
         <div class="d-flex align-items-center justify-content-between">
-          <h3 class="page-title">Fiches d'enquêtes journalier</h3>
+          <h3 class="page-title">Fiches d'enquêtes port</h3>
           <div class="d-inline-block align-items-center">
             <nav>
               <ol class="breadcrumb">
@@ -12,7 +12,7 @@
                   <router-link to="/"><i class="mdi mdi-home-outline"></i></router-link>
                 </li>
                 <li class="breadcrumb-item" aria-current="page">SIM</li>
-                <li class="breadcrumb-item active" aria-current="page">Fiches d'enquêtes journalier</li>
+                <li class="breadcrumb-item active" aria-current="page">Fiches d'enquêtes port</li>
               </ol>
             </nav>
           </div>
@@ -90,7 +90,7 @@
   </template>
   
   <script>
-  import Collectes from "@/components/fiche_enquete_compo/journalieres.vue"
+  import Collectes from "@/components/fiche_enquete_compo/port.vue"
   import { useToast } from "vue-toastification";
   import axios from '@/lib/axiosConfig'
   import Loading from "@/components/others/loading.vue";

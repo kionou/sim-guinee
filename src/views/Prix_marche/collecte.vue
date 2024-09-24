@@ -171,7 +171,7 @@
   
                       <div style="display: inline-block">
                         <span style="font-weight: 600; font-size: 1.1em; display: block">{{
-                         data?.niveau_approvisionement}} </span>
+                       data?.niveau_approvisionement  }} </span>
                       </div>
                     </div>
                   </td>
@@ -184,10 +184,10 @@
                       <a href="javascript:void(0)" class="btn btn-circle btn-success btn-xs" title=""
                       @click="HandleDetail(data , 'Detail-collecte')"><i class="ti-eye"></i></a>
                       <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title=""
-                        @click="HandleIdUpdate(data.id_fiche , 'update-prix-collecte')" data-original-title="Update"><i
+                        @click="HandleIdUpdate(data.id_fiche , 'update-prix-collecte' , 'COLLECTE')" data-original-title="Update"><i
                           class="ti-marker-alt"></i></a>
                       <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs"
-                        @click="HandleIdDelete(data.id_fiche)" title="" data-toggle="tooltip"
+                        @click="HandleIdDelete(data.id_fiche , 'COLLECTE')" title="" data-toggle="tooltip"
                         data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>
                   </td>
@@ -825,7 +825,7 @@
                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                     <div class="mt-1"> Niveau d'approvisionnement du produit dans le marché : <span
                         class="fw-semibold fs-16" data-bs-toggle="tooltip"
-                        title="Current Salary">{{detailData?.niveau_approvisionement}}</span>
+                        title="Current Salary">{{detailData?.niveau_approvisionement }}</span>
                     </div>
                   </div>
                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -1191,13 +1191,13 @@ export default {
       } else {
       }
     },
-    async HandleIdUpdate(id, modalId) {
+    async HandleIdUpdate(id, modalId , nom) {
       this.openModal(modalId)
       this.stepModal = "update";
       this.loading = true;
 
       try {
-        const response = await axios.get(`/enquetes/marches-prix/collectes/detail/${id}`, {
+        const response = await axios.get(`/enquetes/marches-prix/collectes/detail/${id}?type=${nom}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -1269,7 +1269,7 @@ export default {
         this.loading = false;
       }
     },
-    async HandleIdDelete(id) {
+    async HandleIdDelete(id ,nom) {
       // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
       const result = await Swal.fire({
         title: "Êtes-vous sûr ?",
@@ -1283,16 +1283,16 @@ export default {
 
       // Si l'utilisateur confirme la suppression
       if (result.isConfirmed) {
-        this.ConfirmeDelete(id);
+        this.ConfirmeDelete(id ,nom);
       }
     },
-    async ConfirmeDelete(id) {
+    async ConfirmeDelete(id ,nom) {
       this.loading = true;
-      console.log('id',id)
+     
 
       try {
         // Faites une requête pour supprimer l'élément avec l'ID itemId
-        const response = await axios.delete(`/enquetes/marches-prix/collectes/${id}`, {
+        const response = await axios.delete(`/enquetes/marches-prix/collectes/${id}?type=${nom}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -1451,7 +1451,13 @@ export default {
       const endIndex = startIndex + this.itemsPerPage;
       return this.MagasinsOptions.slice(startIndex, endIndex);
     },
+    getCleanCaractere(word){
+      return word.replace(/[('")]/g, '')?.trim()
+    
+  }
   },
+
+
 };
   </script>
   <style lang="css" scoped></style>

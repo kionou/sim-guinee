@@ -42,6 +42,11 @@
                    <th></th>
                    <th>N° Fiche</th>
                    <th>Agent collecte</th>
+                   <th>Type d'embarcation</th>
+                   <th>Nb embarcat. rentrées/jour</th>
+                   <th> L'espèce présente</th>
+                   <th>Difficultes rencontrées</th>
+                   <th> Hr. fin collecte sem.</th>
                    <th>Nb de prod. collectés </th>
                    <th>Date</th>
                    <th>Actions</th>
@@ -80,14 +85,19 @@
 					  </div>
 					</td>
               
-                   <td style="width:180px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ data?.nbre_produit }}</td>
+                   <td  class="text-center" >{{ data?.enquete?.type_embarcation ?? "-"}}</td>
+                   <td  class="text-center" >{{ data?.enquete?.nbr_barques_rentres_jour ?? "-"}}</td>
+                   <td  class="text-center" >{{ data?.enquete?.espece_presente ?? "-"}}</td>
+                   <td  class="text-center" >{{ data?.enquete?.difficultes_rencontrees ?? "-"}}</td>
+                   <td  class="text-center" >{{ data?.enquete?.heure_fin_collecte_semaine ?? "-" }}</td>
+                   <td style="width:150px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ data?.nbre_produit  ?? "-"}}</td>
                    <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ getYear( data?.enquete?.date_enquete) }}</td>
                    
                    <td style="width: 120px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <router-link :to="{ name: 'enquete-prix-par-marche-collecte', params: { id: data.enquete?.id , nom:'COLLECTE' }}" class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"  data-original-title="view" ><i class="ti-eye"></i></router-link>
+                        <router-link :to="{ name: 'enquete-prix-par-marche-debarcadere', params: { id: data.enquete?.id , nom:'DEBARCADERE' }}" class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"  data-original-title="view" ><i class="ti-eye"></i></router-link>
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.enquete?.id , 'update-fiche-collecte')"  ><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.enquete?.id , 'COLLECTE')" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.enquete?.id , 'DEBARCADERE')" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
                </tr>
@@ -113,7 +123,7 @@
             </div>
 
             <div class="modal center-modal fade"  id="add-fiche-collecte"  ref="add-fiche-collecte" tabindex="-1">
-          <div class="modal-dialog ">
+          <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Ajouter une fiche</h5>
@@ -124,7 +134,7 @@
             <div class="modal-body">
                   <div class="row mt-3 content-group">
                        
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > N° Fiche <span class="text-danger">*</span></label
@@ -148,7 +158,7 @@
                             </small>
                           </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Date <span class="text-danger">*</span></label
@@ -171,33 +181,7 @@
                             </small>
                           </div>
                         </div>
-
-                        <!-- <div class="col-6">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.marche"
-                              color="secondary"
-                              name="step1.marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="MarchesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.marche.$error">{{
-                              v$.step1.marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['marche']">
-                              {{ resultError["marche"] }}
-                            </small>
-                          </div>
-                        </div> -->
-
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Agent collecte <span class="text-danger">*</span></label
@@ -221,6 +205,129 @@
                             </small>
                           </div>
                         </div>
+
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Type d'embarcation <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step1.type_embarcation"
+                              color="secondary"
+                              name="step1.type_embarcation"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+                              :options="Embarcation"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.type_embarcation.$error">{{
+                              v$.step1.type_embarcation.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['type_embarcation']">
+                              {{ resultError["type_embarcation"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nombre d'embarcations rentrées par jour <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.nbr_barques_rentres_jour"
+                              color="secondary"
+                              name="step1.nbr_barques_rentres_jour"
+                              size="sm"
+                              rounded-size="sm"
+                              type="number"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.nbr_barques_rentres_jour.$error">{{
+                              v$.step1.nbr_barques_rentres_jour.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nbr_barques_rentres_jour']">
+                              {{ resultError["nbr_barques_rentres_jour"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > L'espèce présente <span class="text-danger">*</span></label
+                            >
+                            <MazSelect label="" v-model="step1.espece_presente" :options="ProduitsOptions" v-slot="{ option  }" search
+                                        size="sm" rounded-size="sm" color="secondary" multiple>
+                                        <div class="d-flex align-items-center" style="
+                                        padding-top: 0.5rem;
+                                        padding-bottom: 0.5rem;
+                                        width: 100%;
+                                        gap: 1rem;
+                                        ">
+                                        <MazAvatar size="0.8rem" :src="option.picture" />
+                                        <strong>
+                                        {{ option.label }}
+                                        </strong>
+                                        </div>
+                                                        </MazSelect>
+                            <small v-if="v$.step1.espece_presente.$error">{{
+                              v$.step1.espece_presente.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['espece_presente']">
+                              {{ resultError["espece_presente"] }}
+                            </small>
+                          </div>
+                        </div>
+
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Difficultes rencontrées <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.difficultes_rencontrees"
+                              color="secondary"
+                              name="step1.difficultes_rencontrees"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.difficultes_rencontrees.$error">{{
+                              v$.step1.difficultes_rencontrees.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['difficultes_rencontrees']">
+                              {{ resultError["difficultes_rencontrees"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Heure de fin de collecte en semaine <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step1.heure_fin_collecte_semaine"
+                              color="secondary"
+                              name="step1.heure_fin_collecte_semaine"
+                              size="sm"
+                              rounded-size="sm"
+                              type="time"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.heure_fin_collecte_semaine.$error">{{
+                              v$.step1.heure_fin_collecte_semaine.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['heure_fin_collecte_semaine']">
+                              {{ resultError["heure_fin_collecte_semaine"] }}
+                            </small>
+                          </div>
+                        </div>
+                       
                        
                       
                       </div>
@@ -238,7 +345,7 @@
 
     
           <div class="modal center-modal fade"  id="update-fiche-collecte"  ref="update-fiche-collecte" tabindex="-1">
-          <div class="modal-dialog">
+          <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier une fiche</h5>
@@ -249,7 +356,7 @@
             <div class="modal-body">
                   <div class="row mt-3 content-group">
                        
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > N° Fiche <span class="text-danger">*</span></label
@@ -273,7 +380,7 @@
                             </small>
                           </div>
                         </div>
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Date <span class="text-danger">*</span></label
@@ -296,33 +403,7 @@
                             </small>
                           </div>
                         </div>
-
-                        <!-- <div class="col-6">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.marche"
-                              color="secondary"
-                              name="step2.marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="MarchesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.marche.$error">{{
-                              v$.step2.marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['marche']">
-                              {{ resultError["marche"] }}
-                            </small>
-                          </div>
-                        </div> -->
-
-                        <div class="col-12">
+                        <div class="col-6">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Agent collecte <span class="text-danger">*</span></label
@@ -346,6 +427,129 @@
                             </small>
                           </div>
                         </div>
+
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Type d'embarcation <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step2.type_embarcation"
+                              color="secondary"
+                              name="step2.type_embarcation"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+                              :options="Embarcation"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.type_embarcation.$error">{{
+                              v$.step2.type_embarcation.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['type_embarcation']">
+                              {{ resultError["type_embarcation"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nombre d'embarcations rentrées par jour <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.nbr_barques_rentres_jour"
+                              color="secondary"
+                              name="step2.nbr_barques_rentres_jour"
+                              size="sm"
+                              rounded-size="sm"
+                              type="number"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.nbr_barques_rentres_jour.$error">{{
+                              v$.step2.nbr_barques_rentres_jour.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nbr_barques_rentres_jour']">
+                              {{ resultError["nbr_barques_rentres_jour"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > L'espèce présente <span class="text-danger">*</span></label
+                            >
+                            <MazSelect label="" v-model="step2.espece_presente" :options="ProduitsOptions" v-slot="{ option  }" search
+                                        size="sm" rounded-size="sm" color="secondary" multiple>
+                                        <div class="d-flex align-items-center" style="
+                                        padding-top: 0.5rem;
+                                        padding-bottom: 0.5rem;
+                                        width: 100%;
+                                        gap: 1rem;
+                                        ">
+                                        <MazAvatar size="0.8rem" :src="option.picture" />
+                                        <strong>
+                                        {{ option.label }}
+                                        </strong>
+                                        </div>
+                                                        </MazSelect>
+                            <small v-if="v$.step2.espece_presente.$error">{{
+                              v$.step2.espece_presente.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['espece_presente']">
+                              {{ resultError["espece_presente"] }}
+                            </small>
+                          </div>
+                        </div>
+
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Difficultes rencontrées <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.difficultes_rencontrees"
+                              color="secondary"
+                              name="step2.difficultes_rencontrees"
+                              size="sm"
+                              rounded-size="sm"
+                              type="text"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.difficultes_rencontrees.$error">{{
+                              v$.step2.difficultes_rencontrees.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['difficultes_rencontrees']">
+                              {{ resultError["difficultes_rencontrees"] }}
+                            </small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Heure de fin de collecte en semaine <span class="text-danger">*</span></label
+                            >
+                            <MazInput
+                              v-model="step2.heure_fin_collecte_semaine"
+                              color="secondary"
+                              name="step2.heure_fin_collecte_semaine"
+                              size="sm"
+                              rounded-size="sm"
+                              type="time"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.heure_fin_collecte_semaine.$error">{{
+                              v$.step2.heure_fin_collecte_semaine.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['heure_fin_collecte_semaine']">
+                              {{ resultError["heure_fin_collecte_semaine"] }}
+                            </small>
+                          </div>
+                        </div>
+                       
                        
                       
                       </div>
@@ -421,6 +625,7 @@ export default {
             FichesCollOptions: [],
             CollecteursOptions: [],
             MarchesOptions: [],
+            ProduitsOptions:[],
             data:[],
             currentPage: 1,
             itemsPerPage: 10,
@@ -428,44 +633,65 @@ export default {
             totalPageArray: [],
             currentMarcheName: "",
             selectAll: false,
-      selectedItems: [],
+           selectedItems: [],
           
             step1: {
                 num_fiche:"",
-            date_enquete:"",
-            // marche:"",
-            collecteur:"",
+              date_enquete:"",
+               collecteur:"",
+               type_embarcation:"",
+               nbr_barques_rentres_jour:"",
+               espece_presente:[],
+               difficultes_rencontrees:"",
+               heure_fin_collecte_semaine:"",
             
             },
             step2: {
-              num_fiche:"",
-            date_enquete:"",
-            // marche:"",
-            collecteur:"",
+                num_fiche:"",
+              date_enquete:"",
+               collecteur:"",
+               type_embarcation:"",
+               nbr_barques_rentres_jour:"",
+               espece_presente:[],
+               difficultes_rencontrees:"",
+               heure_fin_collecte_semaine:"",
             },
             v$: useVuelidate(),
             error: "",
             resultError: {},
+            Embarcation:[
+                {label:"MONOXYLE" , value:"MONOXYLE"},
+                {label:"FLYMBOTE" , value:"FLYMBOTE"},
+                {label:"SALAN" , value:"SALAN"},
+            ]
          
 
         }
     },
     validations: {
         step1: {
-                num_fiche:{require},
+            num_fiche:{require},
             date_enquete:{require},
-            // marche:{require},
             collecteur:{require},
+            type_embarcation:{require},
+            nbr_barques_rentres_jour:{require},
+            espece_presente:{require},
+            difficultes_rencontrees:{require},
+            heure_fin_collecte_semaine:{require},
             
             },
        
         step2: {
            
           
-          num_fiche:{require},
+            num_fiche:{require},
             date_enquete:{require},
-            // marche:{require},
             collecteur:{require},
+            type_embarcation:{require},
+            nbr_barques_rentres_jour:{require},
+            espece_presente:{require},
+            difficultes_rencontrees:{require},
+            heure_fin_collecte_semaine:{require},
            
     },
   },
@@ -473,6 +699,7 @@ export default {
     const code  =   await JSON.parse(localStorage.getItem('DataCommune'));
     await this.fetchCommuneByCode(code )
      await this.fetchNumberFiche()
+        await this.fetchProduits()
     await this.fetchCollecteurs()
     
     
@@ -595,6 +822,27 @@ export default {
 		this.handleErrors(error);
       }
     },
+    async fetchProduits() {
+      try {
+        const response = await axios.get(`/parametrages/produits?code_type_marche=06`, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("response", response);
+        if (response.status === 200) {
+          response.data.map(item => this.ProduitsOptions.push({
+            label: `${item.nom_produit} ( ${item.code_produit})`,
+            picture: item.image,
+            value: item.code_produit
+          }))
+          this.loading = false;
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
     async submitFicheCollecte(modalId) {
         this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
@@ -604,10 +852,15 @@ export default {
             date_enquete:this.step1.date_enquete,
             marche: this.id,
             collecteur: this.step1.collecteur,
+            type_embarcation: this.step1.type_embarcation,
+            nbr_barques_rentres_jour: this.step1.nbr_barques_rentres_jour,
+            espece_presente: this.step1.espece_presente,
+            difficultes_rencontrees: this.step1.difficultes_rencontrees,
+            heure_fin_collecte_semaine: this.step1.heure_fin_collecte_semaine,
             }
             console.log('data',data)
         try {
-          const response = await axios.post("/enquetes/Fiches/collectes", data, {
+          const response = await axios.post("/enquetes/Fiches/debarcadere-ports", data, {
             headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
            
           }
@@ -618,9 +871,14 @@ export default {
           if (response.status === 200) {
              this.closeModal(modalId);
              this.step1 = {
-          num_fiche: "",
-          date_enquete: "",
-          collecteur: "",
+              num_fiche:"",
+              date_enquete:"",
+               collecteur:"",
+               type_embarcation:"",
+               nbr_barques_rentres_jour:"",
+               espece_presente:"",
+               difficultes_rencontrees:"",
+               heure_fin_collecte_semaine:"",
          
         };
         this.v$.step1.$reset();
@@ -654,12 +912,21 @@ export default {
         if (response.status === 200) {
             console.log('Slbvlkjbv',response)
         
+        
           let data =  response.data
+       
+
           this.step2.num_fiche = data.num_fiche,
           this.step2.date_enquete = data.date_enquete,
           this.step2.collecteur = data.collecteur,
-          
+          this.step2.type_embarcation = data.type_embarcation,
        
+
+          this.step2.nbr_barques_rentres_jour = data.nbr_barques_rentres_jour,
+          this.step2.espece_presente = data.espece_presente,
+          this.step2.difficultes_rencontrees = data.difficultes_rencontrees,
+          this.step2.heure_fin_collecte_semaine = data.heure_fin_collecte_semaine,
+
           this.ToId = data.id
           this.loading = false;
         
@@ -679,15 +946,20 @@ export default {
     
        this.loading = true;
        let data = {
-            num_fiche:this.step2.num_fiche,
+           num_fiche:this.step2.num_fiche,
             date_enquete:this.step2.date_enquete,
             marche: this.id,
             collecteur: this.step2.collecteur,
+            type_embarcation: this.step2.type_embarcation,
+            nbr_barques_rentres_jour: this.step2.nbr_barques_rentres_jour,
+            espece_presente: this.step2.espece_presente,
+            difficultes_rencontrees: this.step2.difficultes_rencontrees,
+            heure_fin_collecte_semaine: this.step2.heure_fin_collecte_semaine,
             }
             console.log('data',data)
 
       try {
-        const response = await axios.put(`/enquetes/Fiches/collectes/${this.ToId}`,data, {
+        const response = await axios.put(`/enquetes/Fiches/debarcadere-ports/${this.ToId}`,data, {
           headers: {
            
             Authorization: `Bearer ${this.loggedInUser.token}`,

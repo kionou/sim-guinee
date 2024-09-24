@@ -47,7 +47,7 @@
                    <th>Geo local.</th>
                    <th>Commune</th>
                    <th>Agent collecte</th>
-                   <th>Jours du marché</th>
+                   <th>Jours du port</th>
                    <th>Actions</th>
                   
                </tr>
@@ -120,7 +120,7 @@
     <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-      <h5 class="modal-title">Ajouter un marché</h5>
+      <h5 class="modal-title">Ajouter un port</h5>
       <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-marche')"  >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -203,7 +203,7 @@
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Jours marché <span class="text-danger">*</span></label
+                              > Jours du  port <span class="text-danger">*</span></label
                             >
                             <MazSelect
                               v-model="step1.jour_du_marche"
@@ -237,7 +237,7 @@
                               size="sm"
                               rounded-size="sm"
                               search
-                :options="CommunesOptions"
+                             :options="CommunesOptions"
                               
                               
                             />
@@ -339,7 +339,7 @@
                               size="sm"
                               rounded-size="sm"
                               search
-                :options="CollecteursOptions"
+                              :options="CollecteursOptions"
                               
                               
                             />
@@ -387,7 +387,7 @@
           <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title">Modifier un marché</h5>
+            <h5 class="modal-title">Modifier un port</h5>
             <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('update-marche')" >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -470,7 +470,7 @@
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Jours marché <span class="text-danger">*</span></label
+                              > Jours du port <span class="text-danger">*</span></label
                             >
                             <MazSelect
                               v-model="step2.jour_du_marche"
@@ -592,7 +592,7 @@
                         </div>
                       
             </div>
- 
+  
       <div class="row mt-3 content-group">
         <div class="col">
                           <div class="input-groupe">
@@ -719,7 +719,7 @@
        jour_du_marche:[],
         
       },
- step2: {
+  step2: {
         code_marche:"",
         nom_marche:"",
         longitude:"",
@@ -921,8 +921,8 @@
       if (response.status === 200) {
             this.closeModal(modalId);
       this.successmsg(
-        "Création du marché",
-        "Votre marché a été créé avec succès !"
+        "Création du port",
+        "Votre port a été créé avec succès !"
       );
   
       this.$emit('point-collecte-updated');
@@ -938,7 +938,7 @@
     },
     async  HandleIdUpdate(id , modalId){
         console.log('Slbvlkjbv',id)
-
+  
         this.openModal(modalId)
     this.loading = true;
   
@@ -1009,8 +1009,8 @@
         if (response.status === 200) {
           this.closeModal(modalId);
           this.successmsg(
-        "Mise à jour du marché",
-        "Votre marché a été mis à jour avec succès !"
+        "Mise à jour du port",
+        "Votre port a été mis à jour avec succès !"
       );
       this.$emit('point-collecte-updated');
       this.loading = false
@@ -1061,8 +1061,8 @@
            if (response.status === 200) {
              this.loading = false
        this.successmsg(
-            "Suppression du marché",
-            "Votre marché a été supprimé avec succès !"
+            "Suppression du port",
+            "Votre port a été supprimé avec succès !"
           );
           this.$emit('point-collecte-updated');
           this.loading = false
@@ -1155,10 +1155,10 @@
         backdrop.fadeIn(100); 
       }
     },
-
+  
     openModal(modalId) {
       let modalElement = this.$refs[modalId];
-
+  
       $(modalElement).fadeIn(100, function() {
         $(modalElement).addClass('show');
       });
@@ -1167,7 +1167,7 @@
     },
     closeModal(modalId) { 
       let modalElement = this.$refs[modalId];
-
+  
       $(modalElement).fadeOut(100, function() {
         $(modalElement).removeClass('show');
         $(modalElement).css('display', 'none');

@@ -25,35 +25,30 @@
                     </div>
                    
                 </div>
-                
-
-    <div class="swiper">
-  <!-- Additional required wrapper -->
-  <div class="swiper-wrapper">
-   
-  
-    <div class="swiper-slide">
-      <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
-    </div>
-    <div class="swiper-slide">
-      <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
-    </div>
-    <div class="swiper-slide">
-      <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
-    </div>
-    <div class="swiper-slide">
-      <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
-    </div>
-   
-  </div>
-  <!-- If we need pagination -->
- 
-
-</div>
-			  
+                <div class="swiper">
+              <!-- Additional required wrapper -->
+              <div class="swiper-wrapper">
               
+              
+                <div class="swiper-slide">
+                  <img src="@/assets/img/img1.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+                </div>
+                <div class="swiper-slide">
+                  <img src="@/assets/img/img2.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+                </div>
+                <div class="swiper-slide">
+                  <img src="@/assets/img/img3.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+                </div>
+                <div class="swiper-slide">
+                  <img src="@/assets/img/img4.jpg" class="authentication-image img-thumbnail   h-400  w-600" alt="">
+                </div>
+              
+              </div>
+              <!-- If we need pagination -->
+            
 
             </div>
+             </div>
             </div>
             <div class="col-xl-4">
               <div class="formulaire">

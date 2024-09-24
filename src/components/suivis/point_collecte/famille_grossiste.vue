@@ -43,6 +43,8 @@
                   <th class="text-center">Code</th>
                   <th>Nom </th>
                   <th>Geo local.</th>
+                  <th>Région</th>
+                  <th>Préfecture</th>
                   <th>Commune</th>
                   <th>Agent collecte</th>
                   <th>Jours du marché</th>
@@ -62,57 +64,58 @@
               </tbody>
               <tbody v-else>
                 <tr v-for="data   in paginatedItems" :key="data.id">
-                
+                  <td style="width: 50px;" class="text-center">
+                    {{ data?.marche?.code_marche ?? "-"}}
+                  </td>
   
-                    <td style="width: 50px;" class="text-center">
-                  {{ data?.marche?.code_marche ?? "-"}}
-                </td>
-
-                <td>
-                  <div>
-                    <router-link  @click="HamdleData(data.marche?.commune_relation)"
-                      :to="{ name: 'fiches-enquetes-type-marche-grossiste', params: { id: data.marche?.id_marche , nom:data.marche?.nom_marche }}"
-                      style="color: #0d6efd !important; text-decoration: underline;  font-style: italic;">
-                      {{ data?.marche?.nom_marche ?? "-"}}
+                  <td>
+                    <div>
+                      <router-link  @click="HamdleData(data.marche?.commune_relation)"
+                        :to="{ name: 'fiches-enquetes-type-marche-grossiste', params: { id: data.marche?.id_marche , nom:data.marche?.nom_marche }}"
+                        style="color: #0d6efd !important; text-decoration: underline;  font-style: italic;">
+                        {{ data?.marche?.nom_marche ?? "-"}}
+    
+                      </router-link>
+    
+    
+                    </div>
+                  </td>
   
-                    </router-link>
+                  <td style="width: 100px;" class="text-center">
+                    {{ data?.marche?.longitude ?? "-"}} , {{ data?.marche?.latitude ?? "-"}}
+                  </td>
   
+                  <td style="width: 100px;" class="text-center">
+                    {{ data?.marche?.commune_relation?.prefecture_?.region_relation?.nom_region ?? "-"}}
+                  </td>
+                  <td style="width: 100px;" class="text-center">
+                    {{ data?.marche?.commune_relation?.prefecture_?.nom_prefecture ?? "-"}}
+                  </td>
+                  <td style="width: 100px;" class="text-center">
+                    {{ data?.marche?.commune_relation?.nom_commune ?? "-"}}
+                  </td>
   
-                  </div>
-                </td>
-
-                <td style="width: 100px;" class="text-center">
-                  {{ data?.marche?.longitude ?? "-"}} , {{ data?.marche?.latitude ?? "-"}}
-                </td>
-
-                <td style="width: 100px;" class="text-center">
-                  {{ data?.marche?.commune_relation?.nom_commune ?? "-"}}
-                </td>
-
-                <td style="width: 170px;" class="text-center">
-                  <span
-                    class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur
-                    ?? "-"}} {{data?.marche?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
-                  <span style="font-size:12px !important"
-                    class="text-danger  d-block">{{data?.marche?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
-                </td>
-
-                <td   data-bs-toggle="tooltip"   data-bs-placement="top"
-             
-                    style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
-                    :title="data?.marche?.jour_du_marche">
-                  {{ data?.marche?.jour_du_marche ?? "-" }}
-                </td>
-
-                <td   class="text-center"
-             
-             style="width: 50px; font-weight: bolder; color: red;" 
-             :title="data?.nbre_enquetes">
-           {{ data?.nbre_enquetes ?? "-" }}
-         </td>
-
+                  <td style="width: 170px;" class="text-center">
+                    <span
+                      class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur
+                      ?? "-"}} {{data?.marche?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
+                    <span style="font-size:12px !important"
+                      class="text-danger  d-block">{{data?.marche?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
+                  </td>
   
-                
+                  <td   data-bs-toggle="tooltip"   data-bs-placement="top"
+               
+                      style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
+                      :title="data?.marche?.jour_du_marche">
+                    {{ data?.marche?.jour_du_marche ?? "-" }}
+                  </td>
+  
+                  <td   class="text-center"
+               
+               style="width: 50px; font-weight: bolder; color: red;" 
+               :title="data?.nbre_enquetes">
+             {{ data?.nbre_enquetes ?? "-" }}
+           </td>
   
   
                    <td class="text-center" style="width: 70px !important;">
@@ -990,10 +993,10 @@
           this.MarchesOptions = this.data.filter(user => {
             console.log('searchValueUser', user)
   
-            const Code = user.code_marche || '';
-            const nom = user.nom_marche || '';
-            const Commune = user?.commune_relation?.nom_commune || '';
-            const Jour = user?.jour_du_marche || '';
+            const Code = user.marche?.code_marche || '';
+            const nom = user.marche?.nom_marche || '';
+            const Commune = user?.marche?.commune_relation?.nom_commune || '';
+            const Jour = user?.marche?.jour_du_marche || '';
   
   
             return Code.toLowerCase().includes(searchValue) || nom.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) || Jour.toLowerCase().includes(searchValue)

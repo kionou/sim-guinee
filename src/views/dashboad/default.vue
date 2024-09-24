@@ -163,13 +163,40 @@
             </transition>
           </li>
   
-          <li>
+          <!-- <li>
             <router-link to="/sim/suivis-points-collecte" @click="setActiveMenu('/sim/suivis-points-collecte')"
               :class="{ active: activeMenu === '/sim/suivis-points-collecte' }">
               <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
               <span>Fiches de collecte</span>
             </router-link>
-          </li>
+          </li> -->
+
+          <li>
+        <router-link to="#" @click.stop="toggleDropdownMenu('typeMarche')">
+          <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
+          <span>Fiches de collecte</span>
+          <span class="pull-right-container">
+            <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.typeMarche }]"></i>
+          </span>
+        </router-link>
+        <transition name="slide">
+          <ul v-show="openMenus.typeMarche" class="submenu">
+            <li v-for="marche in TypesMarchesOptions" :key="marche.type.id_type_marche">
+              <a :href="'/sim/suivis-points-collecte/' + marche.type.id_type_marche"
+                @click="setActiveSubMenu('/sim/suivis-points-collecte/' + marche.type.id_type_marche)"
+                :class="{ active: activeSubMenu === '/sim/suivis-points-collecte/' + marche.type.id_type_marche }">
+                <i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i> 
+                <span class="text-primary">{{ marche.type.nom_type_marche }} &nbsp; <b class="py-1 px-1 bg-gray-300 font-size-12 " style="border-radius:5px ; color:red "> {{ marche.nbre_marche }}</b> </span>
+               
+                <!-- <span class="badge mt-0 text-warning fw-bolder font-size-12">
+                  {{ marche.nbre_marche}}
+            </span> -->
+              
+              </a>
+            </li>
+          </ul>
+        </transition>
+      </li>
   
         </ul>
       </section>
@@ -198,9 +225,11 @@ export default {
       isOpen: false,
       openMenus: {
         parametrages: false,
+        typeMarche: false,
       },
       activeMenu: null,
       activeSubMenu: null,
+      TypesMarchesOptions:[],
     }
   },
   computed: {
@@ -220,7 +249,8 @@ export default {
     },
   },
 
-  methods: {
+   methods: {
+  
     toggleDropdown() {
       this.isOpen = !this.isOpen;
     },
@@ -233,25 +263,21 @@ export default {
       }
     },
     toggleDropdownMenu(menu) {
-      this.openMenus[menu] = !this.openMenus[menu];
-      this.saveMenuState();
-    },
-    setActiveSubMenu(subMenu) {
-      this.activeSubMenu = subMenu;
-      this.activeMenu = '/sim/parametrages'; // Le menu "Paramètres" est actif lorsque n'importe quel sous-menu est actif
-      this.openMenus.parametrages = true; // Assurez-vous que le menu Paramètres est ouvert
-      this.saveMenuState();
-    },
-    setActiveMenu(menu) {
-      this.activeMenu = menu;
-      this.activeSubMenu = null; // Réinitialiser activeSubMenu lorsqu'un menu principal est actif
-      this.closeAllMenus(); // Fermer tous les autres menus
-      this.saveMenuState();
-    },
-    closeAllMenus() {
-      for (let key in this.openMenus) {
+    // Fermer tous les autres menus avant d'ouvrir celui cliqué
+    Object.keys(this.openMenus).forEach(key => {
+      if (key !== menu) {
         this.openMenus[key] = false;
       }
+    });
+    // Basculer l'état du menu cliqué
+    this.openMenus[menu] = !this.openMenus[menu];
+    this.saveMenuState();
+  },
+    setActiveSubMenu(subMenu) {
+      this.activeSubMenu = subMenu;
+      this.activeMenu = subMenu;
+      //  this.openMenus.parametrages = true;
+      this.saveMenuState();
     },
     saveMenuState() {
       localStorage.setItem('openMenus', JSON.stringify(this.openMenus));
@@ -262,25 +288,44 @@ export default {
       const savedOpenMenus = localStorage.getItem('openMenus');
       const savedActiveMenu = localStorage.getItem('activeMenu');
       const savedActiveSubMenu = localStorage.getItem('activeSubMenu');
-
       if (savedOpenMenus) {
         this.openMenus = JSON.parse(savedOpenMenus);
       }
-
       if (savedActiveMenu) {
         this.activeMenu = savedActiveMenu;
       }
-
       if (savedActiveSubMenu) {
         this.activeSubMenu = savedActiveSubMenu;
         if (savedActiveMenu === '/sim/parametrages') {
           this.openMenus.parametrages = true;
+        }else{
+          this.openMenus.typeMarche = true;
         }
+      }
+    },
+    async fetchTypeMarches() {
+      try {
+        const response = await axios.get( `/parametrages/type-marches/admin-dynamic-types`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+            
+          }
+        );
+  
+          console.log('responsecolecteurs',response)
+        if (response.status === 200) {
+            this.TypesMarchesOptions = response.data
+        }
+      } catch (error) {
+    this.handleErrors(error);
       }
     },
   },
 
   async mounted() {
+    this.fetchTypeMarches(),
 
     console.log("index", this.loggedInUser);
     // Optional: Close dropdown when clicking outside
@@ -1934,4 +1979,7 @@ export default {
   max-height: 0;
   opacity: 0;
 }
+
+
+
 </style>

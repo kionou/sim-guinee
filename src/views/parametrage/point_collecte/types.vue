@@ -81,24 +81,24 @@
          <tbody v-else>
              <tr v-for="data  in paginatedItems" :key="data.id">
                  <td style="width: 50px;" class="text-center">
-                  {{ data?.code_type_marche}}
+                  {{ data?.type?.code_type_marche}}
                  </td>
                  <td>
         <div>
-          {{ data?.nom_type_marche ?? "-"}}
+          {{ data?.type?.nom_type_marche ?? "-"}}
         
         </div>
          </td>
          <td>
         <div>
-          {{ data?.description ?? "-"}}
+          {{ data?.type?.description ?? "-"}}
         
         </div>
          </td>
                
                  <td style="width: 100px;">
                   <div class="d-flex justify-content-evenly border-0">
-                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_marche , 'update-type-marche')"   ><i class="ti-marker-alt"></i></a>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.type?.code_marche , 'update-type-marche')"   ><i class="ti-marker-alt"></i></a>
                       <!-- <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_marche)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a> -->
                   </div>   
         </td > 
@@ -402,7 +402,7 @@ async  mounted() {
       
       async fetchMarches() {
     try {
-      const response = await axios.get( '/parametrages/type-marches',
+      const response = await axios.get( 'parametrages/type-marches/admin-dynamic-types',
         {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -411,7 +411,7 @@ async  mounted() {
         }
       );
 
-        console.log('responsecolecteurs',response)
+        console.log('responsemarches types',response)
       if (response.status === 200) {
             this.data  = response.data ;
             this.MarchesOptions = this.data

@@ -1,37 +1,35 @@
 <template >
-    <div>
-		<Loading v-if="loading" style="z-index: 99999"></Loading>
-      
-		<div class="box mb-0">
-				<div class="box-header with-border p-2">
-				  	
-					<div class="navbar-custom-menu r-side">
-        <ul class="nav navbar-nav justify-content-end">	
-				  
-			<li class="btn-group d-lg-inline-flex d-none h-40">
-				<div class="app-menu">
-					<div class="search-bx mx-5">
-						<form>
-							<div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
-                          aria-describedby="button-addon2" v-model="searchMarcheConso" @input="filterByName">
-                        <div class="input-group-append">
-                          <button class="btn border border-1"><i class="ti-search"></i></button>
-                        </div>
+  <div>
+    <Loading v-if="loading" style="z-index: 99999"></Loading>
+  
+    <div class="box">
+      <div class="box-header with-border p-2">
+  
+        <div class="navbar-custom-menu r-side">
+          <ul class="nav navbar-nav justify-content-end">
+  
+            <li class="btn-group d-lg-inline-flex d-none h-40">
+              <div class="app-menu">
+                <div class="search-bx mx-5">
+                  <form>
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                        aria-describedby="button-addon2" v-model="searchMarche" @input="filterByName">
+                      <div class="input-group-append">
+                        <button class="btn border border-1"><i class="ti-search"></i></button>
                       </div>
-						</form>
-					</div>
-				</div>
-			</li>
-			<!-- <li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#add-marche" ><i class="mdi mdi-plus"></i></button>
-			</li> -->
-
-			
-        </ul>
-                  </div>        
-				</div>
-		</div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </li>
+         
+  
+  
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="box mx-2">
       <div class="box-header with-border">
         <h3 class="box-title mb-0"> {{ description.description }}</h3>
@@ -45,6 +43,8 @@
                 <th class="text-center">Code</th>
                 <th>Nom </th>
                 <th>Geo local.</th>
+                <th>Région</th>
+                <th>Préfecture</th>
                 <th>Commune</th>
                 <th>Agent collecte</th>
                 <th>Jours du marché</th>
@@ -117,9 +117,6 @@
            {{ data?.nbre_enquetes ?? "-" }}
          </td>
 
-            
-               
-                
 
                  <td class="text-center" style="width: 70px !important;">
                   <router-link @click="HamdleData(data.marche?.commune_relation)"  :to="{ name: 'fiches-enquetes-type-marche-hebdomadaire', params: { id: data.marche?.id_marche , nom:data.marche?.nom_marche }}" class="text-white btn btn-primary btn-sm">
@@ -142,520 +139,423 @@
       </div>
     </div>
   
-		
-
-   <div class="modal center-modal fade" id="add-marche"  ref="add-marche" tabindex="-1">
-	  <div class="modal-dialog modal-lg">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">Ajouter un marché</h5>
-			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+  
+    <div class="modal center-modal fade" id="add-marche" ref="add-marche" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajouter un marché</h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('add-marche')">
               <span aria-hidden="true">&times;</span>
             </button>
-		  </div>
-		  <div class="modal-body">
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Code <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.code_marche"
-                              color="secondary"
-                              name="step1.code_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.code_marche.$error">{{
-                              v$.step1.code_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['code_marche']">
-                              {{ resultError["code_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Nom <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.nom_marche"
-                              color="secondary"
-                              name="step1.nom_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.nom_marche.$error">{{
-                              v$.step1.nom_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['nom_marche']">
-                              {{ resultError["nom_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Type marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.type_marche"
-                              color="secondary"
-                              name="step1.type_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="Marches"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.type_marche.$error">{{
-                              v$.step1.type_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['type_marche']">
-                              {{ resultError["type_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Superficie <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.superficie"
-                              color="secondary"
-                              name="step1.superficie"
-                              size="sm"
-                              rounded-size="sm"
-                             type="number"
-							 :min="0"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.superficie.$error">{{
-                              v$.step1.superficie.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['superficie']">
-                              {{ resultError["superficie"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-				<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Longitude <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.longitude"
-                              color="secondary"
-                              name="step1.longitude"
-                              size="sm"
-                              rounded-size="sm"
-                              type="number"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.longitude.$error">{{
-                              v$.step1.longitude.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['longitude']">
-                              {{ resultError["longitude"] }}
-                            </small>
-                          </div>
-                        </div>
-						
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Latitude <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.latitude"
-                              color="secondary"
-                              name="step1.latitude"
-                              size="sm"
-                              rounded-size="sm"
-                              type="number"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.latitude.$error">{{
-                              v$.step1.latitude.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['latitude']">
-                              {{ resultError["latitude"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              >Commune <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.commune"
-                              color="secondary"
-                              name="step1.commune"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="CommunesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.commune.$error">{{
-                              v$.step1.commune.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['commune']">
-                              {{ resultError["commune"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Agent collecte <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.collecteur"
-                              color="secondary"
-                              name="step1.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="CollecteursOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.collecteur.$error">{{
-                              v$.step1.collecteur.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['collecteur']">
-                              {{ resultError["collecteur"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
-                            >
-							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
-
-                            <small v-if="v$.step1.description.$error">{{
-                              v$.step1.description.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['description']">
-                              {{ resultError["description"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-             
-		  </div>
-		  <div class="modal-footer modal-footer-uniform text-end">
-		
-        <button type="button" @click="SubmitCollecteur('add-marche')" class="waves-effect waves-light btn btn-primary ">Valider</button>
-
-
-		  </div>
-		</div>
-	  </div>
-	        </div>
-
-    
-          <div class="modal center-modal fade"  id="update-marche"  ref="update-marche" tabindex="-1">
-          <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title">Modifier un marché</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
-              <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Code <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.code_marche"
-                              color="secondary"
-                              name="step2.code_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.code_marche.$error">{{
-                              v$.step2.code_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['code_marche']">
-                              {{ resultError["code_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Nom <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.nom_marche"
-                              color="secondary"
-                              name="step2.nom_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.nom_marche.$error">{{
-                              v$.step2.nom_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['nom_marche']">
-                              {{ resultError["nom_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Type marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.type_marche"
-                              color="secondary"
-                              name="step2.type_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="Marches"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.type_marche.$error">{{
-                              v$.step2.type_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['type_marche']">
-                              {{ resultError["type_marche"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Superficie <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.superficie"
-                              color="secondary"
-                              name="step2.superficie"
-                              size="sm"
-                              rounded-size="sm"
-                             type="number"
-							 :min="0"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.superficie.$error">{{
-                              v$.step2.superficie.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['superficie']">
-                              {{ resultError["superficie"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-				<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Longitude <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.longitude"
-                              color="secondary"
-                              name="step2.longitude"
-                              size="sm"
-                              rounded-size="sm"
-                              type="number"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.longitude.$error">{{
-                              v$.step2.longitude.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['longitude']">
-                              {{ resultError["longitude"] }}
-                            </small>
-                          </div>
-                        </div>
-						
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Latitude <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.latitude"
-                              color="secondary"
-                              name="step2.latitude"
-                              size="sm"
-                              rounded-size="sm"
-                              type="number"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.latitude.$error">{{
-                              v$.step2.latitude.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['latitude']">
-                              {{ resultError["latitude"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              >Commune <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.commune"
-                              color="secondary"
-                              name="step2.commune"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="CommunesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.commune.$error">{{
-                              v$.step2.commune.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['commune']">
-                              {{ resultError["commune"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Agent collecte <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.collecteur"
-                              color="secondary"
-                              name="step2.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="CollecteursOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.collecteur.$error">{{
-                              v$.step2.collecteur.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['collecteur']">
-                              {{ resultError["collecteur"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-			<div class="row mt-3 content-group">
-                        
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
-                            >
-							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
-
-                            <small v-if="v$.step2.description.$error">{{
-                              v$.step2.description.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['description']">
-                              {{ resultError["description"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
-             
-		  </div>
-            <div class="modal-footer modal-footer-uniform text-end">
-          
-              <button type="button" @click="submitUpdate('update-marche')" class="waves-effect waves-light btn btn-primary ">Valider</button>
-          
-
-            </div>
           </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Code <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.code_marche" color="secondary" name="step1.code_marche" size="sm"
+                    rounded-size="sm" type="text" />
+                  <small v-if="v$.step1.code_marche.$error">{{
+                    v$.step1.code_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['code_marche']">
+                    {{ resultError["code_marche"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Nom <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.nom_marche" color="secondary" name="step1.nom_marche" size="sm"
+                    rounded-size="sm" type="text" />
+                  <small v-if="v$.step1.nom_marche.$error">{{
+                    v$.step1.nom_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['nom_marche']">
+                    {{ resultError["nom_marche"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+            <div class="row mt-3 content-group">
+              <!-- <div class="col">
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Type marché <span class="text-danger">*</span></label
+                                >
+                                <MazSelect
+                                  v-model="step1.type_marche"
+                                  color="secondary"
+                                  name="step1.type_marche"
+                                  size="sm"
+                                  rounded-size="sm"
+                                  search
+                                 :options="TypesOptions"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step1.type_marche.$error">{{
+                                  v$.step1.type_marche.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['type_marche']">
+                                  {{ resultError["type_marche"] }}
+                                </small>
+                              </div>
+                            </div> -->
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Jours marché <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step1.jour_du_marche" color="secondary" name="step1.jour_du_marche" size="sm"
+                    rounded-size="sm" search :options="jours" multiple />
+                  <small v-if="v$.step1.jour_du_marche.$error">{{
+                    v$.step1.jour_du_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['jour_du_marche']">
+                    {{ resultError["jour_du_marche"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword">Commune <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step1.commune" color="secondary" name="step1.commune" size="sm" rounded-size="sm"
+                    search :options="CommunesOptions" />
+                  <small v-if="v$.step1.commune.$error">{{
+                    v$.step1.commune.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['commune']">
+                    {{ resultError["commune"] }}
+                  </small>
+                </div>
+              </div>
+              <!-- <div class="col">
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Superficie <span class="text-danger">*</span></label
+                                >
+                                <MazInput
+                                  v-model="step1.superficie"
+                                  color="secondary"
+                                  name="step1.superficie"
+                                  size="sm"
+                                  rounded-size="sm"
+                                 type="number"
+                   :min="0"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step1.superficie.$error">{{
+                                  v$.step1.superficie.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['superficie']">
+                                  {{ resultError["superficie"] }}
+                                </small>
+                              </div>
+                            </div> -->
+  
+            </div>
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Longitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.longitude" color="secondary" name="step1.longitude" size="sm" rounded-size="sm"
+                    type="number" />
+                  <small v-if="v$.step1.longitude.$error">{{
+                    v$.step1.longitude.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['longitude']">
+                    {{ resultError["longitude"] }}
+                  </small>
+                </div>
+              </div>
+  
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Latitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.latitude" color="secondary" name="step1.latitude" size="sm" rounded-size="sm"
+                    type="number" />
+                  <small v-if="v$.step1.latitude.$error">{{
+                    v$.step1.latitude.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['latitude']">
+                    {{ resultError["latitude"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+  
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Agent collecte <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step1.collecteur" color="secondary" name="step1.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollecteursOptions" />
+                  <small v-if="v$.step1.collecteur.$error">{{
+                    v$.step1.collecteur.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['collecteur']">
+                    {{ resultError["collecteur"] }}
+                  </small>
+                </div>
+              </div>
+  
+  
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Description <span class="text-danger">*</span></label>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
+                    id="text-area" v-model="step1.description" rows="1"></textarea>
+  
+                  <small v-if="v$.step1.description.$error">{{
+                    v$.step1.description.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+  
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+  
+            <button type="button" @click="SubmitCollecteur('add-marche')"
+              class="waves-effect waves-light btn btn-primary ">Valider</button>
+  
+  
           </div>
         </div>
+      </div>
     </div>
+  
+  
+    <div class="modal center-modal fade" id="update-marche" ref="update-marche" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modifier un marché</h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('update-marche')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Code <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.code_marche" color="secondary" name="step2.code_marche" size="sm"
+                    rounded-size="sm" type="text" />
+                  <small v-if="v$.step2.code_marche.$error">{{
+                    v$.step2.code_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['code_marche']">
+                    {{ resultError["code_marche"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Nom <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.nom_marche" color="secondary" name="step2.nom_marche" size="sm"
+                    rounded-size="sm" type="text" />
+                  <small v-if="v$.step2.nom_marche.$error">{{
+                    v$.step2.nom_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['nom_marche']">
+                    {{ resultError["nom_marche"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+            <div class="row mt-3 content-group">
+              <!-- <div class="col">
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Type marché <span class="text-danger">*</span></label
+                                >
+                                <MazSelect
+                                  v-model="step2.type_marche"
+                                  color="secondary"
+                                  name="step2.type_marche"
+                                  size="sm"
+                                  rounded-size="sm"
+                                  search
+                                  :options="TypesOptions"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step2.type_marche.$error">{{
+                                  v$.step2.type_marche.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['type_marche']">
+                                  {{ resultError["type_marche"] }}
+                                </small>
+                              </div>
+                            </div> -->
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Jours marché <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step2.jour_du_marche" color="secondary" name="step2.jour_du_marche" size="sm"
+                    rounded-size="sm" search :options="jours" multiple />
+                  <small v-if="v$.step2.jour_du_marche.$error">{{
+                    v$.step2.jour_du_marche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['jour_du_marche']">
+                    {{ resultError["jour_du_marche"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword">Commune <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step2.commune" color="secondary" name="step2.commune" size="sm" rounded-size="sm"
+                    search :options="CommunesOptions" />
+                  <small v-if="v$.step2.commune.$error">{{
+                    v$.step2.commune.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['commune']">
+                    {{ resultError["commune"] }}
+                  </small>
+                </div>
+              </div>
+              <!-- <div class="col">
+                              <div class="input-groupe">
+                                <label for="userpassword"
+                                  > Superficie <span class="text-danger">*</span></label
+                                >
+                                <MazInput
+                                  v-model="step2.superficie"
+                                  color="secondary"
+                                  name="step2.superficie"
+                                  size="sm"
+                                  rounded-size="sm"
+                                 type="number"
+                   :min="0"
+                                  
+                                  
+                                />
+                                <small v-if="v$.step2.superficie.$error">{{
+                                  v$.step2.superficie.$errors[0].$message
+                                }}</small>
+                                <small v-if="resultError['superficie']">
+                                  {{ resultError["superficie"] }}
+                                </small>
+                              </div>
+                            </div> -->
+  
+            </div>
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Longitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.longitude" color="secondary" name="step2.longitude" size="sm" rounded-size="sm"
+                    type="number" />
+                  <small v-if="v$.step2.longitude.$error">{{
+                    v$.step2.longitude.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['longitude']">
+                    {{ resultError["longitude"] }}
+                  </small>
+                </div>
+              </div>
+  
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Latitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.latitude" color="secondary" name="step2.latitude" size="sm" rounded-size="sm"
+                    type="number" />
+                  <small v-if="v$.step2.latitude.$error">{{
+                    v$.step2.latitude.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['latitude']">
+                    {{ resultError["latitude"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+  
+            <div class="row mt-3 content-group">
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Agent collecte <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step2.collecteur" color="secondary" name="step2.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollecteursOptions" />
+                  <small v-if="v$.step2.collecteur.$error">{{
+                    v$.step2.collecteur.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['collecteur']">
+                    {{ resultError["collecteur"] }}
+                  </small>
+                </div>
+              </div>
+  
+  
+              <div class="col">
+                <div class="input-groupe">
+                  <label for="userpassword"> Description <span class="text-danger">*</span></label>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
+                    id="text-area" v-model="step2.description" rows="1"></textarea>
+  
+                  <small v-if="v$.step2.description.$error">{{
+                    v$.step2.description.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['description']">
+                    {{ resultError["description"] }}
+                  </small>
+                </div>
+              </div>
+  
+            </div>
+  
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+  
+            <button type="button" @click="submitUpdate('update-marche')"
+              class="waves-effect waves-light btn btn-primary ">Valider</button>
+  
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-<script>
+  <script>
 import Pag from "@/components/others/pagination.vue";
 import Loading from "@/components/others/loading.vue";
 import axios from '@/lib/axiosConfig'
 import useVuelidate from "@vuelidate/core";
 import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
-import {successmsg} from "@/lib/modal.js"
+import { successmsg } from "@/lib/modal.js"
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
-  import Swal from 'sweetalert2'
-  import { useToast } from "vue-toastification";
+import Swal from 'sweetalert2'
+import { useToast } from "vue-toastification";
 export default {
-	setup() {
-   const toast = useToast();
-   return { toast }
- },
- props: {
+  setup() {
+    const toast = useToast();
+    return { toast }
+  },
+  props: {
+    idTypeMarche: Number,
+    marches: Array,
+    description: Object,
     marchesData: {
       type: Array,
       required: true,
     },
-    description: Object,
   },
-	components:{
-        Pag , Loading , MazPhoneNumberInput
-    },
-    computed: {
+  components: {
+    Pag, Loading, MazPhoneNumberInput
+  },
+  computed: {
     loggedInUser() {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
@@ -667,61 +567,71 @@ export default {
       const endIndex = startIndex + this.itemsPerPage;
       return this.MarchesOptions.slice(startIndex, endIndex);
     },
-  
+
   },
-    data() {
-        return {
-            loading: false,
-            searchMarcheConso:"",
-            isModalUpdate:"",
-            MarchesOptions: [],
-			CommunesOptions:[],
-			CollecteursOptions:[],
-            data:[],
-            currentPage: 1,
-            itemsPerPage: 10,
-            ToId:"",
-            totalPageArray: [],
-			Marches: [
-				{ label: "Marché de collecte", value: 1 },
-				{ label: "Marché de consommation", value: 2 },
-				{ label: "Marché de grossiste", value: 3 },
-				{ label: "Marché de détail", value: 4 },
-        		],
-			step1: {
-				code_marche:"",
-				nom_marche:"",
-				type_marche:"",
-				superficie:"",
-				longitude:"",
-				latitude:"",
-				commune:"",
-				collecteur:"",
-				description:"",
-				
-			},
-            step2: {
-				code_marche:"",
-				nom_marche:"",
-				type_marche:"",
-				superficie:"",
-				longitude:"",
-				latitude:"",
-				commune:"",
-				collecteur:"",
-				description:"",
+  data() {
+    return {
+      loading: false,
+      Code: "",
+      searchMarche: "",
+      isModalUpdate: "",
+      MarchesOptions: [],
+      TypesOptions: [],
+      CommunesOptions: [],
+      CollecteursOptions: [],
+      data: [],
+      currentPage: 1,
+      itemsPerPage: 10,
+      ToId: "",
+      totalPageArray: [],
+      Marches: [
+        { label: "Marché de collecte", value: 1 },
+        { label: "Marché de consommation", value: 3 },
+        { label: "Marché de grossiste", value: 2 },
+        { label: "Marché de détail", value: 4 },
+      ],
+      step1: {
+        code_marche: "",
+        nom_marche: "",
+        longitude: "",
+        latitude: "",
+        commune: "",
+        collecteur: "",
+        description: "",
+        jour_du_marche: [],
 
-			},
-            v$: useVuelidate(),
-            error: "",
-            resultError: {},
+      },
+      step2: {
+        code_marche: "",
+        nom_marche: "",
+        longitude: "",
+        latitude: "",
+        commune: "",
+        collecteur: "",
+        description: "",
+        jour_du_marche: [],
 
-        }
-    },
-    watch: {
+
+      },
+      v$: useVuelidate(),
+      error: "",
+      resultError: {},
+      jours: [
+        { label: 'Lundi', value: 'Lundi' },
+        { label: 'Mardi', value: 'Mardi' },
+        { label: 'Mercredi', value: 'Mercredi' },
+        { label: 'Jeudi', value: 'Jeudi' },
+        { label: 'Vendredi', value: 'Vendredi' },
+        { label: 'Samedi', value: 'Samedi' },
+        { label: 'Dimanche', value: 'Dimanche' },
+      ]
+
+    }
+  },
+  watch: {
     marchesData: {
       handler(newData) {
-        console.log('azerty',newData)
+        console.log('azertycollecte',newData)
         this.MarchesOptions = [...newData];
         this.data = [...newData];
         this.updatePaginatedItems();
@@ -729,65 +639,96 @@ export default {
       deep: true,
       immediate: true,
     },
+
+    // idTypeMarche: {
+    //   immediate: true,
+    //   handler(newValue, oldValue) {
+    //     console.log(`idTypeMarche a changé : ${oldValue} -> ${newValue}`);
+    //      this.fetchMarches(newValue);
+    //     this.Code = newValue
+    //   },
+    // },
+
+    // marches: {
+    //   immediate: true,
+    //   handler(newData) {
+    //     console.log('Nouvelles données de marches :', newData);
+    //     this.MarchesOptions = [...newData];
+    //     this.data = [...newData];
+    //     this.updatePaginatedItems();
+    //   }
+    // }
   },
-    validations: {
-		step1: {
-				code_marche:{require},
-				nom_marche:{require},
-				type_marche:{require},
-				superficie:{require},
-				longitude:{require},
-				latitude:{require},
-				commune:{require},
-				collecteur:{require},
-				description:{require},
-				
-			},
-       
-         step2: {
-			   code_marche:{require},
-				nom_marche:{require},
-				type_marche:{require},
-				superficie:{require},
-				longitude:{require},
-				latitude:{require},
-				commune:{require},
-				collecteur:{require},
-				description:{require},
-		 },
+  validations: {
+    step1: {
+      code_marche: { require },
+      nom_marche: { require },
+      longitude: { require },
+      latitude: { require },
+      commune: { require },
+      collecteur: { require },
+      description: { require },
+      jour_du_marche: { require }
+
+    },
+
+    step2: {
+      code_marche: { require },
+      nom_marche: { require },
+      longitude: { require },
+      latitude: { require },
+      commune: { require },
+      collecteur: { require },
+      description: { require },
+      jour_du_marche: { require }
+
+    },
   },
-  async  mounted() {
+  async mounted() {
     // await this.fetchMarches()
     await this.fetchCommunes()
     await this.fetchCollecteurs()
-        
-    },
-    methods: {
-        successmsg:successmsg,
+    await this.fetchTypesMarches()
+
   
-        
-        async fetchMarches() {
+
+  //   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  // var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  //   return new bootstrap.Tooltip(tooltipTriggerEl);
+  // });
+
+  },
+  methods: {
+    successmsg: successmsg,
+    HamdleData(data){
+      console.log('data',data)
+      localStorage.setItem('DataCommune', JSON.stringify(data));
+    },
+
+
+    async fetchMarches(id) {
       try {
-        const response = await axios.get( '/parametrages/marches',
+        const response = await axios.get(`/parametrages/marches/marche/listes?type_marche=${id}`,
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
 
-          console.log('responsecolecteurs',response)
+        console.log('responsecolecteursaa', id, response)
         if (response.status === 200) {
-              this.data  = response.data ;
-              this.MarchesOptions = this.data
-              this.loading =  false
+          this.data = response.data;
+          this.MarchesOptions = this.data
+          this.$emit('marches-count', { idTypeMarche: id, count: this.data.length });
+          this.loading = false
         }
       } catch (error) {
-		this.handleErrors(error);
+        this.handleErrors(error);
       }
     },
-	async fetchCommunes() {
+    async fetchCommunes() {
       try {
         const response = await axios.get('/parametrages/localites/communes',
           {
@@ -798,86 +739,112 @@ export default {
           }
         );
 
-        console.log('response', response)
         if (response.status === 200) {
-			response.data.map(item => this.CommunesOptions.push({
-				label: item.nom_commune,
-				value: item.id_commune
-				}))
-          
+          response.data.map(item => this.CommunesOptions.push({
+            label: item.nom_commune,
+            value: item.id_commune
+          }))
+
         }
       } catch (error) {
 
         this.handleErrors(error);
       }
     },
-	async fetchCollecteurs() {
+    async fetchTypesMarches() {
       try {
-        const response = await axios.get( '/parametrages/collecteurs',
+        const response = await axios.get('/parametrages/type-marches',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
 
-          console.log('responsecolecteurs',response)
         if (response.status === 200) {
-			response.data.map(item => {
-				this.CollecteursOptions.push({
-					label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-					value: item.id_collecteur 
-				});
-});
+          response.data.map(item => this.TypesOptions.push({
+            label: item.nom_type_marche,
+            value: item.code_type_marche
+          }))
+
         }
       } catch (error) {
-		this.handleErrors(error);
+
+
+      }
+    },
+    async fetchCollecteurs() {
+      try {
+        const response = await axios.get('/parametrages/collecteurs',
+          {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+
+          }
+        );
+
+        if (response.status === 200) {
+          response.data.map(item => {
+            this.CollecteursOptions.push({
+              label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
+              value: item.id_collecteur
+            });
+          });
+        }
+      } catch (error) {
+        this.handleErrors(error);
       }
     },
     async SubmitCollecteur(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
-       let data = {
+        let data = {
 
-            code_marche:this.step1.code_marche,
-            nom_marche:this.step1.nom_marche,
-            type_marche:this.step1.type_marche,
-            superficie:this.step1.superficie,
-            longitude:this.step1.longitude,
-            latitude:this.step1.latitude,
-            commune:this.step1.commune,
-            collecteur:this.step1.collecteur,
-            description:this.step1.description,
-       }
-       
-	   console.log('data',data)
+          code_marche: this.step1.code_marche,
+          nom_marche: this.step1.nom_marche,
+          type_marche: this.Code,
+          longitude: this.step1.longitude,
+          latitude: this.step1.latitude,
+          commune: this.step1.commune,
+          collecteur: this.step1.collecteur,
+          description: this.step1.description,
+          jour_du_marche: (this.step1.jour_du_marche).toString(),
+        }
+
+        console.log('data', data)
         try {
           const response = await axios.post("/parametrages/marches", data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
-          }
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            }
           });
-		  console.log('qfs', response)
-		  if (response.status === 200) {
+          console.log('qfs', response)
+          if (response.status === 200) {
             this.closeModal(modalId);
-			this.successmsg(
-				"Création du marché",
-				"Votre marché a été créé avec succès !"
-			);
+            this.successmsg(
+              "Création du marché",
+              "Votre marché a été créé avec succès !"
+            );
 
-            await this.fetchMarches();
+            this.$emit('point-collecte-updated');
+            this.loading = false
           } else {
           }
         } catch (error) {
-			this.handleErrors(error);
+          this.handleErrors(error);
         }
       } else {
-      
+
       }
     },
-    async  HandleIdUpdate(id){
-    this.loading = true;
+    async HandleIdUpdate(id, modalId) {
+      console.log('Slbvlkjbv', id)
+
+      this.openModal(modalId)
+      this.loading = true;
 
       try {
         const response = await axios.get(`/parametrages/marches/${id}`, {
@@ -886,90 +853,86 @@ export default {
           }
         });
 
-      
+
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
-        
-          let data =  response.data
+          console.log('Slbvlkjbv', response)
+
+          let data = response.data
           this.step2 = {
             code_marche: data.code_marche,
             nom_marche: data.nom_marche,
-            type_marche: parseInt(data.type_marche),
-            superficie: data.superficie,
             longitude: data.longitude,
             latitude: data.latitude,
             commune: data.commune,
-            collecteur: data.collecteur,
+            collecteur: data?.collecteur,
             description: data.description,
-            
-
+            jour_du_marche: data?.jour_du_marche?.split(','),
           }
-       
+          this.Code = parseInt(data.type_marche)
           this.ToId = data.code_marche
           this.loading = false;
-        
+
         }
       } catch (error) {
-      
-		this.handleErrors(error);
+
+        this.handleErrors(error);
       }
 
     },
-    async  submitUpdate(modalId){
-   
-   this.v$.step2.$touch();
+    async submitUpdate(modalId) {
 
- 
-    if (this.v$.$errors.length == 0) {
-    
-       this.loading = true;
-       let data = {
-		   code_marche:this.step2.code_marche,
-            nom_marche:this.step2.nom_marche,
-            type_marche:this.step2.type_marche,
-            superficie:this.step2.superficie,
-            longitude:this.step2.longitude,
-            latitude:this.step2.latitude,
-            commune:this.step2.commune,
-            collecteur:this.step2.collecteur,
-            description:this.step2.description,
-          
-          
-            }
+      this.v$.step2.$touch();
 
 
- 
-      try {
-        const response = await axios.put(`/parametrages/marches/${this.ToId}`,data, {
-          headers: {
-           
-            Authorization: `Bearer ${this.loggedInUser.token}`,
-          
-          },
-        });
-     
-        if (response.status === 200) {
-          this.closeModal(modalId);
-          this.successmsg(
-				"Mise à jour du marché",
-				"Votre marché a été mis à jour avec succès !"
-			);
-            await this.fetchMarches();
-         
-          
-        } 
-      } catch (error) {
-		this.handleErrors(error);
+      if (this.v$.$errors.length == 0) {
+
+        this.loading = true;
+        let data = {
+          code_marche: this.step2.code_marche,
+          nom_marche: this.step2.nom_marche,
+          type_marche: this.Code,
+          longitude: this.step2.longitude,
+          latitude: this.step2.latitude,
+          commune: this.step2.commune,
+          collecteur: this.step2.collecteur,
+          description: this.step2.description,
+          jour_du_marche: (this.step2.jour_du_marche).toString(),
+        }
+
+
+
+        try {
+          const response = await axios.put(`/parametrages/marches/${this.ToId}`, data, {
+            headers: {
+
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+
+            },
+          });
+
+          if (response.status === 200) {
+            this.closeModal(modalId);
+            this.successmsg(
+              "Mise à jour du marché",
+              "Votre marché a été mis à jour avec succès !"
+            );
+            this.$emit('point-collecte-updated');
+            this.loading = false
+
+
+          }
+        } catch (error) {
+          this.handleErrors(error);
+        }
+      } else {
+
+        this.loading = false;
+
       }
-    } else {
-  
-      this.loading = false;
-
-    }
-   },
+    },
     async HandleIdDelete(id) {
-     // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
-     const result = await Swal.fire({
+      // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
+      const result = await Swal.fire({
         title: 'Êtes-vous sûr ?',
         text: 'Vous ne pourrez pas annuler cette action !',
         icon: 'warning',
@@ -977,82 +940,76 @@ export default {
         confirmButtonText: 'Oui, supprimez-le !',
         cancelButtonText: 'Non, annulez !',
         reverseButtons: true
-     });
-
-     // Si l'utilisateur confirme la suppression
-     if (result.isConfirmed) {
-       this.ConfirmeDelete(id);
-     }
-         },
-         async ConfirmeDelete(id) {
-          this.loading = true
-         
-         try {
-           // Faites une requête pour supprimer l'élément avec l'ID itemId
-           const response = await axios.delete(`/parametrages/marches/${id}`, {
-             headers: {
-               Authorization: `Bearer ${this.loggedInUser.token}`,
-               
-   
-             },
-   
-   
-           });
-       
-           if (response.status === 200) {
-             this.loading = false
-			 this.successmsg(
-						"Suppression du marché",
-						"Votre marché a été supprimé avec succès !"
-					);
-            await this.fetchMarches();
-   
-           } else {
-        
-			this.handleErrors(error);
-           }
-         } catch (error) {
-			this.handleErrors(error);
-           
-         }
-   
-       },
-    filterByName() {
-this.currentPage = 1;
-if (this.searchMarcheConso !== null) {
-   const tt = this.searchMarcheCons;
-  const  searchValue = tt.toLowerCase()
-
-  this.MarchesOptions =this.data.filter(user => {
-    const Code = user.code_marche || '';
-    const nom = user.nom_marche || '';
-    const Commune = user?.commune_relation?.nom_commune || '';
-    
-    
-    return Code.toLowerCase().includes(searchValue) || nom.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) 
-	  
-  });
-
-} else {
-this.MarchesOptions = [...this.data];
- 
-}
-
-},
-updateCurrentPage(pageNumber) {
-      this.currentPage = pageNumber;
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth", // Utilisez 'auto' pour un défilement instantané
       });
-    },
-    updatePaginatedItems() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
 
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.MarchesOptions.slice(startIndex, endIndex);
+      // Si l'utilisateur confirme la suppression
+      if (result.isConfirmed) {
+        this.ConfirmeDelete(id);
+      }
     },
-triggerToast(errorMessage) {
+    async ConfirmeDelete(id) {
+      this.loading = true
+
+      try {
+        // Faites une requête pour supprimer l'élément avec l'ID itemId
+        const response = await axios.delete(`/parametrages/marches/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+
+
+          },
+
+
+        });
+
+        if (response.status === 200) {
+          this.loading = false
+          this.successmsg(
+            "Suppression du marché",
+            "Votre marché a été supprimé avec succès !"
+          );
+          this.$emit('point-collecte-updated');
+          this.loading = false
+
+        } else {
+
+          this.handleErrors(error);
+        }
+      } catch (error) {
+        this.handleErrors(error);
+
+      }
+
+    },
+    filterByName() {
+      this.currentPage = 1;
+      if (this.searchMarche !== null) {
+        const tt = this.searchMarche;
+        console.log('ee', tt)
+        const searchValue = tt.toLowerCase()
+        console.log('searchValue', searchValue)
+        console.log('searchValue', this.data)
+
+        this.MarchesOptions = this.data.filter(user => {
+          console.log('searchValueUser', user)
+
+          const Code = user.marche?.code_marche || '';
+          const nom = user.marche?.nom_marche || '';
+          const Commune = user?.marche?.commune_relation?.nom_commune || '';
+          const Jour = user?.marche?.jour_du_marche || '';
+
+
+          return Code.toLowerCase().includes(searchValue) || nom.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) || Jour.toLowerCase().includes(searchValue)
+
+        });
+
+      } else {
+        this.MarchesOptions = [...this.data];
+
+      }
+
+    },
+    triggerToast(errorMessage) {
       this.toast.error(errorMessage, {
         position: "top-right",
         timeout: 8000,
@@ -1083,7 +1040,7 @@ triggerToast(errorMessage) {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       else if
-       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
@@ -1095,16 +1052,34 @@ triggerToast(errorMessage) {
         return false;
       }
     },
-closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      modalElement.style.opacity = "";
-       document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100);
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function () {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function () {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function () {
+        $(this).remove();
+      });
     },
 
     async formatValidationErrors(errors) {
@@ -1112,22 +1087,34 @@ closeModal(modalId) {
 
       for (const field in errors) {
         const errorMessages = errors[field]; // Liste complète des messages d'erreur
-  
+
 
         const concatenatedError = errorMessages.join(", "); // Concaténer les messages d'erreur
-       
+
 
         formattedErrors[field] = concatenatedError; // Utilisez le nom du champ comme clé
       }
 
       this.resultError = formattedErrors; // Stockez les erreurs dans un objet
 
-    
+
     },
-    
+    updateCurrentPage(pageNumber) {
+      this.currentPage = pageNumber;
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth", // Utilisez 'auto' pour un défilement instantané
+      });
     },
+    updatePaginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.MarchesOptions.slice(startIndex, endIndex);
+    },
+  },
 }
-</script>
-<style lang="css" scoped>
-    
+  </script>
+  <style lang="css" scoped>
+
 </style>
