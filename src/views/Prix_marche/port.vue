@@ -722,6 +722,7 @@
         Fournisseur: [
           { label: "Abondant", value: "Abondant" },
           { label: "Normal", value: "Normal" },
+          { label: "Moyen", value: "Moyen" },
           { label: "Rare", value: "Rare" },
   
         ],

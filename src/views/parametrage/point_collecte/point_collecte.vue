@@ -157,7 +157,6 @@ methods: {
         }
       );
 
-        console.log('responsecolecteurs',response)
       if (response.status === 200) {
            
             this.MarchesOptions =  response.data 
@@ -197,7 +196,6 @@ this.fetchTypesMarches();
       //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
     }
     if (error.response?.data.detail.includes('204')) {
-      console.log('bonjour')
       this.loading = false;
       this.data = [];
       // Logique pour une erreur serveur

@@ -75,34 +75,10 @@
           <li>
             <router-link to="/" @click="setActiveMenu('/')" :class="{ active: activeMenu === '/' }">
               <i class="icon-Layout-4-blocks"><span class="path1"></span><span class="path2"></span></i>
-              <span>Tableau de bord</span>
+              <spam>Tableau de bord</spam>
             </router-link>
           </li>
-          <!-- <li>
-        <router-link to="#" @click.stop="toggleDropdownMenu('parametrages')">
-          <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
-          <span>Paramètres</span>
-          <span class="pull-right-container">
-            <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.parametrages }]"></i>
-          </span>
-        </router-link>
-        <transition name="slide">
-          <ul v-show="openMenus.parametrages" class="submenu">
-            <li style="padding-top:6px !important"><router-link to="/sim/utilisateurs" @click="handleSubMenuClick('/sim/utilisateurs')" :class="{ active: activeSubMenu === '/sim/utilisateurs' }" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Gestion Utilisateurs</router-link></li>
-            <li style="padding-top:6px !important"><router-link  to="/sim/localites" style="color:var(--color-primary);"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Localités</router-link></li>
-            <li style="padding-top:6px !important"><router-link to="/sim/collectes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Collecteurs</router-link></li>
-            <li style="padding-top:6px !important"><router-link to="/sim/magasins" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Magasins</router-link></li>
-            <li style="padding-top:6px !important"><router-link to="/sim/debarcaderes" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Debarcadères</router-link></li>
-            <li style="padding-top:6px !important"><router-link to="/sim/types-produits" style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i>Gestion Produits</router-link></li>
-          </ul>
-        </transition>
-      </li>
-       <li>
-          <router-link to="/sim/marches">
-            <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
-            <span>Gestion Marchés</span>
-          </router-link>
-        </li>    -->
+
           <li>
             <router-link to="#" @click.stop="toggleDropdownMenu('parametrages')">
               <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
@@ -163,17 +139,11 @@
             </transition>
           </li>
   
-          <!-- <li>
-            <router-link to="/sim/suivis-points-collecte" @click="setActiveMenu('/sim/suivis-points-collecte')"
-              :class="{ active: activeMenu === '/sim/suivis-points-collecte' }">
-              <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
-              <span>Fiches de collecte</span>
-            </router-link>
-          </li> -->
+  
 
           <li>
         <router-link to="#" @click.stop="toggleDropdownMenu('typeMarche')">
-          <i class="icon-Layout-grid"><span class="path1"></span><span class="path2"></span></i>
+          <i class="icon-File"><span class="path1"></span><span class="path2"></span></i>
           <span>Fiches de collecte</span>
           <span class="pull-right-container">
             <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.typeMarche }]"></i>
@@ -186,7 +156,7 @@
                 @click="setActiveSubMenu('/sim/suivis-points-collecte/' + marche.type.id_type_marche)"
                 :class="{ active: activeSubMenu === '/sim/suivis-points-collecte/' + marche.type.id_type_marche }">
                 <i class="icon-Commit me-2"><span class="path1"></span><span class="path2"></span></i> 
-                <span class="text-primary">{{ marche.type.nom_type_marche }} &nbsp; <b class="py-1 px-1 bg-gray-300 font-size-12 " style="border-radius:5px ; color:red "> {{ marche.nbre_marche }}</b> </span>
+                <spam>{{ marche.type.nom_type_marche }} &nbsp; <b class="py-1 px-1 bg-gray-300 font-size-12 " style="border-radius:5px ; color:red "> {{ marche.nbre_marche }}</b> </spam>
                
                 <!-- <span class="badge mt-0 text-warning fw-bolder font-size-12">
                   {{ marche.nbre_marche}}
@@ -197,6 +167,55 @@
           </ul>
         </transition>
       </li>
+      <li>
+            <router-link to="/sim/chiffres-cles" @click="setActiveMenu('/sim/chiffres-cles')" :class="{ active: activeMenu === '/sim/chiffres-cles' }">
+              <i class="icon-Chart-pie"><span class="path1"></span><span class="path2"></span></i>
+              <spam>Chiffres clé</spam>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/sim/disponibilites-besoins" @click="setActiveMenu('/sim/disponibilites-besoins')" :class="{ active: activeMenu === '/sim/disponibilites-besoins' }">
+              <i class="icon-Write"><span class="path1"></span><span class="path2"></span></i>
+              <spam>Disponibilités & Bésoins</spam>
+            </router-link>
+          </li>
+
+      <!-- <li>
+            <router-link to="#" @click.stop="toggleDropdownMenu('autres_parametrages')">
+              <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
+              <span>Autres paramètres</span>
+              <span class="pull-right-container">
+                <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.autres_parametrages }]"></i>
+              </span>
+            </router-link>
+            <transition name="slide">
+              <ul v-show="openMenus.autres_parametrages" class="submenu">
+               
+               
+  
+                <li style="padding-top:6px !important"><router-link to="/sim/collectes"
+                    @click="setActiveSubMenu('/sim/collectes')" :class="{ active: activeSubMenu === '/sim/collectes' }"
+                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
+                        class="path2"></span></i>Chiffre clé</router-link></li>
+
+                <li style="padding-top:6px !important"><router-link to="/sim/types-marches"
+                    @click="setActiveSubMenu('/sim/types-marches')" :class="{ active: activeSubMenu === '/sim/types-marches' }"
+                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
+                        class="path2"></span></i>Disponibilité</router-link></li>
+
+                        <li style="padding-top:6px !important"><router-link to="/sim/points-collecte"
+                    @click="setActiveSubMenu('/sim/points-collecte')" :class="{ active: activeSubMenu === '/sim/points-collecte' }"
+                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
+                        class="path2"></span></i>Bésoins</router-link></li>
+
+                      
+
+              
+
+                
+              </ul>
+            </transition>
+          </li> -->
   
         </ul>
       </section>
@@ -226,6 +245,7 @@ export default {
       openMenus: {
         parametrages: false,
         typeMarche: false,
+        autres_parametrages:false,
       },
       activeMenu: null,
       activeSubMenu: null,
@@ -257,26 +277,45 @@ export default {
     async logout() {
       try {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser"); // Appel de l'action pour déconnecter l'utilisateur
+        this.clearMenuState();
         this.$router.push("/");
         location.reload();
       } catch (error) {
       }
     },
-    toggleDropdownMenu(menu) {
-    // Fermer tous les autres menus avant d'ouvrir celui cliqué
-    Object.keys(this.openMenus).forEach(key => {
-      if (key !== menu) {
+  
+  setActiveMenu(menu) {
+      this.activeMenu = menu;
+      this.activeSubMenu = null; // Réinitialise le sous-menu actif
+
+      // Fermer tous les menus déroulants si le tableau de bord est activé
+      if (menu === '/') {
+        this.closeAllMenus();
+      }
+
+      this.saveMenuState(); // Sauvegarde l'état des menus
+    },
+
+    // Fermer tous les menus déroulants
+    closeAllMenus() {
+      for (let key in this.openMenus) {
         this.openMenus[key] = false;
       }
-    });
-    // Basculer l'état du menu cliqué
-    this.openMenus[menu] = !this.openMenus[menu];
-    this.saveMenuState();
-  },
+    },
+    toggleDropdownMenu(menu) {
+      // Fermer tous les autres menus avant d'ouvrir celui cliqué
+      Object.keys(this.openMenus).forEach((key) => {
+        if (key !== menu) {
+          this.openMenus[key] = false;
+        }
+      });
+      // Basculer l'état du menu cliqué
+      this.openMenus[menu] = !this.openMenus[menu];
+      this.saveMenuState();
+    },
     setActiveSubMenu(subMenu) {
       this.activeSubMenu = subMenu;
       this.activeMenu = subMenu;
-      //  this.openMenus.parametrages = true;
       this.saveMenuState();
     },
     saveMenuState() {
@@ -285,6 +324,10 @@ export default {
       localStorage.setItem('activeSubMenu', this.activeSubMenu);
     },
     loadMenuState() {
+      if (!this.isAuthenticated) {
+      this.clearMenuState(); // Nettoie si non authentifié
+      return;
+    }
       const savedOpenMenus = localStorage.getItem('openMenus');
       const savedActiveMenu = localStorage.getItem('activeMenu');
       const savedActiveSubMenu = localStorage.getItem('activeSubMenu');
@@ -298,11 +341,19 @@ export default {
         this.activeSubMenu = savedActiveSubMenu;
         if (savedActiveMenu === '/sim/parametrages') {
           this.openMenus.parametrages = true;
-        }else{
+        }else if(savedActiveMenu === '/sim/typeMarche'){
           this.openMenus.typeMarche = true;
+        }else{
+          this.openMenus.autres_parametrages = true;
+
         }
       }
     },
+    clearMenuState() {
+    localStorage.removeItem('openMenus');
+    localStorage.removeItem('activeMenu');
+    localStorage.removeItem('activeSubMenu');
+  },
     async fetchTypeMarches() {
       try {
         const response = await axios.get( `/parametrages/type-marches/admin-dynamic-types`,
@@ -313,8 +364,7 @@ export default {
             
           }
         );
-  
-          console.log('responsecolecteurs',response)
+
         if (response.status === 200) {
             this.TypesMarchesOptions = response.data
         }

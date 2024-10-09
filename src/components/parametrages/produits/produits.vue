@@ -45,7 +45,7 @@
                 <tr>
                  
                   <th>Nom & Code</th>
-                  <th>Catégorie</th>
+                  <th>Groupe d'aliments</th>
                   <th>Famille</th>
                   <!-- <th>Origine</th> -->
                   <th>Forme</th>
@@ -93,7 +93,7 @@
                     {{ data?.forme?.nom_forme_produit ?? "-"}} 
                    </td>
 
-                  <td>{{ data?.filiere }}</td>
+                  <td>{{ data?.filiere_relation?.nom_filiere_produit}}</td>
                   <td>{{ data?.affichage_ecran }}</td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
@@ -222,7 +222,7 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Catégorie <span class="text-danger">*</span></label
+                    Groupe d'aliment <span class="text-danger">*</span></label
                   >
                   <MazSelect
                     v-model="step1.categorie_produit"
@@ -313,16 +313,27 @@
                   <label for="userpassword">
                     Filière <span class="text-danger">*</span>
                   </label>
-                  <MazInput
+                  <div class="row">
+                    <div class="col-10">
+                      <MazSelect
                               v-model="step1.filiere"
                               color="secondary"
                               name="step1.filiere"
                               size="sm"
                               rounded-size="sm"
-                             type="text"
+                             search
+                             :options="FilieresOptions"
                               
                               
                             />
+                    </div>
+                    <div class="col-2">
+                      <button
+                  type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" @click="openModal('add-filiere')" > <i class="mdi mdi-plus"></i>
+                </button>
+                    </div>
+                  </div>
+                 
                   <small v-if="v$.step1.filiere.$error">{{
                     v$.step1.filiere.$errors[0].$message
                   }}</small>
@@ -495,7 +506,7 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Catégorie <span class="text-danger">*</span></label
+                    Groupe d'aliment <span class="text-danger">*</span></label
                   >
                   <MazSelect
                     v-model="step2.categorie_produit"
@@ -586,13 +597,14 @@
                   <label for="userpassword">
                     Filière <span class="text-danger">*</span>
                   </label>
-                  <MazInput
+                  <MazSelect
                               v-model="step2.filiere"
                               color="secondary"
                               name="step2.filiere"
                               size="sm"
                               rounded-size="sm"
-                             type="text"
+                              search
+                              :options="FilieresOptions"
                               
                               
                             />
@@ -716,6 +728,89 @@
         </div>
       </div>
     </div>
+
+    <!-- add filiere  -->
+    <div
+      class="modal center-modal fade"
+      id="add-filiere"
+      ref="add-filiere"
+      tabindex="-1"
+    >
+      <div class="modal-dialog ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Ajouter une filiere
+            </h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-produit')" >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Code <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="filiere.code_filiere_produit"
+                    color="secondary"
+                    name="filiere.code_filiere_produit"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.filiere.code_filiere_produit.$error">{{
+                    v$.filiere.code_filiere_produit.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['code_filiere_produit']">
+                    {{ resultError["code_filiere_produit"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Nom <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="filiere.nom_filiere_produit"
+                    color="secondary"
+                    name="filiere.nom_filiere_produit"
+                    size="sm"
+                    rounded-size="sm"
+                    type="text"
+                  />
+                  <small v-if="v$.filiere.nom_filiere_produit.$error">{{
+                    v$.filiere.nom_filiere_produit.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['nom_filiere_produit']">
+                    {{ resultError["nom_filiere_produit"] }}
+                  </small>
+                </div>
+              </div>
+             
+             
+             
+             
+            
+            
+            </div>
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
+                  type="button"
+                  @click="submitFiliere('add-filiere')"
+                  class="waves-effect waves-light btn btn-primary"
+                >
+                  Valider
+                </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -761,6 +856,7 @@ export default {
       OriginesOptions: [],
       FormesOptions: [],
       TypesMarchesOptions:[],
+      FilieresOptions:[],
       selectedImage:"",
       dataFile:"",
       dataImage:"",
@@ -792,6 +888,10 @@ export default {
         affichage_ecran: "",
         filiere:"",
 
+      },
+      filiere :{
+        code_filiere_produit:"",
+        nom_filiere_produit:"",
       },
       choix:[
         {label: 'Oui' , value:true},
@@ -827,6 +927,10 @@ export default {
         affichage_ecran: { require },
         filiere:{ require },
     },
+    filiere:{
+      code_filiere_produit:{ require },
+      nom_filiere_produit:{ require },
+    }
   },
   async mounted() {
     await this.fetchProduits();
@@ -835,6 +939,7 @@ export default {
     await this.fetchOrigines();
     await this.fetchTypesMarches();
     await this.fetchFormes();
+    await this.fetchFilieres();
   },
   methods: {
     successmsg: successmsg,
@@ -918,19 +1023,42 @@ export default {
         this.handleErrors(error);
       }
     },
+    async fetchFilieres() {
+      this.FilieresOptions = []
+      try {
+        const response = await axios.get("/parametrages/filieres", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+        console.log("responsefileres", response);
+        if (response.status === 200) {
+          response.data.map(item => this.FilieresOptions.push({
+            label: item.nom_filiere_produit,
+            value: item.code_filiere_produit
+
+				}))
+     
+          this.loading = false;
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      }
+    },
     async fetchTypesMarches() {
         try {
-          const response = await axios.get("/parametrages/type-marches", {
+          const response = await axios.get("/parametrages/type-marches/admin-dynamic-types", {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
           });
   
-          console.log("response", response);
+          console.log("responsetypemarches", response);
           if (response.status === 200) {
             response.data.map(item => this.TypesMarchesOptions.push({
-                  label: item.nom_type_marche,
-                  value: item.code_type_marche
+                  label: item.type?.nom_type_marche,
+                  value: item.type?.code_type_marche
                   }))
             this.loading = false;
           }
@@ -1180,6 +1308,47 @@ handleImageClick(data , modalId) {
       this.dataFile = data
       console.log('Image sélectionnée:', this.dataFile);
       // Vous pouvez ajouter ici d'autres actions à effectuer lors du clic sur l'image
+    },
+
+    // add filiere 
+    async submitFiliere(modalId) {
+      this.v$.filiere.$touch();
+
+      if (this.v$.$errors.length == 0) {
+        this.loading = true;
+        let data = {
+          code_filiere_produit: this.filiere.code_filiere_produit,
+          nom_filiere_produit: this.filiere.nom_filiere_produit,
+         
+         
+        };
+        console.log('data',data)
+
+        try {
+          const response = await axios.post(`/parametrages/filieres`,[ data], {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+
+          if (response.status === 200) {
+            this.closeModal(modalId);
+            this.successmsg(
+                  "Création de la filière",
+                  "Votre filière a été créé avec succès !"
+              );
+
+             await this.fetchFilieres();
+             this.filiere = {
+
+             }
+          }
+        } catch (error) {
+          this.handleErrors(error);
+        }
+      } else {
+        this.loading = false;
+      }
     },
 triggerFileInput() {
       console.log('Triggering file input');

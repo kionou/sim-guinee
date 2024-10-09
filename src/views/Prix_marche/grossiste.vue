@@ -248,349 +248,340 @@
             <!-- <span class="stepper-item-title"> Step {{ item }} </span> -->
         </div>
     </div>
-</div>
-<div  class="container-fluid"  >
-     <!-- Étape 1 -->
-<div v-if="currentStep === 1">
-    <div class="form-container">
-        <div class="row mt-3 content-group">
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Produit <span class="text-danger">*</span></label>
-                                        <MazSelect label="" v-model="step1.produit" :options="ProduitsOptions" v-slot="{ option  }" search
-                    size="sm" rounded-size="sm" color="secondary">
-                    <div class="d-flex align-items-center" style="
-                          padding-top: 0.5rem;
-                          padding-bottom: 0.5rem;
-                          width: 100%;
-                          gap: 1rem;
-                        ">
-                      <MazAvatar size="0.8rem" :src="option.picture" />
-                      <strong>
-                        {{ option.label }}
-                      </strong>
-                    </div>
-                  </MazSelect>
-                                    <small v-if="v$.step1.produit.$error">{{
-                                        v$.step1.produit.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['produit']">
-                                        {{ resultError["produit"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Unité de stock <span class="text-danger">*</span></label>
-                                        <MazSelect v-model="step1.unite_stock" color="secondary" name="step1.unite" size="sm" rounded-size="sm" search
-                                        :options="UnitesOptions" />
-                                    <small v-if="v$.step1.unite_stock.$error">{{
-                                        v$.step1.unite_stock.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['unite_stock']">
-                                        {{ resultError["unite_stock"] }}
-                                    </small>
-                                </div>
-                            </div>
-    
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Poids moyen d'unite de stock <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step1.poids_moyen_unite_stock" color="secondary" name="step1.poids_moyen_unite_stock" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step1.poids_moyen_unite_stock.$error">{{
-                                        v$.step1.poids_moyen_unite_stock.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['poids_moyen_unite_stock']">
-                                        {{ resultError["poids_moyen_unite_stock"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Stock anterieur <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step1.stock_anterieur" color="secondary" name="step1.stock_anterieur" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step1.stock_anterieur.$error">{{
-                                        v$.step1.stock_anterieur.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['stock_anterieur']">
-                                        {{ resultError["stock_anterieur"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Poids du stock <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step1.poids_stock" color="secondary" name="step1.poids_stock" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step1.poids_stock.$error">{{
-                                        v$.step1.poids_stock.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['poids_stock']">
-                                        {{ resultError["poids_stock"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Stock du jour à semaine <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step1.stock_du_jour" color="secondary" name="step1.stock_du_jour" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step1.stock_du_jour.$error">{{
-                                        v$.step1.stock_du_jour.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['stock_du_jour']">
-                                        {{ resultError["stock_du_jour"] }}
-                                    </small>
-                                </div>
-                            </div>
-    
-                         
-    
-         </div> 
-    
-        
-    </div>
-    <div class="btnForm py-3 d-flex items-center justify-content-end">
-    <button class="btnLogin" :disabled="isButtonDisabled" @click.prevent="nextStep('add-prix-groosite')">
-        Suivant
-    </button>
-    </div>
-</div>
-
-  <!-- Étape 2 -->
-  <div v-if="currentStep === 2">
-      <div class="form-container">
-        <div class="row mt-3 content-group">
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Quelle est l'unité de mesure pour l'achat <span class="text-danger">*</span></label>
-                                        <MazSelect v-model="step2.unite_achat" color="secondary" name="step2.unite" size="sm" rounded-size="sm" search
-                                        :options="UnitesOptions" />
-                                    <small v-if="v$.step2.unite_achat.$error">{{
-                                        v$.step2.unite_achat.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['unite_achat']">
-                                        {{ resultError["unite_achat"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Nombre d'unite d'achat <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step2.nombre_unite_achat" color="secondary" name="step2.nombre_unite_achat"
-                                        size="sm" rounded-size="sm" type="text" />
-                                    <small v-if="v$.step2.nombre_unite_achat.$error">{{
-                                        v$.step2.nombre_unite_achat.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['nombre_unite_achat']">
-                                        {{ resultError["nombre_unite_achat"] }}
-                                    </small>
-                                </div>
-                            </div>
-    
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                     Quantité entrée <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step2.quantite_entree" color="secondary" name="step2.quantite_entree" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step2.quantite_entree.$error">{{
-                                        v$.step2.quantite_entree.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['quantite_entree']">
-                                        {{ resultError["quantite_entree"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Prix d'achat <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step2.prix_achat" color="secondary" name="step2.prix_achat" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step2.prix_achat.$error">{{
-                                        v$.step2.prix_achat.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['prix_achat']">
-                                        {{ resultError["prix_achat"] }}
-                                    </small>
-                                </div>
-                            </div>
+                      </div>
+                      <div  class="container-fluid"  >
+                          <!-- Étape 1 -->
+                      <div v-if="currentStep === 1">
+                          <div class="form-container">
+                              <div class="row mt-3 content-group">
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Produit <span class="text-danger">*</span></label>
+                                                              <MazSelect label="" v-model="step1.produit" :options="ProduitsOptions" v-slot="{ option  }" search
+                                          size="sm" rounded-size="sm" color="secondary">
+                                          <div class="d-flex align-items-center" style="
+                                                padding-top: 0.5rem;
+                                                padding-bottom: 0.5rem;
+                                                width: 100%;
+                                                gap: 1rem;
+                                              ">
+                                            <MazAvatar size="0.8rem" :src="option.picture" />
+                                            <strong>
+                                              {{ option.label }}
+                                            </strong>
+                                          </div>
+                                        </MazSelect>
+                                                          <small v-if="v$.step1.produit.$error">{{
+                                                              v$.step1.produit.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['produit']">
+                                                              {{ resultError["produit"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Unité de stock <span class="text-danger">*</span></label>
+                                                              <MazSelect v-model="step1.unite_stock" color="secondary" name="step1.unite" size="sm" rounded-size="sm" search
+                                                              :options="UnitesOptions" />
+                                                          <small v-if="v$.step1.unite_stock.$error">{{
+                                                              v$.step1.unite_stock.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['unite_stock']">
+                                                              {{ resultError["unite_stock"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
                           
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Poids moyen d'unite de stock <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step1.poids_moyen_unite_stock" color="secondary" name="step1.poids_moyen_unite_stock" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step1.poids_moyen_unite_stock.$error">{{
+                                                              v$.step1.poids_moyen_unite_stock.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['poids_moyen_unite_stock']">
+                                                              {{ resultError["poids_moyen_unite_stock"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Stock anterieur <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step1.stock_anterieur" color="secondary" name="step1.stock_anterieur" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step1.stock_anterieur.$error">{{
+                                                              v$.step1.stock_anterieur.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['stock_anterieur']">
+                                                              {{ resultError["stock_anterieur"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Poids du stock <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step1.poids_stock" color="secondary" name="step1.poids_stock" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step1.poids_stock.$error">{{
+                                                              v$.step1.poids_stock.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['poids_stock']">
+                                                              {{ resultError["poids_stock"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Stock du jour à semaine <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step1.stock_du_jour" color="secondary" name="step1.stock_du_jour" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step1.stock_du_jour.$error">{{
+                                                              v$.step1.stock_du_jour.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['stock_du_jour']">
+                                                              {{ resultError["stock_du_jour"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
                           
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Fournisseur principaux <span class="text-danger">*</span></label>
-                                        <MazSelect v-model="step2.fournisseur_principaux" color="secondary" name="step2.unite" size="sm" rounded-size="sm" search
-                                        :options="Fournisseurs" />
-                                    <small v-if="v$.step2.fournisseur_principaux.$error">{{
-                                        v$.step2.fournisseur_principaux.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['fournisseur_principaux']">
-                                        {{ resultError["fournisseur_principaux"] }}
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        provenance du produit <span class="text-danger">*</span></label>
-                                        <MazSelect v-model="step2.localite_achat" color="secondary" name="step2.destination_finale"
-                                        size="sm" rounded-size="sm" search :options="CommunesOptions" />
-                                    <small v-if="v$.step2.localite_achat.$error">{{
-                                        v$.step2.localite_achat.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['localite_achat']">
-                                        {{ resultError["localite_achat"] }}
-                                    </small>
-                                </div>
-                            </div>
+                                              
                           
-    
-                         
-    
-                        </div> 
-      </div>
-      <div class="btnForm py-3 d-flex items-center justify-content-between">
-      <button class="btnLogin" @click.prevent="prevStep">Previous</button>
-      <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Next</button>
-    </div>
-    </div>
-
-
-      <!-- Étape 3 -->
-  <div v-if="currentStep === 3">
-      <div class="form-container">
-        <div class="row mt-3 content-group">
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                     Quelle est l'unité de mesure pour la vente  <span class="text-danger">*</span></label>
-                                     <MazSelect v-model="step3.unite_vente" color="secondary" name="step3.unite_vente" size="sm" rounded-size="sm" search
-                                        :options="UnitesOptions" />
-                                    <small v-if="v$.step3.unite_vente.$error">{{
-                                        v$.step3.unite_vente.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['unite_vente']">
-                                        {{ resultError["unite_vente"] }}
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Prix unitaire de vente  <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step3.prix_unitaire_vente" color="secondary" name="step3.prix_unitaire_vente" size="sm"
-                                        rounded-size="sm" type="text" />
-                                    <small v-if="v$.step3.prix_unitaire_vente.$error">{{
-                                        v$.step3.prix_unitaire_vente.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['prix_unitaire_vente']">
-                                        {{ resultError["prix_unitaire_vente"] }}
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Client principal   <span class="text-danger">*</span></label>
-                                        <MazSelect v-model="step3.client_vente" color="secondary" name="step3.client_vente" size="sm" rounded-size="sm" search
-                                        :options="Clients" />
-                                    <small v-if="v$.step3.client_vente.$error">{{
-                                        v$.step3.client_vente.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['client_vente']">
-                                        {{ resultError["client_vente"] }}
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="input-groupe">
-                                    <label for="userpassword">
-                                        Autre client principal  <span class="text-danger">*</span></label>
-                                    <MazInput v-model="step3.autre_client_principal" color="secondary" name="step3.autre_client_principal" size="sm"
-                                        rounded-size="sm" type="number" />
-                                    <small v-if="v$.step3.autre_client_principal.$error">{{
-                                        v$.step3.autre_client_principal.$errors[0].$message
-                                        }}</small>
-                                    <small v-if="resultError['autre_client_principal']">
-                                        {{ resultError["autre_client_principal"] }}
-                                    </small>
-                                </div>
-                            </div>
-                        </div> 
-      </div>
-      <div class="btnForm py-3 d-flex items-center justify-content-between">
-      <button class="btnLogin" @click.prevent="prevStep">Previous</button>
-      <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Next</button>
-    </div>
-    </div>
-
-          <!-- Étape 4 -->
-  <div v-if="currentStep === 4">
-      <div class="form-container">
-        <div class="row mt-3 content-group">
-                           
-                           <div class="col-12">
-                               <div class="input-groupe">
-                                   <label for="userpassword">
-                                       Statut  <span class="text-danger">*</span></label>
-                                   <MazSelect v-model="step4.statut" color="secondary" name="step4.statut"
-                                       size="sm" rounded-size="sm" type="text" search :options="choix" />
-                                   <small v-if="v$.step4.statut.$error">{{
-                                       v$.step4.statut.$errors[0].$message
-                                       }}</small>
-                                   <small v-if="resultError['statut']">
-                                       {{ resultError["statut"] }}
-                                   </small>
-                               </div>
-                           </div>
-   
+                              </div> 
                           
-                           <div class="col-12">
-                               <div class="input-groupe">
-                                   <label for="userpassword">
-                                       Observations <span class="text-danger">*</span></label>
-                                       <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
-                                       id="text-area" v-model="step4.observation" rows="2"></textarea>
-                                   <small v-if="v$.step4.observation.$error">{{
-                                       v$.step4.observation.$errors[0].$message
-                                       }}</small>
-                                   <small v-if="resultError['observation']">
-                                       {{ resultError["observation"] }}
-                                   </small>
-                               </div>
-                           </div>
-   
+                              
+                          </div>
+                          <div class="btnForm py-3 d-flex items-center justify-content-end">
+                          <button class="btnLogin" :disabled="isButtonDisabled" @click.prevent="nextStep('add-prix-groosite')">
+                              Suivant
+                          </button>
+                          </div>
+                      </div>
+                        <!-- Étape 2 -->
+                        <div v-if="currentStep === 2">
+                            <div class="form-container">
+                              <div class="row mt-3 content-group">
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Quelle est l'unité de mesure pour l'achat <span class="text-danger">*</span></label>
+                                                              <MazSelect v-model="step2.unite_achat" color="secondary" name="step2.unite" size="sm" rounded-size="sm" search
+                                                              :options="UnitesOptions" />
+                                                          <small v-if="v$.step2.unite_achat.$error">{{
+                                                              v$.step2.unite_achat.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['unite_achat']">
+                                                              {{ resultError["unite_achat"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Nombre d'unite d'achat <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step2.nombre_unite_achat" color="secondary" name="step2.nombre_unite_achat"
+                                                              size="sm" rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step2.nombre_unite_achat.$error">{{
+                                                              v$.step2.nombre_unite_achat.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['nombre_unite_achat']">
+                                                              {{ resultError["nombre_unite_achat"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                          
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                          Quantité entrée <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step2.quantite_entree" color="secondary" name="step2.quantite_entree" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step2.quantite_entree.$error">{{
+                                                              v$.step2.quantite_entree.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['quantite_entree']">
+                                                              {{ resultError["quantite_entree"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Prix d'achat <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step2.prix_achat" color="secondary" name="step2.prix_achat" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step2.prix_achat.$error">{{
+                                                              v$.step2.prix_achat.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['prix_achat']">
+                                                              {{ resultError["prix_achat"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                
+                                                
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Fournisseur principaux <span class="text-danger">*</span></label>
+                                                              <MazSelect v-model="step2.fournisseur_principaux" color="secondary" name="step2.unite" size="sm" rounded-size="sm" search
+                                                              :options="Fournisseurs" />
+                                                          <small v-if="v$.step2.fournisseur_principaux.$error">{{
+                                                              v$.step2.fournisseur_principaux.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['fournisseur_principaux']">
+                                                              {{ resultError["fournisseur_principaux"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              provenance du produit <span class="text-danger">*</span></label>
+                                                              <MazSelect v-model="step2.localite_achat" color="secondary" name="step2.destination_finale"
+                                                              size="sm" rounded-size="sm" search :options="CommunesOptions" />
+                                                          <small v-if="v$.step2.localite_achat.$error">{{
+                                                              v$.step2.localite_achat.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['localite_achat']">
+                                                              {{ resultError["localite_achat"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                
+                          
+                                              
+                          
+                                              </div> 
+                            </div>
+                            <div class="btnForm py-3 d-flex items-center justify-content-between">
+                            <button class="btnLogin" @click.prevent="prevStep">Previous</button>
+                            <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Next</button>
+                          </div>
+                          </div>
+                            <!-- Étape 3 -->
+                        <div v-if="currentStep === 3">
+                            <div class="form-container">
+                              <div class="row mt-3 content-group">
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                          Quelle est l'unité de mesure pour la vente  <span class="text-danger">*</span></label>
+                                                          <MazSelect v-model="step3.unite_vente" color="secondary" name="step3.unite_vente" size="sm" rounded-size="sm" search
+                                                              :options="UnitesOptions" />
+                                                          <small v-if="v$.step3.unite_vente.$error">{{
+                                                              v$.step3.unite_vente.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['unite_vente']">
+                                                              {{ resultError["unite_vente"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Prix unitaire de vente  <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step3.prix_unitaire_vente" color="secondary" name="step3.prix_unitaire_vente" size="sm"
+                                                              rounded-size="sm" type="text" />
+                                                          <small v-if="v$.step3.prix_unitaire_vente.$error">{{
+                                                              v$.step3.prix_unitaire_vente.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['prix_unitaire_vente']">
+                                                              {{ resultError["prix_unitaire_vente"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Client principal   <span class="text-danger">*</span></label>
+                                                              <MazSelect v-model="step3.client_vente" color="secondary" name="step3.client_vente" size="sm" rounded-size="sm" search
+                                                              :options="Clients" />
+                                                          <small v-if="v$.step3.client_vente.$error">{{
+                                                              v$.step3.client_vente.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['client_vente']">
+                                                              {{ resultError["client_vente"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-6">
+                                                      <div class="input-groupe">
+                                                          <label for="userpassword">
+                                                              Autre client principal  <span class="text-danger">*</span></label>
+                                                          <MazInput v-model="step3.autre_client_principal" color="secondary" name="step3.autre_client_principal" size="sm"
+                                                              rounded-size="sm" type="number" />
+                                                          <small v-if="v$.step3.autre_client_principal.$error">{{
+                                                              v$.step3.autre_client_principal.$errors[0].$message
+                                                              }}</small>
+                                                          <small v-if="resultError['autre_client_principal']">
+                                                              {{ resultError["autre_client_principal"] }}
+                                                          </small>
+                                                      </div>
+                                                  </div>
+                                              </div> 
+                            </div>
+                            <div class="btnForm py-3 d-flex items-center justify-content-between">
+                            <button class="btnLogin" @click.prevent="prevStep">Previous</button>
+                            <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Next</button>
+                          </div>
+                          </div>
+                                <!-- Étape 4 -->
+                        <div v-if="currentStep === 4">
+                            <div class="form-container">
+                              <div class="row mt-3 content-group">
+                                                
+                                                <div class="col-12">
+                                                    <div class="input-groupe">
+                                                        <label for="userpassword">
+                                                            Statut  <span class="text-danger">*</span></label>
+                                                        <MazSelect v-model="step4.statut" color="secondary" name="step4.statut"
+                                                            size="sm" rounded-size="sm" type="text" search :options="choix" />
+                                                        <small v-if="v$.step4.statut.$error">{{
+                                                            v$.step4.statut.$errors[0].$message
+                                                            }}</small>
+                                                        <small v-if="resultError['statut']">
+                                                            {{ resultError["statut"] }}
+                                                        </small>
+                                                    </div>
+                                                </div>
                         
-   
-                       </div> 
-      </div>
-      <div class="btnForm py-3 d-flex items-center justify-content-between">
-      <button class="btnLogin" @click.prevent="prevStep">Previous</button>
-      <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Finish</button>
-    </div>
-    </div>
-
-</div>
-   
-    
-    
-    
+                                                
+                                                <div class="col-12">
+                                                    <div class="input-groupe">
+                                                        <label for="userpassword">
+                                                            Observations <span class="text-danger">*</span></label>
+                                                            <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
+                                                            id="text-area" v-model="step4.observation" rows="2"></textarea>
+                                                        <small v-if="v$.step4.observation.$error">{{
+                                                            v$.step4.observation.$errors[0].$message
+                                                            }}</small>
+                                                        <small v-if="resultError['observation']">
+                                                            {{ resultError["observation"] }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                        
+                                              
+                        
+                                            </div> 
+                            </div>
+                            <div class="btnForm py-3 d-flex items-center justify-content-between">
+                            <button class="btnLogin" @click.prevent="prevStep">Previous</button>
+                            <button class="btnLogin" @click.prevent="nextStep('add-prix-groosite')">Finish</button>
+                          </div>
+                          </div>
+                      </div>
                     </div>
                     
                 </div>
@@ -1372,7 +1363,7 @@ observation: { require },
       },
       prevStep() {
         if (this.currentStep > 1) {
-          this.currentStep--;
+         
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
       },
@@ -1801,11 +1792,11 @@ observation: { require },
 
           if (response.status === 200) {
             this.closeModal(modalId);
+            this.currentStep = 1;
             this.successmsg(
                 "Mise à jour de l'enquête",
                 "Votre enquête sur les prix a été mise à jour avec succès !"
             );
-            this.currentPage = 1
             await this.fetchMagasins();
           }
         } catch (error) {

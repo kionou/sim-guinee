@@ -34,12 +34,21 @@
  </div>
  <!-- /.box-header -->
  <div class="box-body">
+  <div>
+            <div v-if="hasNewSelection" class="position-fixed  my-1" style="left: 30%;">
+              <button class="btn " style="background-color: red; color:white" @click="validateSelection">
+                <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                Valider
+              </button>
+            </div>
+  
+          </div>
      <div class="table-responsive">
        <table id="example1" class="table table-bordered table-striped">
          <thead>
              <tr>
                 
-                 <th></th>
+              <th> <input type="checkbox" @change="selectAll" :checked="isAllSelected"></th>
                  <th>N° Fiche</th>
                  <th>Agent collecte</th>
                  <th>N° pt collecte</th>
@@ -65,7 +74,9 @@
          <tbody v-else>
              <tr v-for="(data )  in paginatedItems" :key="data.id">
                <td class="text-center" style="width:70px !important">
-              <input type="checkbox" v-model="selectedItems" :value="data.enquete?.id">
+                <input type="checkbox" v-model="selectedItems" :value="data.enquete?.num_fiche"
+                      :checked="data.enquete?.etat === true"
+                      @change="updateSelection(data.enquete?.num_fiche, $event.target.checked)">
 
                </td>
                  
@@ -571,8 +582,11 @@ props: {
           ToId:"",
           totalPageArray: [],
           currentMarcheName: "",
-          selectAll: false,
-          selectedItems: [],
+
+          initialSelectedItems: [],
+      selectAllCheckbox: false,  // État de la checkbox "select all"
+      selectedItems: [],
+      hasNewSelection: false, //
         
           step1: {
           num_fiche:"",
@@ -637,6 +651,12 @@ async  mounted() {
       this.FichesCollOptions = [...newData];
       this.data = [...newData];
       this.updatePaginatedItems();
+
+      this.initialSelectedItems = this.data
+          .filter(item => item.enquete?.etat === true)
+          .map(item => item.enquete?.num_fiche);
+        this.selectedItems = [...this.initialSelectedItems];
+        this.updateSelectedItems();
     },
     deep: true,
     immediate: true,
@@ -645,7 +665,6 @@ async  mounted() {
   methods: {
       successmsg:successmsg,
       HandleData(data){
-          console.log('data',data)
           localStorage.setItem('DataPrixMarche', JSON.stringify(data));
 
       },
@@ -670,7 +689,6 @@ async  mounted() {
         }
       );
 
-        console.log('responsecollerty',response)
       if (response.status === 200) {
             this.data  = response.data ;
             this.FichesCollOptions = this.data
@@ -695,7 +713,6 @@ async  mounted() {
         }
       );
 
-        console.log('responsecolecteurs',response)
       if (response.status === 200) {
     response.data.map(item => {
       this.CollecteursOptions.push({
@@ -718,8 +735,6 @@ async  mounted() {
           
         }
       );
-
-        console.log('responseCommune ',response)
       if (response.status === 200) {
         this.Commune = response.data
   
@@ -738,8 +753,6 @@ async  mounted() {
           
         }
       );
-
-        console.log('responsenumber',response)
       if (response.status === 200) {
   this.step1.num_fiche  = response.data
       }
@@ -761,16 +774,13 @@ async  mounted() {
           nom_personne_enquete: this.step1.nom_personne_enquete,
           contact_personne_enquete: this.step1.contact_personne_enquete,
           }
-          console.log('data',data)
       try {
         const response = await axios.post("/enquetes/Fiches/grossistes", data, {
           headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
          
         }
         });
-     console.log('qfs',response)
-
-    
+  
         if (response.status === 200) {
            this.closeModal(modalId);
            this.step1 = {
@@ -811,7 +821,6 @@ async  mounted() {
 
     
       if (response.status === 200) {
-          console.log('Slbvlkjbv',response)
       
         let data =  response.data
         this.step2.num_fiche = data.num_fiche,
@@ -849,7 +858,6 @@ async  mounted() {
           nom_personne_enquete: this.step2.nom_personne_enquete,
           contact_personne_enquete: this.step2.contact_personne_enquete,
           }
-          console.log('data',data)
 
     try {
       const response = await axios.put(`enquetes/Fiches/grossistes/${this.ToId}`,data, {
@@ -929,15 +937,93 @@ async  mounted() {
        }
  
      },
-     toggleAll() {
-    this.selectedItems = this.selectAll 
-      ? this.paginatedItems.map(item => item.id)
-      : [];
-  },
-  validateSelected() {
-    console.log('IDs sélectionnés:', this.selectedItems);
-    // Ajoutez ici la logique pour traiter les éléments sélectionnés
-  },
+     updateSelectedItems() {
+      this.paginatedItems.forEach(item => {
+        if (this.selectedItems.includes(item.enquete?.num_fiche)) {
+          item.enquete.etat = true;
+        } else {
+          item.enquete.etat = false;
+        }
+      });
+    },
+    updateSelection(num_fiche, etat) {
+      if (etat) {
+        if (!this.selectedItems.includes(num_fiche)) {
+          this.selectedItems.push(num_fiche);
+        }
+      } else {
+        const index = this.selectedItems.indexOf(num_fiche);
+        if (index > -1) {
+          this.selectedItems.splice(index, 1);
+        }
+
+      }
+      this.hasNewSelection = this.selectedItems.some(item => !this.initialSelectedItems.includes(item));
+    },
+    selectAll(event) {
+      if (event.target.checked) {
+        this.selectedItems = this.paginatedItems.map(item => item.enquete?.num_fiche);
+        this.hasNewSelection = this.selectedItems.some(item => !this.initialSelectedItems.includes(item));
+      } else {
+
+        this.selectedItems = [];
+        this.hasNewSelection = false;
+      }
+
+      this.showValidationButton = this.selectedItems.length > 0;
+    },
+    async validateSelection() {
+      const result = await Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: 'Vous ne pourrez pas annuler cette action !',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, validez !',
+        cancelButtonText: 'Non, annulez !',
+        reverseButtons: true
+      });
+
+      // Si l'utilisateur confirme la suppression
+      if (result.isConfirmed) {
+        this.validateSelection1();
+      }
+    },
+    async validateSelection1() {
+      const newItems = this.selectedItems.filter(item => !this.initialSelectedItems.includes(item));
+      const formattedItems = newItems.map(item => {
+        return { code: String(item) };
+      });
+      this.loading = true
+
+      try {
+        const response = await axios.post('/enquetes/Fiches/validations', formattedItems, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+
+
+        });
+
+        if (response.status === 200) {
+          this.loading = false
+          this.successmsg(
+            "Validation des fiches d'enquête",
+            "Les fiches d'enquête sélectionnées ont été validées avec succès !"
+          );
+          this.$emit('enquete-updated');
+          this.hasNewSelection = false
+          this.loading = false
+
+        } else {
+
+          this.handleErrors(error);
+        }
+      } catch (error) {
+        this.handleErrors(error);
+
+      }
+
+    },
   filterByName() {
 this.currentPage = 1;
 if (this.searchFicheCollecteFiche !== null) {
@@ -992,7 +1078,7 @@ triggerToast(errorMessage) {
       //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
     }
     if (error.response?.data.detail.includes('204')) {
-      console.log('bonjour')
+   
       this.loading = false;
       this.data = [];
       

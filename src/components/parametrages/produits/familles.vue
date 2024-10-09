@@ -23,7 +23,7 @@
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#add-famille" ><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"  @click="openModal('add-famille')" ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
@@ -65,7 +65,7 @@
                    
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_famille_produit)"  data-original-title="Update" data-toggle="modal" data-target="#update-famille"><i class="ti-marker-alt"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_famille_produit ,'update-famille')"  data-original-title="Update" ><i class="ti-marker-alt"></i></a>
                         <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_famille_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
@@ -96,7 +96,7 @@
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h5 class="modal-title">Ajouter des familles</h5>
-			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('add-famille')" >
               <span aria-hidden="true">&times;</span>
             </button>
 		  </div>
@@ -199,7 +199,7 @@
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Modifier une famille</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-famille')" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -477,7 +477,8 @@ export default {
       
       }
     },
-    async  HandleIdUpdate(id){
+    async  HandleIdUpdate(id , modalId){
+      this.openModal(modalId)
     this.loading = true;
 
       try {
@@ -659,18 +660,35 @@ triggerToast(errorMessage) {
         return false;
       }
     },
-closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      modalElement.style.opacity = "";
-       document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
     },
 
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
+    },
     async formatValidationErrors(errors) {
       const formattedErrors = {};
 

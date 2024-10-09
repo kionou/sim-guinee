@@ -27,8 +27,7 @@
                 <button
                   type="button"
                   class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                  data-toggle="modal"
-                  data-target="#add-magasin"
+                  @click="openModal('add-magasin')"
                   
                 >
                   <i class="mdi mdi-plus"></i>
@@ -84,10 +83,8 @@
                         href="javascript:void(0)"
                         class="btn btn-circle btn-info btn-xs"
                         title=""
-                        @click="HandleIdUpdate(data.code_magasin)"
+                        @click="HandleIdUpdate(data.code_magasin ,'update-magasin')"
                         data-original-title="Update"
-                        data-toggle="modal"
-                        data-target="#update-magasin"
                         ><i class="ti-marker-alt"></i
                       ></a>
                       <a
@@ -133,7 +130,7 @@
             <h5 class="modal-title">
               Ajouter un magasin
             </h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('add-magasin')" >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -339,7 +336,7 @@
             <h5 class="modal-title">
               Modifier un magasin
             </h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('update-magasin')" >
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -716,6 +713,17 @@ export default {
 		  console.log('qfs', response)
 		  if (response.status === 200) {
             this.closeModal(modalId);
+            this.step1 = {
+           code_magasin: "",
+        nom_magasin: "",
+        longitude: "",
+        latitude: "",
+        capacite: "",
+        description: "",
+        collecteur: "",
+        commune: "",
+        };
+        this.v$.step1.$reset();
 			this.successmsg(
 				"Création du magasin",
 				"Votre magasin a été créé avec succès !"
@@ -733,7 +741,8 @@ export default {
       } else {
       }
     },
-    async HandleIdUpdate(id) {
+    async HandleIdUpdate(id , modalId) {
+      this.openModal(modalId)
       this.stepModal = "update";
       this.loading = true;
 
@@ -909,15 +918,34 @@ export default {
         return false;
       }
     },
-    closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
     async formatValidationErrors(errors) {
       const formattedErrors = {};

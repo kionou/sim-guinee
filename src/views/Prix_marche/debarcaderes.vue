@@ -123,12 +123,12 @@
                 <thead>
                   <tr>
     
-                    <th>Principale espèce collecte</th>
+                    <th>Princ. espèce coll.</th>
                     <th>Collecteur</th>
-                    <th>  Quantité cumulée de la semaine du produit débarquée dans le débarcadère</th>
-                    <th>  Prix moyen de la semaine d'un kg du produit chez les grossistes</th>
-                    <th>  Prix moyen de la semaine d'un kg du produit chez les détaillants </th>
-                    <th>Niveau de disponibilité du produit dans la semaine</th>
+                    <th> Qté cumulée prod. débarqué dans débarcadère sem.</th>
+                    <th>  Px moy. sem. 1 kg prod. grossistes</th>
+                    <th>  Px moy. sem. 1 kg prod. détaillants </th>
+                    <th>  Px moy. sem. 1 kg prod. détaillants</th>
                     <th>date d'enquete</th>
                     <th>Actions</th>
                   </tr>
@@ -722,6 +722,7 @@
         Fournisseur: [
           { label: "Abondant", value: "Abondant" },
           { label: "Normal", value: "Normal" },
+          { label: "Moyen", value: "Moyen" },
           { label: "Rare", value: "Rare" },
   
         ],

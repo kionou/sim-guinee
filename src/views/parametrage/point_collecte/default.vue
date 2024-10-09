@@ -156,7 +156,6 @@ export default {
             },
           }
         );
-		  console.log('dataresponse',response)
         if (response.status === 200) {
           this.data = response.data;
           this.filteredMarches = this.data
@@ -214,7 +213,6 @@ export default {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       if (error.response?.data.detail.includes('204')) {
-        console.log('bonjour')
         this.loading = false;
         this.data = [];
         // Logique pour une erreur serveur
@@ -236,7 +234,6 @@ export default {
 
   },
   // beforeRouteLeave(to, from, next) {
-  //   console.log('kiter');
 
   //   // Supprimer l'onglet actif du localStorage si on quitte cette page
   //   localStorage.removeItem('activeTabMarcheLocal');

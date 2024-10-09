@@ -411,7 +411,6 @@ async  mounted() {
         }
       );
 
-        console.log('responsemarches types',response)
       if (response.status === 200) {
             this.data  = response.data ;
             this.MarchesOptions = this.data
@@ -435,13 +434,11 @@ async  mounted() {
           
      }
      
-   console.log('data',data)
       try {
         const response = await axios.post("/parametrages/marches", data, {
           headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
         }
         });
-    console.log('qfs', response)
     if (response.status === 200) {
           this.closeModal(modalId);
     this.successmsg(
@@ -471,9 +468,7 @@ async  mounted() {
       });
 
     
-      if (response.status === 200) {
-          console.log('Slbvlkjbv',response)
-      
+      if (response.status === 200) {   
         let data =  response.data
         this.step2 = {
           code_type_marche: data.code_type_marche,
@@ -588,13 +583,9 @@ async  mounted() {
 this.currentPage = 1;
 if (this.searchMarche !== null) {
  const tt = this.searchMarche;
- console.log('ee',tt)
 const  searchValue = tt.toLowerCase()
-console.log('searchValue',searchValue)
-console.log('searchValue',this.data)
-
 this.MarchesOptions =this.data.filter(user => {
-console.log('searchValueUser',user)
+
 
   const Code = user.code_type_marche || '';
   const nom = user.nom_type_marche || '';

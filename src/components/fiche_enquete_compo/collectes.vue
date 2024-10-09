@@ -1,366 +1,325 @@
 <template >
-    <div>
-        <Loading v-if="loading" style="z-index: 99999"></Loading>
-        <div class="col-12">
-<div class="box">
-   <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
-     <h3 class="box-title mb-0 col-8" style="font-size: 20px;">Liste des fiches d'enquêtes sur le marché <b style="color:red !important">{{nom }}</b> dans la commune de <b style="color:red !important">{{Commune.nom_commune }}</b> et dans la région <b style="color:red !important">{{Commune?.prefecture_?.region_relation?.nom_region }}</b></h3>
- 
-   
-     <div class="navbar-custom-menu r-side col-4">
-        <ul class="nav navbar-nav justify-content-end">	
-				  
-			<li class="btn-group d-lg-inline-flex d-none h-40">
-				<div class="app-menu">
-					<div class="search-bx mx-5">
-						<form>
-							<div class="input-group">
-							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchFicheCollecteFiche" @input="filterByName">
-							  <div class="input-group-append">
-								<button class="btn border border-1" ><i class="ti-search"></i></button>
-							  </div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</li>
-			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="openModal('add-fiche-collecte')"   ><i class="mdi mdi-plus"></i></button>
-			</li>
-
-			
-        </ul>
-                  </div> 
-   </div>
-   <!-- /.box-header -->
-   <div class="box-body">
-       <div class="table-responsive">
-         <table id="example1" class="table table-bordered table-striped">
-           <thead>
-               <tr>
-                  
-                   <th></th>
-                   <th>N° Fiche</th>
-                   <th>Agent collecte</th>
-                   <th>Nb de prod. collectés </th>
-                   <th>Date</th>
-                   <th>Actions</th>
-                  
-               </tr>
-           </thead>
-           <tbody v-if="paginatedItems.length === 0" >
-            <tr>
-              <td colspan="18">
-                <div
-                  class="badge bg-warning"
-                  style="width: 100%; font-size: 14px"
-                >
-                Pas de données !!
+  <div>
+    <Loading v-if="loading" style="z-index: 99999"></Loading>
+    <div class="col-12">
+      <div class="box">
+        <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
+          <h3 class="box-title mb-0 col-8" style="font-size: 20px;">Liste des fiches d'enquêtes sur le marché <b
+              style="color:red !important">{{nom }}</b> dans la commune de <b
+              style="color:red !important">{{Commune.nom_commune }}</b> et dans la région <b
+              style="color:red !important">{{Commune?.prefecture_?.region_relation?.nom_region }}</b></h3>
+  
+  
+          <div class="navbar-custom-menu r-side col-4">
+            <ul class="nav navbar-nav justify-content-end">
+  
+              <li class="btn-group d-lg-inline-flex d-none h-40">
+                <div class="app-menu">
+                  <div class="search-bx mx-5">
+                    <form>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                          aria-describedby="button-addon2" v-model="searchFicheCollecteFiche" @input="filterByName">
+                        <div class="input-group-append">
+                          <button class="btn border border-1"><i class="ti-search"></i></button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-           <tbody v-else>
-               <tr v-for="(data )  in paginatedItems" :key="data.id">
-                 <td class="text-center" style="width:50px">
-                <input type="checkbox" v-model="selectedItems" :value="data.id">
-
-                 </td>
-                   
-                   <td style="width:100px !important">{{ data?.enquete?.num_fiche }}</td>
-                   <td>
-					  <div class="widget-user-image">
-						
-						<div style="display: inline-block">
-						  <span style="font-weight: 600; font-size: 1.1em; display: block"
-							>{{ data?.enquete?.collecteur_relation?.nom_collecteur }} {{ data?.enquete?.collecteur_relation?.prenom_collecteur }}</span
-						  >
-						  <span style="display: block; color:red !important">{{ data?.enquete?.collecteur_relation?.whatsapp_collecteur }}</span>
-						</div>
-					  </div>
-					</td>
-              
-                   <td style="width:180px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ data?.nbre_produit }}</td>
-                   <td style="width:100px !important ; color:red !important; font-weight:bolder !important" class="text-center" >{{ getYear( data?.enquete?.date_enquete) }}</td>
-                   
-                   <td style="width: 120px;">
+              </li>
+              <li class="h-40">
+                <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
+                  @click="openModal('add-fiche-collecte')"><i class="mdi mdi-plus"></i></button>
+              </li>
+  
+  
+            </ul>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div>
+            <div v-if="hasNewSelection" class="position-fixed  my-1" style="left: 30%;">
+              <button class="btn " style="background-color: red; color:white" @click="validateSelection">
+                <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                Valider
+              </button>
+            </div>
+  
+          </div>
+          <div class="table-responsive">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+  
+                  <th> <input type="checkbox" @change="selectAll" :checked="isAllSelected"></th>
+                  <th>N° Fiche</th>
+                  <th>Agent collecte</th>
+                  <th>Nb de prod. collectés </th>
+                  <th>Date</th>
+                  <th>Actions</th>
+  
+                </tr>
+              </thead>
+              <tbody v-if="paginatedItems.length === 0">
+                <tr>
+                  <td colspan="18">
+                    <div class="badge bg-warning" style="width: 100%; font-size: 14px">
+                      Pas de données !!
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr v-for="(data )  in paginatedItems" :key="data.id">
+                  <td class="text-center" style="width:50px">
+                    <input type="checkbox" v-model="selectedItems" :value="data.enquete?.num_fiche"
+                      :checked="data.enquete?.etat === true"
+                      @change="updateSelection(data.enquete?.num_fiche, $event.target.checked)">
+  
+                  </td>
+  
+                  <td style="width:100px !important">{{ data?.enquete?.num_fiche }}</td>
+                  <td>
+                    <div class="widget-user-image">
+  
+                      <div style="display: inline-block">
+                        <span style="font-weight: 600; font-size: 1.1em; display: block">{{
+                          data?.enquete?.collecteur_relation?.nom_collecteur }} {{
+                          data?.enquete?.collecteur_relation?.prenom_collecteur }}</span>
+                        <span style="display: block; color:red !important">{{
+                          data?.enquete?.collecteur_relation?.whatsapp_collecteur }}</span>
+                      </div>
+                    </div>
+                  </td>
+  
+                  <td style="width:180px !important ; color:red !important; font-weight:bolder !important"
+                    class="text-center">{{ data?.nbre_produit }}</td>
+                  <td style="width:100px !important ; color:red !important; font-weight:bolder !important"
+                    class="text-center">{{ getYear( data?.enquete?.date_enquete) }}</td>
+  
+                  <td style="width: 120px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <router-link :to="{ name: 'enquete-prix-par-marche-collecte', params: { id: data.enquete?.id , nom:'COLLECTE' }}" class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"  data-original-title="view" ><i class="ti-eye"></i></router-link>
-                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.enquete?.id , 'update-fiche-collecte')"  ><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.enquete?.id , 'COLLECTE')" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
-                    </div>   
-					</td > 
-               </tr>
-           </tbody>
-          
-         </table>
-       </div>
-       <div class="row">
-              <div class="col-lg-12">
-                <div class="container_pagination">
-                  <Pag
-                    :current-page="currentPage"
-                    :total-pages="totalPages"
-                    @page-change="updateCurrentPage"
-                  />
+                      <router-link
+                        :to="{ name: 'enquete-prix-par-marche-collecte', params: { id: data.enquete?.id , nom:'COLLECTE' }}"
+                        class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"
+                        data-original-title="view"><i class="ti-eye"></i></router-link>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title=""
+                        @click="HandleIdUpdate(data.enquete?.id , 'update-fiche-collecte')"><i
+                          class="ti-marker-alt"></i></a>
+                      <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs"
+                        @click="HandleIdDelete(data.enquete?.id , 'COLLECTE')" title="" data-toggle="tooltip"
+                        data-original-title="Delete"><i class="ti-trash"></i></a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+  
+            </table>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="container_pagination">
+                <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+  
+    </div>
+  
+    <div class="modal center-modal fade" id="add-fiche-collecte" ref="add-fiche-collecte" tabindex="-1">
+      <div class="modal-dialog ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajouter une fiche</h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('add-fiche-collecte')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+  
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> N° Fiche <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.num_fiche" color="secondary" name="step1.num_fiche" size="sm" rounded-size="sm"
+                    type="text" readonly disabled />
+                  <small v-if="v$.step1.num_fiche.$error">{{
+                    v$.step1.num_fiche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['num_fiche']">
+                    {{ resultError["num_fiche"] }}
+                  </small>
                 </div>
               </div>
-             </div>
-   </div>
-   <!-- /.box-body -->
- </div>
-         
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> Date <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.date_enquete" color="secondary" name="step1.date_enquete" size="sm"
+                    rounded-size="sm" type="date" />
+                  <small v-if="v$.step1.date_enquete.$error">{{
+                    v$.step1.date_enquete.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['date_enquete']">
+                    {{ resultError["date_enquete"] }}
+                  </small>
+                </div>
+              </div>
+  
+              <!-- <div class="col-6">
+                            <div class="input-groupe">
+                              <label for="userpassword"
+                                > Marché <span class="text-danger">*</span></label
+                              >
+                              <MazSelect
+                                v-model="step1.marche"
+                                color="secondary"
+                                name="step1.marche"
+                                size="sm"
+                                rounded-size="sm"
+                                search
+                                :options="MarchesOptions"
+                                
+                                
+                              />
+                              <small v-if="v$.step1.marche.$error">{{
+                                v$.step1.marche.$errors[0].$message
+                              }}</small>
+                              <small v-if="resultError['marche']">
+                                {{ resultError["marche"] }}
+                              </small>
+                            </div>
+                          </div> -->
+  
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> Agent collecte <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step1.collecteur" color="secondary" name="step1.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollecteursOptions" />
+                  <small v-if="v$.step1.collecteur.$error">{{
+                    v$.step1.collecteur.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['collecteur']">
+                    {{ resultError["collecteur"] }}
+                  </small>
+                </div>
+              </div>
+  
+  
             </div>
-
-            <div class="modal center-modal fade"  id="add-fiche-collecte"  ref="add-fiche-collecte" tabindex="-1">
-          <div class="modal-dialog ">
-          <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title">Ajouter une fiche</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-fiche-collecte')" >
-              <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                  <div class="row mt-3 content-group">
-                       
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > N° Fiche <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.num_fiche"
-                              color="secondary"
-                              name="step1.num_fiche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              readonly
-                              disabled                              
-                              
-                            />
-                            <small v-if="v$.step1.num_fiche.$error">{{
-                              v$.step1.num_fiche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['num_fiche']">
-                              {{ resultError["num_fiche"] }}
-                            </small>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Date <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step1.date_enquete"
-                              color="secondary"
-                              name="step1.date_enquete"
-                              size="sm"
-                              rounded-size="sm"
-                              type="date"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.date_enquete.$error">{{
-                              v$.step1.date_enquete.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['date_enquete']">
-                              {{ resultError["date_enquete"] }}
-                            </small>
-                          </div>
-                        </div>
-
-                        <!-- <div class="col-6">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.marche"
-                              color="secondary"
-                              name="step1.marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="MarchesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.marche.$error">{{
-                              v$.step1.marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['marche']">
-                              {{ resultError["marche"] }}
-                            </small>
-                          </div>
-                        </div> -->
-
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Agent collecte <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.collecteur"
-                              color="secondary"
-                              name="step1.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="CollecteursOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.collecteur.$error">{{
-                              v$.step1.collecteur.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['collecteur']">
-                              {{ resultError["collecteur"] }}
-                            </small>
-                          </div>
-                        </div>
-                       
-                      
-                      </div>
-                    
-            </div>
-            <div class="modal-footer modal-footer-uniform text-end">
-          
-              <button type="button" @click="submitFicheCollecte('add-fiche-collecte')" class="waves-effect waves-light btn btn-primary ">Valider</button>
-          
-
-            </div>
+  
           </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+  
+            <button type="button" @click="submitFicheCollecte('add-fiche-collecte')"
+              class="waves-effect waves-light btn btn-primary ">Valider</button>
+  
+  
           </div>
         </div>
-
-    
-          <div class="modal center-modal fade"  id="update-fiche-collecte"  ref="update-fiche-collecte" tabindex="-1">
-          <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title">Modifier une fiche</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-fiche-collecte')" >
-              <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                  <div class="row mt-3 content-group">
-                       
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > N° Fiche <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.num_fiche"
-                              color="secondary"
-                              name="step2.num_fiche"
-                              size="sm"
-                              rounded-size="sm"
-                              type="text"
-                              readonly
-                              disabled                              
-                              
-                            />
-                            <small v-if="v$.step2.num_fiche.$error">{{
-                              v$.step2.num_fiche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['num_fiche']">
-                              {{ resultError["num_fiche"] }}
-                            </small>
-                          </div>
-                        </div>
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Date <span class="text-danger">*</span></label
-                            >
-                            <MazInput
-                              v-model="step2.date_enquete"
-                              color="secondary"
-                              name="step2.date_enquete"
-                              size="sm"
-                              rounded-size="sm"
-                              type="date"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.date_enquete.$error">{{
-                              v$.step2.date_enquete.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['date_enquete']">
-                              {{ resultError["date_enquete"] }}
-                            </small>
-                          </div>
-                        </div>
-
-                        <!-- <div class="col-6">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.marche"
-                              color="secondary"
-                              name="step2.marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="MarchesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.marche.$error">{{
-                              v$.step2.marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['marche']">
-                              {{ resultError["marche"] }}
-                            </small>
-                          </div>
-                        </div> -->
-
-                        <div class="col-12">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Agent collecte <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.collecteur"
-                              color="secondary"
-                              name="step2.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="CollecteursOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.collecteur.$error">{{
-                              v$.step2.collecteur.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['collecteur']">
-                              {{ resultError["collecteur"] }}
-                            </small>
-                          </div>
-                        </div>
-                       
-                      
-                      </div>
-                    
-            </div>
-            <div class="modal-footer modal-footer-uniform text-end">
-          
-              <button type="button" @click="submitUpdate('update-fiche-collecte')" class="waves-effect waves-light btn btn-primary ">Valider</button>
-          
-
-            </div>
-          </div>
-          </div>
-        </div>
+      </div>
     </div>
+  
+  
+    <div class="modal center-modal fade" id="update-fiche-collecte" ref="update-fiche-collecte" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modifier une fiche</h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('update-fiche-collecte')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+  
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> N° Fiche <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.num_fiche" color="secondary" name="step2.num_fiche" size="sm" rounded-size="sm"
+                    type="text" readonly disabled />
+                  <small v-if="v$.step2.num_fiche.$error">{{
+                    v$.step2.num_fiche.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['num_fiche']">
+                    {{ resultError["num_fiche"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> Date <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.date_enquete" color="secondary" name="step2.date_enquete" size="sm"
+                    rounded-size="sm" type="date" />
+                  <small v-if="v$.step2.date_enquete.$error">{{
+                    v$.step2.date_enquete.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['date_enquete']">
+                    {{ resultError["date_enquete"] }}
+                  </small>
+                </div>
+              </div>
+  
+              <!-- <div class="col-6">
+                            <div class="input-groupe">
+                              <label for="userpassword"
+                                > Marché <span class="text-danger">*</span></label
+                              >
+                              <MazSelect
+                                v-model="step2.marche"
+                                color="secondary"
+                                name="step2.marche"
+                                size="sm"
+                                rounded-size="sm"
+                                search
+                                :options="MarchesOptions"
+                                
+                                
+                              />
+                              <small v-if="v$.step2.marche.$error">{{
+                                v$.step2.marche.$errors[0].$message
+                              }}</small>
+                              <small v-if="resultError['marche']">
+                                {{ resultError["marche"] }}
+                              </small>
+                            </div>
+                          </div> -->
+  
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> Agent collecte <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step2.collecteur" color="secondary" name="step2.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollecteursOptions" />
+                  <small v-if="v$.step2.collecteur.$error">{{
+                    v$.step2.collecteur.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['collecteur']">
+                    {{ resultError["collecteur"] }}
+                  </small>
+                </div>
+              </div>
+  
+  
+            </div>
+  
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+  
+            <button type="button" @click="submitUpdate('update-fiche-collecte')"
+              class="waves-effect waves-light btn btn-primary ">Valider</button>
+  
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import Pag from "@/components/others/pagination.vue";
@@ -368,20 +327,20 @@ import Loading from "@/components/others/loading.vue";
 import axios from '@/lib/axiosConfig'
 import useVuelidate from "@vuelidate/core";
 import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
-import {successmsg} from "@/lib/modal.js"
+import { successmsg } from "@/lib/modal.js"
 import MazPhoneNumberInput from 'maz-ui/components/MazPhoneNumberInput'
-  import Swal from 'sweetalert2'
-  import { useToast } from "vue-toastification";
+import Swal from 'sweetalert2'
+import { useToast } from "vue-toastification";
 export default {
-    setup() {
-   const toast = useToast();
-   return { toast }
- },
- props: {
-    nom:{
-        type:String,
-        required:true,
-    } ,
+  setup() {
+    const toast = useToast();
+    return { toast }
+  },
+  props: {
+    nom: {
+      type: String,
+      required: true,
+    },
     enquetes: {
       type: Array,
       required: true,
@@ -390,15 +349,15 @@ export default {
       type: Number,
       required: true,
     },
-    id:{
-        type:String,
-        required: true
+    id: {
+      type: String,
+      required: true
     }
   },
-    components:{
-        Pag , Loading
-    },
-    computed: {
+  components: {
+    Pag, Loading
+  },
+  computed: {
     loggedInUser() {
       return this.$store.getters["auth/myAuthenticatedUser"];
     },
@@ -410,238 +369,258 @@ export default {
       const endIndex = startIndex + this.itemsPerPage;
       return this.FichesCollOptions.slice(startIndex, endIndex);
     },
-  
-  },
-    data() {
-        return {
-            loading: false,
-            searchFicheCollecteFiche:"",
-            Commune:"",
-            isModalUpdate:"",
-            FichesCollOptions: [],
-            CollecteursOptions: [],
-            MarchesOptions: [],
-            data:[],
-            currentPage: 1,
-            itemsPerPage: 10,
-            ToId:"",
-            totalPageArray: [],
-            currentMarcheName: "",
-            selectAll: false,
-      selectedItems: [],
-          
-            step1: {
-                num_fiche:"",
-            date_enquete:"",
-            // marche:"",
-            collecteur:"",
-            
-            },
-            step2: {
-              num_fiche:"",
-            date_enquete:"",
-            // marche:"",
-            collecteur:"",
-            },
-            v$: useVuelidate(),
-            error: "",
-            resultError: {},
-         
+    isAllSelected() {
+      // Vérifie si tous les éléments de paginatedItems sont sélectionnés
+      return this.paginatedItems.length > 0 && this.selectedItems.length === this.paginatedItems.length;
+    }
 
-        }
+  },
+  data() {
+    return {
+      loading: false,
+      searchFicheCollecteFiche: "",
+      Commune: "",
+      isModalUpdate: "",
+      FichesCollOptions: [],
+      CollecteursOptions: [],
+      MarchesOptions: [],
+      data: [],
+      currentPage: 1,
+      itemsPerPage: 10,
+      ToId: "",
+      totalPageArray: [],
+      currentMarcheName: "",
+
+      initialSelectedItems: [],
+      selectAllCheckbox: false,  // État de la checkbox "select all"
+      selectedItems: [],
+      hasNewSelection: false, //
+
+
+      step1: {
+        num_fiche: "",
+        date_enquete: "",
+        // marche:"",
+        collecteur: "",
+
+      },
+      step2: {
+        num_fiche: "",
+        date_enquete: "",
+        // marche:"",
+        collecteur: "",
+      },
+      v$: useVuelidate(),
+      error: "",
+      resultError: {},
+
+
+    }
+  },
+  validations: {
+    step1: {
+      num_fiche: { require },
+      date_enquete: { require },
+      // marche:{require},
+      collecteur: { require },
+
     },
-    validations: {
-        step1: {
-                num_fiche:{require},
-            date_enquete:{require},
-            // marche:{require},
-            collecteur:{require},
-            
-            },
-       
-        step2: {
-           
-          
-          num_fiche:{require},
-            date_enquete:{require},
-            // marche:{require},
-            collecteur:{require},
-           
+
+    step2: {
+
+
+      num_fiche: { require },
+      date_enquete: { require },
+      // marche:{require},
+      collecteur: { require },
+
     },
   },
-  async  mounted() {
-    const code  =   await JSON.parse(localStorage.getItem('DataCommune'));
-    await this.fetchCommuneByCode(code )
-     await this.fetchNumberFiche()
+  async mounted() {
+    const code = await JSON.parse(localStorage.getItem('DataCommune'));
+    await this.fetchCommuneByCode(code)
+    await this.fetchNumberFiche()
     await this.fetchCollecteurs()
-    
-    
-        
-    },
-    watch: {
+
+
+
+  },
+  watch: {
     enquetes: {
       handler(newData) {
-        console.log('znquetes',newData)
         this.FichesCollOptions = [...newData];
         this.data = [...newData];
         this.updatePaginatedItems();
+
+        this.initialSelectedItems = this.data
+          .filter(item => item.enquete?.etat === true)
+          .map(item => item.enquete?.num_fiche);
+        this.selectedItems = [...this.initialSelectedItems];
+        this.updateSelectedItems();
       },
       deep: true,
       immediate: true,
     },
+    selectedItems(newValue) {
+      this.selectAllCheckbox = newValue.length === this.paginatedItems.length;
+    }
   },
-    methods: {
-        successmsg:successmsg,
-        HandleData(data){
-            console.log('data',data)
-            localStorage.setItem('DataPrixMarche', JSON.stringify(data));
+  methods: {
+    successmsg: successmsg,
+    HandleData(data) {
+      localStorage.setItem('DataPrixMarche', JSON.stringify(data));
 
-        },
-        getYear(date) {
-   const d = new Date(date);
-    const day =String(d.getDate()).padStart(2 , '0')
-    const month =String(d.getMonth() + 1).padStart(2 , '0')
-    const year =String(d.getFullYear()) 
-    
-    return `${day}/${month}/${year}`
-},
-  
-        
-        async fetchFichesCollectes() {
+    },
+    getYear(date) {
+      const d = new Date(date);
+      const day = String(d.getDate()).padStart(2, '0')
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const year = String(d.getFullYear())
+
+      return `${day}/${month}/${year}`
+    },
+
+
+    async fetchFichesCollectes() {
       try {
-        const response = await axios.get( `/enquetes/Fiches/par-marche/{id}?identite=${this.id}&type=COLLECTE`,
+        const response = await axios.get(`/enquetes/Fiches/par-marche/{id}?identite=${this.id}&type=COLLECTE`,
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
-
-          console.log('responsecollerty',response)
         if (response.status === 200) {
-              this.data  = response.data ;
-              this.FichesCollOptions = this.data
-           
-              this.loading =  false
+          this.data = response.data;
+          this.FichesCollOptions = this.data
+
+          this.initialSelectedItems = this.data
+            .filter(item => item.enquete?.etat === true)
+            .map(item => item.enquete?.num_fiche);
+          this.selectedItems = [...this.initialSelectedItems];
+          this.updateSelectedItems();
+
+
+          this.loading = false
         }
       } catch (error) {
         this.handleErrors(error);
-       
-       
+
+
       }
     },
-  
+    updateSelectedItems() {
+      this.paginatedItems.forEach(item => {
+        if (this.selectedItems.includes(item.enquete?.num_fiche)) {
+          item.enquete.etat = true;
+        } else {
+          item.enquete.etat = false;
+        }
+      });
+    },
+
     async fetchCollecteurs() {
       try {
-        const response = await axios.get( '/parametrages/collecteurs',
+        const response = await axios.get('/parametrages/collecteurs',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
-
-          console.log('responsecolecteurs',response)
         if (response.status === 200) {
-			response.data.map(item => {
-				this.CollecteursOptions.push({
-					label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-					value: item.id_collecteur 
-				});
-});
+          response.data.map(item => {
+            this.CollecteursOptions.push({
+              label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
+              value: item.id_collecteur
+            });
+          });
         }
       } catch (error) {
-		this.handleErrors(error);
+        this.handleErrors(error);
       }
     },
-    async fetchCommuneByCode(code ) {
+    async fetchCommuneByCode(code) {
       try {
-        const response = await axios.get( `/parametrages/localites/communes/${code.code_commune}`,
+        const response = await axios.get(`/parametrages/localites/communes/${code.code_commune}`,
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
-
-          console.log('responseCommune ',response)
         if (response.status === 200) {
           this.Commune = response.data
-		
+
         }
       } catch (error) {
-		this.handleErrors(error);
+        this.handleErrors(error);
       }
     },
     async fetchNumberFiche() {
       try {
-        const response = await axios.get( '/enquetes/Fiches/fiche-numero',
+        const response = await axios.get('/enquetes/Fiches/fiche-numero',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
-            
+
           }
         );
-
-          console.log('responsenumber',response)
         if (response.status === 200) {
-		this.step1.num_fiche  = response.data
+          this.step1.num_fiche = response.data
         }
       } catch (error) {
-		this.handleErrors(error);
+        this.handleErrors(error);
       }
     },
     async submitFicheCollecte(modalId) {
-        this.v$.step1.$touch();
+      this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
         this.loading = true;
         let data = {
-            num_fiche:this.step1.num_fiche,
-            date_enquete:this.step1.date_enquete,
-            marche: this.id,
-            collecteur: this.step1.collecteur,
-            }
-            console.log('data',data)
+          num_fiche: this.step1.num_fiche,
+          date_enquete: this.step1.date_enquete,
+          marche: this.id,
+          collecteur: this.step1.collecteur,
+        }
         try {
           const response = await axios.post("/enquetes/Fiches/collectes", data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
-           
-          }
-          });
-       console.log('qfs',response)
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
 
-      
+            }
+          });
           if (response.status === 200) {
-             this.closeModal(modalId);
-             this.step1 = {
-          num_fiche: "",
-          date_enquete: "",
-          collecteur: "",
-         
-        };
-        this.v$.step1.$reset();
-        this.successmsg(
-            "Création de la fiche d'enquête",
-            "Votre fiche d'enquête a été créée avec succès !"
-        );
+            this.closeModal(modalId);
+            this.step1 = {
+              num_fiche: "",
+              date_enquete: "",
+              collecteur: "",
+
+            };
+            this.v$.step1.$reset();
+            this.successmsg(
+              "Création de la fiche d'enquête",
+              "Votre fiche d'enquête a été créée avec succès !"
+            );
             this.$emit('enquete-updated');
             this.loading = false
           } else {
           }
         } catch (error) {
-            this.handleErrors(error);
+          this.handleErrors(error);
         }
       } else {
-      
+
       }
     },
-    async  HandleIdUpdate(id , modalId){
+    async HandleIdUpdate(id, modalId) {
       this.openModal(modalId)
-    this.loading = true;
+      this.loading = true;
 
       try {
         const response = await axios.get(`/enquetes/Fiches/collectes/detail/${id}`, {
@@ -650,74 +629,70 @@ export default {
           }
         });
 
-      
+
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
-        
-          let data =  response.data
+          let data = response.data
           this.step2.num_fiche = data.num_fiche,
-          this.step2.date_enquete = data.date_enquete,
-          this.step2.collecteur = data.collecteur,
-          
-       
-          this.ToId = data.id
+            this.step2.date_enquete = data.date_enquete,
+            this.step2.collecteur = data.collecteur,
+
+
+            this.ToId = data.id
           this.loading = false;
-        
+
         }
       } catch (error) {
-      
+
         this.handleErrors(error);
       }
 
     },
-    async  submitUpdate(modalId){
-   
-   this.v$.step2.$touch();
+    async submitUpdate(modalId) {
 
- 
-    if (this.v$.$errors.length == 0) {
-    
-       this.loading = true;
-       let data = {
-            num_fiche:this.step2.num_fiche,
-            date_enquete:this.step2.date_enquete,
-            marche: this.id,
-            collecteur: this.step2.collecteur,
-            }
-            console.log('data',data)
+      this.v$.step2.$touch();
 
-      try {
-        const response = await axios.put(`/enquetes/Fiches/collectes/${this.ToId}`,data, {
-          headers: {
-           
-            Authorization: `Bearer ${this.loggedInUser.token}`,
-          
-          },
-        });
-     
-        if (response.status === 200) {
-          this.closeModal(modalId);
-          this.successmsg(
-          "Mise à jour de la fiche d'enquête",
-          "Votre fiche d'enquête a été mise à jour avec succès !"
-          )
-          this.$emit('enquete-updated');
-          this.loading = false
-         
-          
-        } 
-      } catch (error) {
-        this.handleErrors(error);
+
+      if (this.v$.$errors.length == 0) {
+
+        this.loading = true;
+        let data = {
+          num_fiche: this.step2.num_fiche,
+          date_enquete: this.step2.date_enquete,
+          marche: this.id,
+          collecteur: this.step2.collecteur,
+        }
+        try {
+          const response = await axios.put(`/enquetes/Fiches/collectes/${this.ToId}`, data, {
+            headers: {
+
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+
+            },
+          });
+
+          if (response.status === 200) {
+            this.closeModal(modalId);
+            this.successmsg(
+              "Mise à jour de la fiche d'enquête",
+              "Votre fiche d'enquête a été mise à jour avec succès !"
+            )
+            this.$emit('enquete-updated');
+            this.loading = false
+
+
+          }
+        } catch (error) {
+          this.handleErrors(error);
+        }
+      } else {
+
+        this.loading = false;
+
       }
-    } else {
-  
-      this.loading = false;
-
-    }
-   },
-    async HandleIdDelete(id , nom) {
-     // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
-     const result = await Swal.fire({
+    },
+    async HandleIdDelete(id, nom) {
+      // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
+      const result = await Swal.fire({
         title: 'Êtes-vous sûr ?',
         text: 'Vous ne pourrez pas annuler cette action !',
         icon: 'warning',
@@ -725,79 +700,149 @@ export default {
         confirmButtonText: 'Oui, supprimez-le !',
         cancelButtonText: 'Non, annulez !',
         reverseButtons: true
-     });
+      });
 
-     // Si l'utilisateur confirme la suppression
-     if (result.isConfirmed) {
-       this.ConfirmeDelete(id , nom);
-     }
-         },
-         async ConfirmeDelete(id , nom) {
-          this.loading = true
-         
-         try {
-           // Faites une requête pour supprimer l'élément avec l'ID itemId
-           const response = await axios.delete(`/enquetes/Fiches/collectes/${id}?type=${nom}`, {
-             headers: {
-               Authorization: `Bearer ${this.loggedInUser.token}`,
-             },
-   
-   
-           });
-       
-           if (response.status === 200) {
-             this.loading = false
-             this.successmsg(
-                "Suppression de la fiche d'enquête",
-                "Votre fiche d'enquête a été supprimée avec succès !"
-            );
-            this.$emit('enquete-updated');
-            this.loading = false
-   
-           } else {
-        
-            this.handleErrors(error);
-           }
-         } catch (error) {
-            this.handleErrors(error);
-           
-         }
-   
-       },
-       toggleAll() {
-      this.selectedItems = this.selectAll 
-        ? this.paginatedItems.map(item => item.id)
-        : [];
+      // Si l'utilisateur confirme la suppression
+      if (result.isConfirmed) {
+        this.ConfirmeDelete(id, nom);
+      }
     },
-    validateSelected() {
-      console.log('IDs sélectionnés:', this.selectedItems);
-      // Ajoutez ici la logique pour traiter les éléments sélectionnés
+    async ConfirmeDelete(id, nom) {
+      this.loading = true
+
+      try {
+        // Faites une requête pour supprimer l'élément avec l'ID itemId
+        const response = await axios.delete(`/enquetes/Fiches/collectes/${id}?type=${nom}`, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+
+
+        });
+
+        if (response.status === 200) {
+          this.loading = false
+          this.successmsg(
+            "Suppression de la fiche d'enquête",
+            "Votre fiche d'enquête a été supprimée avec succès !"
+          );
+          this.$emit('enquete-updated');
+          this.loading = false
+
+        } else {
+
+          this.handleErrors(error);
+        }
+      } catch (error) {
+        this.handleErrors(error);
+
+      }
+
+    },
+
+    updateSelection(num_fiche, etat) {
+      if (etat) {
+        if (!this.selectedItems.includes(num_fiche)) {
+          this.selectedItems.push(num_fiche);
+        }
+      } else {
+        const index = this.selectedItems.indexOf(num_fiche);
+        if (index > -1) {
+          this.selectedItems.splice(index, 1);
+        }
+
+      }
+      this.hasNewSelection = this.selectedItems.some(item => !this.initialSelectedItems.includes(item));
+    },
+    selectAll(event) {
+      if (event.target.checked) {
+        this.selectedItems = this.paginatedItems.map(item => item.enquete?.num_fiche);
+        this.hasNewSelection = this.selectedItems.some(item => !this.initialSelectedItems.includes(item));
+      } else {
+
+        this.selectedItems = [];
+        this.hasNewSelection = false;
+      }
+
+      this.showValidationButton = this.selectedItems.length > 0;
+    },
+    async validateSelection() {
+      const result = await Swal.fire({
+        title: 'Êtes-vous sûr ?',
+        text: 'Vous ne pourrez pas annuler cette action !',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oui, validez !',
+        cancelButtonText: 'Non, annulez !',
+        reverseButtons: true
+      });
+
+      // Si l'utilisateur confirme la suppression
+      if (result.isConfirmed) {
+        this.validateSelection1();
+      }
+    },
+    async validateSelection1() {
+      const newItems = this.selectedItems.filter(item => !this.initialSelectedItems.includes(item));
+      const formattedItems = newItems.map(item => {
+        return { code: String(item) };
+      });
+      this.loading = true
+
+      try {
+        const response = await axios.post('/enquetes/Fiches/validations', formattedItems, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+
+
+        });
+
+        if (response.status === 200) {
+          this.loading = false
+          this.successmsg(
+            "Validation des fiches d'enquête",
+            "Les fiches d'enquête sélectionnées ont été validées avec succès !"
+          );
+          this.$emit('enquete-updated');
+          this.hasNewSelection = false
+          this.loading = false
+
+        } else {
+
+          this.handleErrors(error);
+        }
+      } catch (error) {
+        this.handleErrors(error);
+
+      }
+
     },
     filterByName() {
-this.currentPage = 1;
-if (this.searchFicheCollecteFiche !== null) {
-   const tt = this.searchFicheCollecteFiche;
-  const  searchValue = tt.toLowerCase()
-  this.FichesCollOptions =this.data.filter(user => {
-    const Nom = user.enquete?.num_fiche || '';
-    const definition = user.enquete?.marche_relation?.nom_marche || '';
-    const collecte = user.enquete?.collecteur_relation?.nom_collecteur || '';
-    const Prenom = user.enquete?.collecteur_relation?.prenom_collecteur || '';
-    const Numero = user?.num_fiche || '';
-    return Nom.toLowerCase().includes(searchValue)  ||
-    collecte.toLowerCase().includes(searchValue)  ||
-    Prenom.toLowerCase().includes(searchValue)  ||
-    Numero.toLowerCase().includes(searchValue)  ||
-     definition.toLowerCase().includes(searchValue) 
-  });
+      this.currentPage = 1;
+      if (this.searchFicheCollecteFiche !== null) {
+        const tt = this.searchFicheCollecteFiche;
+        const searchValue = tt.toLowerCase()
+        this.FichesCollOptions = this.data.filter(user => {
+          const Nom = user.enquete?.num_fiche || '';
+          const definition = user.enquete?.marche_relation?.nom_marche || '';
+          const collecte = user.enquete?.collecteur_relation?.nom_collecteur || '';
+          const Prenom = user.enquete?.collecteur_relation?.prenom_collecteur || '';
+          const Numero = user?.num_fiche || '';
+          return Nom.toLowerCase().includes(searchValue) ||
+            collecte.toLowerCase().includes(searchValue) ||
+            Prenom.toLowerCase().includes(searchValue) ||
+            Numero.toLowerCase().includes(searchValue) ||
+            definition.toLowerCase().includes(searchValue)
+        });
 
-} else {
-this.FichesCollOptions = [...this.data];
- 
-}
+      } else {
+        this.FichesCollOptions = [...this.data];
 
-},
-triggerToast(errorMessage) {
+      }
+
+    },
+    triggerToast(errorMessage) {
       this.toast.error(errorMessage, {
         position: "top-right",
         timeout: 8000,
@@ -821,10 +866,9 @@ triggerToast(errorMessage) {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       if (error.response?.data.detail.includes('204')) {
-        console.log('bonjour')
         this.loading = false;
         this.data = [];
-        
+
         // Logique pour une erreur serveur
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
@@ -844,7 +888,7 @@ triggerToast(errorMessage) {
       if (!$('.modal-backdrop').length) {
         const backdrop = $('<div class="modal-backdrop fade"></div>');
         $('body').append(backdrop);
-        backdrop.fadeIn(100); 
+        backdrop.fadeIn(100);
       }
     },
 
@@ -852,22 +896,22 @@ triggerToast(errorMessage) {
       this.fetchNumberFiche()
       let modalElement = this.$refs[modalId];
 
-      $(modalElement).fadeIn(100, function() {
+      $(modalElement).fadeIn(100, function () {
         $(modalElement).addClass('show');
       });
       $('body').addClass('modal-open');
       this.addBackdrop();
     },
-    closeModal(modalId) { 
+    closeModal(modalId) {
       let modalElement = this.$refs[modalId];
 
-      $(modalElement).fadeOut(100, function() {
+      $(modalElement).fadeOut(100, function () {
         $(modalElement).removeClass('show');
         $(modalElement).css('display', 'none');
       });
       $('body').removeClass('modal-open');
-      $('.modal-backdrop').fadeOut(100, function() {
-        $(this).remove(); 
+      $('.modal-backdrop').fadeOut(100, function () {
+        $(this).remove();
       });
     },
     async formatValidationErrors(errors) {
@@ -875,19 +919,19 @@ triggerToast(errorMessage) {
 
       for (const field in errors) {
         const errorMessages = errors[field]; // Liste complète des messages d'erreur
-  
+
 
         const concatenatedError = errorMessages.join(", "); // Concaténer les messages d'erreur
-       
+
 
         formattedErrors[field] = concatenatedError; // Utilisez le nom du champ comme clé
       }
 
       this.resultError = formattedErrors; // Stockez les erreurs dans un objet
 
-    
+
     },
-        updateCurrentPage(pageNumber) {
+    updateCurrentPage(pageNumber) {
       this.currentPage = pageNumber;
       window.scrollTo({
         top: 0,
@@ -900,10 +944,10 @@ triggerToast(errorMessage) {
       const endIndex = startIndex + this.itemsPerPage;
       return this.FichesCollOptions.slice(startIndex, endIndex);
     },
-    },
-    
+  },
+
 }
 </script>
 <style lang="css" scoped>
-    
+
 </style>

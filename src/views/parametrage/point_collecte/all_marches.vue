@@ -23,8 +23,12 @@
 
       
   <div class="box mx-2">
-  <div class="box-header with-border p-2">
-    <div class="search-bx mx-5 w-25 float-end">
+  <div class="box-header with-border pb-0 ps-0 p-2" style="border-bottom: 1px solid var(--color-primary) !important;">
+    <ul class="nav nav-tabs customtab2 ">
+						<li class=" nav-item"> <a href="#navpills-1" class="nav-link active" data-toggle="tab" aria-expanded="false">Marchés</a> </li>
+						<li class="nav-item"> <a href="#navpills-3" class="nav-link" data-toggle="tab" aria-expanded="true" @click="loadFiche">Fiches</a> </li>
+					</ul>
+    <!-- <div class="search-bx mx-5 w-25 float-end">
             <form>
               <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
@@ -34,11 +38,29 @@
                         </div>
                       </div>
             </form>
-          </div>
+          </div> -->
   </div>
   
   <div class="box-body p-2">
-        <div class="table-responsive">
+
+    <div class="tab-content">
+						<div id="navpills-1" class="tab-pane active row">
+              <div class=" row box-header with-border pb-0 ps-0 p-2" style="border-bottom: 1px solid transparent !important;">
+   
+   <div class="search-bx mx-5 w-25 float-end pb-3">
+           <form>
+             <div class="input-group">
+                       <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                         aria-describedby="button-addon2" v-model="searchMarche" @input="filterByName">
+                       <div class="input-group-append">
+                         <button class="btn border border-1"><i class="ti-search"></i></button>
+                       </div>
+                     </div>
+           </form>
+         </div>
+ </div>
+       
+          <div class="table-responsive">
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -143,6 +165,14 @@
             </div>
           </div>
         </div>
+						</div>
+					
+						<div id="navpills-3" class="tab-pane" v-if="loadFiches" >
+              <component :is="componentToShow"  :collecte-data="collecteData" ></component>
+
+						</div>
+					</div>
+      
       </div>
   </div>
     
@@ -153,6 +183,11 @@
   import Loading from "@/components/others/loading.vue";
   import axios from '@/lib/axiosConfig'
   import { useToast } from "vue-toastification";
+  import Collecte from '@/components/fiche_enquete_compo/ficheallmarches.vue/collectes.vue'
+  import Grossiste from '@/components/fiche_enquete_compo/ficheallmarches.vue/grossiste.vue'
+  import Betail from '@/components/fiche_enquete_compo/ficheallmarches.vue/betail.vue'
+  import Debarcaderes from '@/components/fiche_enquete_compo/ficheallmarches.vue/debarcadere.vue'
+ 
 export default {
     props:['id'],
     setup() {
@@ -160,7 +195,7 @@ export default {
     return { toast }
   },
   components: {
-     Loading , Pag
+     Loading , Pag , Collecte , Grossiste , Betail , Debarcaderes
   },
   computed: {
     loggedInUser() {
@@ -174,6 +209,17 @@ export default {
       const endIndex = startIndex + this.itemsPerPage;
       return this.MarchesOptions.slice(startIndex, endIndex);
     },
+    componentToShow(){
+      if([1,3,4,8].includes( parseInt(this.id))){
+        return 'Collecte';
+      }else if(parseInt(this.id) === 2){
+        return 'Grossiste'
+      }else if(parseInt(this.id) === 5){
+        return 'Betail'
+      }else if([6,7].includes( parseInt(this.id))){
+        return 'Debarcaderes'
+      }
+    }
 
   },
     data() {
@@ -187,15 +233,41 @@ export default {
             itemsPerPage: 10,
             ToId:"",
             totalPageArray: [],
+            collecteData: {},
+            loadFiches:false
         }
     },
+    watch: {
+    id: {
+      immediate: true,
+      handler(newId) {
+      
+    
+        if (parseInt(newId)  === 1) {
+          this.collecteData = { id: 1, nom: "COLLECTE" };
+        } else if (parseInt(newId) === 2) {
+          this.collecteData = { id: 2, nom: "GROSSISTE" };
+        } else if(parseInt(newId) === 3) {
+          this.collecteData = { id: 3, nom: "HEBDOMADAIRE" };
+        }else if(parseInt(newId) === 4) {
+          this.collecteData = { id: 4, nom: "JOURNALIER" };
+        }else if(parseInt(newId) === 5) {
+          this.collecteData = { id: 5, nom: "BETAIL" };
+        }else if(parseInt(newId) === 6) {
+          this.collecteData = { id: 6, nom: "DEBARCADERE" };
+        }else if(parseInt(newId) === 7) {
+          this.collecteData = { id: 7, nom: "PORT" };
+        }else  {
+          this.collecteData = { id: 8, nom: "TRANSFRONTALIER" };
+        }
+      }
+    }
+  },
   async  mounted() {
         await this.fetchMarches(this.id);
-        console.log('bonjour',this.id)
     },
     methods: {
         HamdleData(data){
-      console.log('data',data)
       localStorage.setItem('DataCommune', JSON.stringify(data));
     },
         async fetchMarches() {
@@ -207,7 +279,6 @@ export default {
             },
           }
         );
-		  console.log('dataresponse',response)
         if (response.status === 200) {
           this.data = response.data.marches;
           this.infoMarche = response.data.type_marche
@@ -218,8 +289,11 @@ export default {
         this.handleErrors(error);
       }
     },
+    loadFiche(){
+      this.loadFiches = true
+    },
     generateRouteForMarket(marche) {
-        console.log('marche',marche)
+     
       if (!marche) return '/default-route'; // Route par défaut si marche est undefined
 
       const typeMarche = marche.type_marche
@@ -233,10 +307,10 @@ export default {
           return { name: 'fiches-enquetes-type-marche-collecte', params };
         case 2: // Grossiste
           return { name: 'fiches-enquetes-type-marche-grossiste', params };
-        case 3: // Journalier
-          return { name: 'fiches-enquetes-type-marche-journaliere', params };
-        case 4: // Hebdomadaire
+        case 3: // Hebdomadaire
           return { name: 'fiches-enquetes-type-marche-hebdomadaire', params };
+        case 4: //  Journalier
+          return { name: 'fiches-enquetes-type-marche-journaliere', params };
         case 5: // Bétail
           return { name: 'fiches-enquetes-type-marche-betail', params };
         case 6: // Débarcadère
@@ -258,13 +332,11 @@ export default {
   this.currentPage = 1;
   if (this.searchMarche !== null) {
    const tt = this.searchMarche;
-   console.log('ee',tt)
   const  searchValue = tt.toLowerCase()
-  console.log('searchValue',searchValue)
-  console.log('searchValue',this.data)
+ 
   
   this.MarchesOptions =this.data.filter(user => {
-  console.log('searchValueUser',user)
+
   
     const Code = user.marche?.code_marche || '';
     const nom = user.marche?.nom_marche || ''; 
@@ -307,7 +379,6 @@ export default {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       if (error.response?.data.detail.includes('204')) {
-        console.log('bonjour')
         this.loading = false;
         this.data = [];
         // Logique pour une erreur serveur

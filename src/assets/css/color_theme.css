@@ -1790,13 +1790,13 @@ Theme Primary Color
 .theme-primary .nav > li > a:hover, .theme-primary .nav > li > a:active, .theme-primary .nav > li > a:focus {
   color: var(--color-primary); }
 .theme-primary .nav-pills > li > a.active {
-  border-top-color: #8950fc;
-  background-color: #8950fc !important;
-  color: #ffffff; }
+  border-top-color: red;
+  background-color: red !important;
+  color: #ffffff !important; }
   .theme-primary .nav-pills > li > a.active:hover, .theme-primary .nav-pills > li > a.active:focus {
-    border-top-color: #8950fc;
-    background-color: #8950fc !important;
-    color: #ffffff; }
+    border-top-color:red;
+    background-color:red !important;
+    color: #ffffff !important; }
 .theme-primary .mailbox-nav .nav-pills > li > a:hover, .theme-primary .mailbox-nav .nav-pills > li > a:focus {
   border-color: #8950fc; }
 .theme-primary .mailbox-nav .nav-pills > li > a.active {
@@ -1955,7 +1955,9 @@ Theme Primary Color
   border-right: 2px solid #8950fc;
   color: #8950fc; }
 .theme-primary .customtab2 li a.nav-link:hover, .theme-primary .customtab2 li a.nav-link:active, .theme-primary .customtab2 li a.nav-link.active {
-  background-color: #8950fc; }
+  background-color: red;
+  color: white !important;
+ }
 
 /*---Notification---*/
 .theme-primary .jq-icon-primary {

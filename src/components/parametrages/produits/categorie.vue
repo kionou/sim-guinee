@@ -4,7 +4,7 @@
         <div class="col-12">
 <div class="box">
    <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
-     <h3 class="box-title mb-0">Liste des catégories</h3>
+     <h3 class="box-title mb-0">Liste des groupes d'aliment</h3>
      <div class="navbar-custom-menu r-side">
         <ul class="nav navbar-nav justify-content-end">	
 				  
@@ -23,7 +23,7 @@
 				</div>
 			</li>
 			<li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5" data-toggle="modal" data-target="#add-categorie" ><i class="mdi mdi-plus"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="openModal('add-categorie')" ><i class="mdi mdi-plus"></i></button>
 			</li>
 
 			
@@ -63,8 +63,8 @@
                    
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
-                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_categorie_produit)"  data-original-title="Update" data-toggle="modal" data-target="#update-categorie"><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_categorie_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                        <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_categorie_produit , 'update-categorie')"  data-original-title="Update"><i class="ti-marker-alt"></i></a>
+                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_categorie_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
                </tr>
@@ -93,8 +93,8 @@
 	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title">Ajouter des Catégories</h5>
-			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+			<h5 class="modal-title">Ajouter des groupes d'aliment</h5>
+			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"  @click="closeModal('add-categorie')" >
               <span aria-hidden="true">&times;</span>
             </button>
 		  </div>
@@ -176,8 +176,8 @@
           <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title">Modifier une catégorie</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" data-dismiss="modal" >
+            <h5 class="modal-title">Modifier un groupe d'aliment</h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-categorie')" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -396,12 +396,12 @@ export default {
 
       
           if (response.status === 200) {
-     this. Categories = [{ code_categorie_produit:"", nom_categorie_produit:"", }];
+          this. Categories = [{ code_categorie_produit:"", nom_categorie_produit:"", }];
 
              this.closeModal(modalId);
              this.successmsg(
-                "Création de catégories",
-                "Vos catégories ont été créées avec succès !"
+                "Création des groupes d'aliments",
+                "Vos groupes d'aliments ont été créées avec succès !"
             );
             await this.fetchCategories();
           } else {
@@ -413,7 +413,8 @@ export default {
       
       }
     },
-    async  HandleIdUpdate(id){
+    async  HandleIdUpdate(id , modalId){
+      this.openModal(modalId)
     this.loading = true;
 
       try {
@@ -467,8 +468,8 @@ export default {
         if (response.status === 200) {
           this.closeModal(modalId);
           this.successmsg(
-                "Mise à jour de la catégorie",
-                "Votre catégorie a été mise à jour avec succès !"
+                "Mise à jour du groupe d'aliment",
+                "Votre groupe d'aliment a été mise à jour avec succès !"
             );
             await this.fetchCategories();
          
@@ -516,8 +517,8 @@ export default {
            if (response.status === 200) {
              this.loading = false
                         this.successmsg(
-                "Suppression de la catégorie",
-                "Votre catégorie a été supprimée avec succès !"
+                "Suppression du groupe d'aliment",
+                "Votre groupe d'aliment a été supprimée avec succès !"
             );
             await this.fetchCategories();
    
@@ -592,16 +593,34 @@ triggerToast(errorMessage) {
         return false;
       }
     },
-closeModal(modalId) {
-      let modalElement = this.$refs[modalId];
-      modalElement.classList.remove("show");
-      modalElement.style.display = "none";
-      modalElement.style.opacity = "";
-       document.body.classList.remove("modal-open");
-      let modalBackdrop = document.querySelector(".modal-backdrop");
-      if (modalBackdrop) {
-        modalBackdrop.parentNode.removeChild(modalBackdrop);
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
       }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
    
     async formatValidationErrors(errors) {

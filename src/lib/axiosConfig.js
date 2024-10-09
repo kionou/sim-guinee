@@ -1,5 +1,6 @@
 // axiosConfig.js
 import axios from 'axios';
+import { mapGetters } from "vuex";
 
 
 
@@ -27,6 +28,11 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    localStorage.removeItem('openMenus');
+    localStorage.removeItem('activeMenu');
+    localStorage.removeItem('activeSubMenu');
+    // this.$store.dispatch("auth/clearMyAuthenticatedUser"); // Appel de l'action pour déconnecter l'utilisateur
+    // this.$router.push("/");
     return Promise.reject(error);
   }
 );

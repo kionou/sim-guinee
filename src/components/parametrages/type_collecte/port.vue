@@ -47,6 +47,7 @@
                    <th>Geo local.</th>
                    <th>Commune</th>
                    <th>Agent collecte</th>
+                   <th>Nature du marché</th>
                    <th>Jours du port</th>
                    <th>Actions</th>
                   
@@ -85,6 +86,12 @@
           <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
           <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
                    </td>
+                   <td>
+          <div>
+            {{ data?.nature_marche ?? "-"}}
+          
+          </div>
+           </td>
                    <td class="text-center" 
                     style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
                     :title="data?.jour_du_marche">
@@ -326,7 +333,7 @@
                       
             </div>
      
-      <div class="row mt-3 content-group">
+            <div class="row mt-3 content-group">
         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
@@ -339,7 +346,7 @@
                               size="sm"
                               rounded-size="sm"
                               search
-                              :options="CollecteursOptions"
+                :options="CollecteursOptions"
                               
                               
                             />
@@ -350,15 +357,43 @@
                               {{ resultError["collecteur"] }}
                             </small>
                           </div>
-                        </div>
+          </div>
+
+          <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nature du marché <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step1.nature_marche"
+                              color="secondary"
+                              name="step1.nature_marche"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+                       :options="Nature"
+                              
+                              
+                            />
+                            <small v-if="v$.step1.nature_marche.$error">{{
+                              v$.step1.nature_marche.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nature_marche']">
+                              {{ resultError["nature_marche"] }}
+                            </small>
+                          </div>
+             </div>        
+       </div>
+            <div class="row mt-3 content-group">
+      
                 
                         
             <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
+                              > Description </label
                             >
-              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
+              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
   
                             <small v-if="v$.step1.description.$error">{{
                               v$.step1.description.$errors[0].$message
@@ -593,7 +628,7 @@
                       
             </div>
   
-      <div class="row mt-3 content-group">
+            <div class="row mt-3 content-group">
         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
@@ -617,15 +652,43 @@
                               {{ resultError["collecteur"] }}
                             </small>
                           </div>
-                        </div>
-              
+          </div>
+
+          <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Nature du marché <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step2.nature_marche"
+                              color="secondary"
+                              name="step2.nature_marche"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+                       :options="Nature"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.nature_marche.$error">{{
+                              v$.step2.nature_marche.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['nature_marche']">
+                              {{ resultError["nature_marche"] }}
+                            </small>
+                          </div>
+             </div>        
+       </div>
+            <div class="row mt-3 content-group">
+      
+                
                         
             <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
+                              > Description </label
                             >
-                       <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
   
                             <small v-if="v$.step2.description.$error">{{
                               v$.step2.description.$errors[0].$message
@@ -708,6 +771,12 @@
         { label: "Marché de grossiste", value: 2 },
         { label: "Marché de détail", value: 4 },
             ],
+            Nature:[
+                { label: "Urbain", value: "Urbain" },
+                { label: "Rural", value: "Rural" },
+
+
+            ],
       step1: {
         code_marche:"",
         nom_marche:"",
@@ -717,6 +786,7 @@
         collecteur:"",
         description:"",
        jour_du_marche:[],
+       nature_marche:"",
         
       },
   step2: {
@@ -728,6 +798,7 @@
         collecteur:"",
         description:"",
        jour_du_marche:[],
+       nature_marche:"",
   
   
       },
@@ -771,24 +842,26 @@
     step1: {
         code_marche:{require},
         nom_marche:{require},
-        longitude:{require},
-        latitude:{require},
+        longitude:{},
+        latitude:{},
         commune:{require},
         collecteur:{require},
         description:{},
-        jour_du_marche:{require}
+        jour_du_marche:{require},
+        nature_marche:{require},
         
       },
        
          step2: {
          code_marche:{require},
         nom_marche:{require},
-        longitude:{require},
-        latitude:{require},
+        longitude:{},
+        latitude:{},
         commune:{require},
         collecteur:{require},
         description:{},
-        jour_du_marche:{require}
+        jour_du_marche:{require},
+        nature_marche:{require},
   
      },
   },
@@ -907,6 +980,7 @@
             latitude:this.step1.latitude,
             commune:this.step1.commune,
             collecteur:this.step1.collecteur,
+            nature_marche:this.step1.nature_marche,
             description:this.step1.description,
             jour_du_marche:(this.step1.jour_du_marche).toString(),
        }
@@ -962,6 +1036,7 @@
             commune: data.commune,
             collecteur: data?.collecteur,
             description: data.description,
+            nature_marche:data?.nature_marche,
             jour_du_marche:data?.jour_du_marche?.split(','),
           }
           this.Code = parseInt(data.type_marche)
@@ -992,6 +1067,7 @@
             commune:this.step2.commune,
             collecteur:this.step2.collecteur,
             description:this.step2.description,
+            nature_marche:this.step2.nature_marche,
             jour_du_marche:(this.step2.jour_du_marche).toString(),
             }
   
