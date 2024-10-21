@@ -1,6 +1,6 @@
 <template >
     <div style="position: relative;">
-        <Loading v-if="loading" style="z-index: 99999"></Loading> 
+       
 
         <div class="col-12">
             <div class="box">
@@ -57,9 +57,10 @@
                     <div class="table-responsive">
                         <div>
                             <div v-if="paginatedItems.length === 0">
-                                <div class="badge bg-warning" style="width: 100%; font-size: 14px">
+                                <!-- <div class="badge bg-warning" style="width: 100%; font-size: 14px">
                                     Pas de données !!
-                                </div>
+                                </div> -->
+                                <Loading v-if="loading" style="z-index: 99999"></Loading> 
                             </div>
                             <table v-else class="table table-bordered table-striped mt-0 mb-0">
                                 <thead>
@@ -248,7 +249,7 @@ import axioss from '@/lib/axiosConfig'
 import axios from 'axios';
 import Pag from "@/components/others/pagination.vue";
 import LoaderTable from '../others/loaderTable.vue';
-import Loading from '../others/loading.vue';
+import Loading from '../others/loaderTable.vue';
 
 
 export default {
@@ -352,7 +353,7 @@ export default {
         if (response.status === 200) {
           //   this.ProduitsOptions = response.data
           this.ProduitsByFamille = response.data
-          this.loading = false;
+          this.loading = true;
         }
       } catch (error) {
         // this.handleErrors(error);
@@ -428,12 +429,16 @@ formatBudget(value) {
 
 
     handleOptionClickFamille(value) {
+      this.paginatedItems.length = 0
+      this.currentPage = 1;
       this.NomFamille = value
       this.fetchProduitByPrix(this.NomRegion, value)
 
 
     },
     handleOptionClickRegion(value) {
+      this.paginatedItems.length = 0
+      this.currentPage = 1;
       this.NomRegion = value
       this.fetchProduitByPrix(value, this.NomFamille)
 

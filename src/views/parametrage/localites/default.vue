@@ -19,11 +19,7 @@
 		</div>
         <div class="col-12">
 			  <div class="box box-default">
-				<!-- <div class="box-header with-border">
-				  <h4 class="box-title">Horizontal alignment</h4>
-				  <h6 class="box-subtitle">Use default tab with class <code>nav-tabs &amp; justify-content-center </code></h6>
-				</div> -->
-				<!-- /.box-header -->
+			
 				<div class="box-body">
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs justify-content-center" role="tablist">

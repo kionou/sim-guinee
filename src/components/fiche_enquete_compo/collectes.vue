@@ -10,10 +10,10 @@
               style="color:red !important">{{Commune?.prefecture_?.region_relation?.nom_region }}</b></h3>
   
   
-          <div class="navbar-custom-menu r-side col-4">
+          <div class="navbar-custom-menu r-side  float-right col-4">
             <ul class="nav navbar-nav justify-content-end">
   
-              <li class="btn-group d-lg-inline-flex d-none h-40">
+              <li class="btn-group d-lg-inline-flex h-40">
                 <div class="app-menu">
                   <div class="search-bx mx-5">
                     <form>
@@ -105,9 +105,9 @@
                         :to="{ name: 'enquete-prix-par-marche-collecte', params: { id: data.enquete?.id , nom:'COLLECTE' }}"
                         class="btn btn-circle btn-success btn-xs" title="" @click="HandleData(data?.enquete)"
                         data-original-title="view"><i class="ti-eye"></i></router-link>
-                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title=""
+                      <button :disabled="data.enquete?.etat === true" class="btn btn-circle btn-info btn-xs" title=""
                         @click="HandleIdUpdate(data.enquete?.id , 'update-fiche-collecte')"><i
-                          class="ti-marker-alt"></i></a>
+                          class="ti-marker-alt"></i></button>
                       <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs"
                         @click="HandleIdDelete(data.enquete?.id , 'COLLECTE')" title="" data-toggle="tooltip"
                         data-original-title="Delete"><i class="ti-trash"></i></a>

@@ -5,7 +5,7 @@
       <div class="content-header">
     <div class="d-flex align-items-center justify-content-between">
       
-        <h3 class="page-title"> Gestion des suivis des points de collecte </h3>
+        <h3 class="page-title">Gestion des suivis des points de collecte </h3>
         <div class="d-inline-block align-items-center">
           <nav>
             <ol class="breadcrumb">
@@ -24,7 +24,7 @@
     <div class="box box-default">
       <div class="box-body">
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs  " role="tablist" style=" overflow-x: scroll;  overflow-y: hidden; flex-wrap: nowrap !important;">
+        <ul class="nav nav-tabs" role="tablist" style=" overflow-x: scroll;  overflow-y: hidden; flex-wrap: nowrap !important;">
           <li
             class="nav-item"
             v-for="(marche, index) in MarchesOptions"
@@ -66,8 +66,6 @@
               <!-- Composant lié au type de marché -->
                <ComposantDebarcadere @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :debarcaderes="marche.debarcaderes"  v-if="marche.id_type_marche === 6 || marche.id_type_marche === 7" :id-type-marche="marche.id_type_marche" />
                 <ComposantMarche v-else :id-type-marche="marche.id_type_marche" :description="marche.description" @point-collecte-updated="handlePointCollecteUpdated"   :marches="marche.marches" />
-
-                
             </div>
           </div>
         </div>

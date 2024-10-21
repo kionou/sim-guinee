@@ -6,20 +6,7 @@
 			<div class="d-flex align-items-center justify-content-between">
 				
 					<h3 class="page-title"> Tableau de bord </h3>
-					<!-- <div class=" row  w-300">
-
-<div class="col-9">
-  <div class=" position-relative">
-   
-	<MazInput type="date" label="" v-model="date" color="seconday" no-radius  size="sm" />
-  </div>
-</div>
-<div class="col-3" >
-   
-	<button class="btn btn-primary" style="margin-top:0px !important" @click="handleProjetChange()">Valider</button>
-   
-</div>
-                    </div> -->
+			
 					<div class="d-inline-block align-items-center">
 						<nav>
 							<ol class="breadcrumb">
@@ -170,7 +157,7 @@ export default {
   },
 async	mounted() {
     await this.fetchStatistic();
-    await this.fetchStatisticProduits();
+    // await this.fetchStatisticProduits();
 		
 	},
 	methods: {
@@ -185,7 +172,7 @@ async	mounted() {
         console.log("responsedatast", response);
         if (response.status === 200) {
 			this.data = response.data.filter(item => item.statistic !== null);
-         
+            this.loading = false; 
         }
       } catch (error) {
         this.handleErrors(error);

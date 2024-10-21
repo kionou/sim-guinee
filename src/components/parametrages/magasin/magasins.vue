@@ -3,33 +3,28 @@
     <Loading v-if="loading" style="z-index: 99999"></Loading>
     <div class="col-12">
       <div class="box">
-        <div
-          class="box-header with-border d-flex justify-content-between align-items-center p-3"
-        >
+        <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
           <h3 class="box-title mb-0">Liste des magasins d'intrants</h3>
-          <div class="navbar-custom-menu r-side">
+          <div class="navbar-custom-menu r-side  float-right">
             <ul class="nav navbar-nav justify-content-end">
-              <li class="btn-group d-lg-inline-flex d-none h-40">
+              <li class="btn-group d-lg-inline-flex h-40">
                 <div class="app-menu">
                   <div class="search-bx mx-5">
                     <form>
-							<div class="input-group">
-							  <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..." aria-describedby="button-addon2" v-model="searchMagasin" @input="filterByName">
-							  <div class="input-group-append">
-								<button class="btn border border-1" ><i class="ti-search"></i></button>
-							  </div>
-							</div>
-						</form>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Recherchez..."
+                          aria-describedby="button-addon2" v-model="searchMagasin" @input="filterByName">
+                        <div class="input-group-append">
+                          <button class="btn border border-1"><i class="ti-search"></i></button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </li>
               <li class="h-40">
-                <button
-                  type="button"
-                  class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
-                  @click="openModal('add-magasin')"
-                  
-                >
+                <button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"
+                  @click="openModal('add-magasin')">
                   <i class="mdi mdi-plus"></i>
                 </button>
               </li>
@@ -42,7 +37,7 @@
             <table id="example1" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                 
+  
                   <th>Code</th>
                   <th>Nom</th>
                   <th>Capacité</th>
@@ -64,38 +59,38 @@
               </tbody>
               <tbody v-else>
                 <tr v-for="(data) in paginatedItems" :key="data.id_magasin">
-                 
+  
                   <td style="width: 50px;" class="text-center">{{ data.code_magasin }}</td>
                   <td>{{ data.nom_magasin }}</td>
                   <td style="width: 50px;">{{ data.capacite }}</td>
                   <td style="width: 100px;" class="text-center">
                     {{ data?.longitude ?? "-"}} , {{ data?.latitude ?? "-"}}
-                   </td>
+                  </td>
                   <td>{{ data?.commune_relation?.nom_commune ?? "-" }}</td>
                   <td style="width: 170px;" class="text-center">
-                      <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
-                      <span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
-                   </td>
+                    <span
+                      class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur
+                      ?? "-"}} {{data?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
+                    <span style="font-size:12px !important"
+                      class="text-danger  d-block">{{data?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
+                  </td>
                   <td>{{ data.description }}</td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
-                      <a
-                        href="javascript:void(0)"
-                        class="btn btn-circle btn-info btn-xs"
-                        title=""
-                        @click="HandleIdUpdate(data.code_magasin ,'update-magasin')"
-                        data-original-title="Update"
-                        ><i class="ti-marker-alt"></i
-                      ></a>
-                      <a
-                        href="javascript:void(0)"
-                        class="btn btn-circle btn-danger btn-xs"
-                        @click="HandleIdDelete(data.code_magasin)"
-                        title=""
-                        data-toggle="tooltip"
-                        data-original-title="Delete"
-                        ><i class="ti-trash"></i
-                      ></a>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs"
+                  @click="HandleIdUpdate(data?.code_magasin, 'update-magasin')"
+                  data-original-title="Update">
+                  
+                  <span v-if="loadingItems[data?.code_magasin]">
+                    <i class="mdi mdi-loading mdi-spin"></i> 
+                  </span>
+                  <span v-else>
+                    <i class="ti-marker-alt"></i> 
+                  </span>
+                </a>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs"
+                        @click="HandleIdDelete(data.code_magasin)" title="" data-toggle="tooltip"
+                        data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>
                   </td>
                 </tr>
@@ -105,11 +100,7 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="container_pagination">
-                <Pag
-                  :current-page="currentPage"
-                  :total-pages="totalPages"
-                  @page-change="updateCurrentPage"
-                />
+                <Pag :current-page="currentPage" :total-pages="totalPages" @page-change="updateCurrentPage" />
               </div>
             </div>
           </div>
@@ -117,20 +108,16 @@
         <!-- /.box-body -->
       </div>
     </div>
-
-    <div
-      class="modal center-modal fade"
-      id="add-magasin"
-      ref="add-magasin"
-      tabindex="-1"
-    >
+  
+    <div class="modal center-modal fade" id="add-magasin" ref="add-magasin" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
               Ajouter un magasin
             </h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('add-magasin')" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('add-magasin')">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -139,19 +126,12 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Code <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.code_magasin"
-                    color="secondary"
-                    name="step1.code_magasin"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Code <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.code_magasin" color="secondary" name="step1.code_magasin" size="sm"
+                    rounded-size="sm" type="text" />
                   <small v-if="v$.step1.code_magasin.$error">{{
                     v$.step1.code_magasin.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['code_magasin']">
                     {{ resultError["code_magasin"] }}
                   </small>
@@ -160,41 +140,27 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Nom <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.nom_magasin"
-                    color="secondary"
-                    name="step1.nom_magasin"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Nom <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.nom_magasin" color="secondary" name="step1.nom_magasin" size="sm"
+                    rounded-size="sm" type="text" />
                   <small v-if="v$.step1.nom_magasin.$error">{{
                     v$.step1.nom_magasin.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['nom_magasin']">
                     {{ resultError["nom_magasin"] }}
                   </small>
                 </div>
               </div>
-             
+  
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Capacité <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.capacite"
-                    color="secondary"
-                    name="step1.capacite"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Capacité <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.capacite" color="secondary" name="step1.capacite" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step1.capacite.$error">{{
                     v$.step1.capacite.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['capacite']">
                     {{ resultError["capacite"] }}
                   </small>
@@ -205,20 +171,11 @@
                   <label for="userpassword">
                     Commune <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step1.commune"
-                              color="secondary"
-                              name="step1.commune"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							               :options="CommunesOptions"
-                              
-                              
-                            />
+                  <MazSelect v-model="step1.commune" color="secondary" name="step1.commune" size="sm" rounded-size="sm"
+                    search :options="CommunesOptions" />
                   <small v-if="v$.step1.commune.$error">{{
                     v$.step1.commune.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['commune']">
                     {{ resultError["commune"] }}
                   </small>
@@ -227,19 +184,12 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Longitude <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.longitude"
-                    color="secondary"
-                    name="step1.longitude"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Longitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.longitude" color="secondary" name="step1.longitude" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step1.longitude.$error">{{
                     v$.step1.longitude.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['longitude']">
                     {{ resultError["longitude"] }}
                   </small>
@@ -248,45 +198,29 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Latitude <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step1.latitude"
-                    color="secondary"
-                    name="step1.latitude"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Latitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step1.latitude" color="secondary" name="step1.latitude" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step1.latitude.$error">{{
                     v$.step1.latitude.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['latitude']">
                     {{ resultError["latitude"] }}
                   </small>
                 </div>
               </div>
-
-             
+  
+  
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Agent collecte <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step1.collecteur"
-                              color="secondary"
-                              name="step1.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							               :options="CollectionOptions"
-                              
-                              
-                            />
+                  <MazSelect v-model="step1.collecteur" color="secondary" name="step1.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollectionOptions" />
                   <small v-if="v$.step1.collecteur.$error">{{
                     v$.step1.collecteur.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['collecteur']">
                     {{ resultError["collecteur"] }}
                   </small>
@@ -295,48 +229,45 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
-
+                    Description </label>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
+                    id="text-area" v-model="step1.description" rows="1"></textarea>
+  
                   <small v-if="v$.step1.description.$error">{{
                     v$.step1.description.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['description']">
                     {{ resultError["description"] }}
                   </small>
                 </div>
               </div>
-            
+  
             </div>
-           
+  
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
-            <button
-                  type="button"
-                  @click="SubmitMagasins('add-magasin')"
-                  class="waves-effect waves-light btn btn-primary"
-                >
-                  Valider
-                </button>
+            <button type="button" @click="SubmitMagasins('add-magasin')" class="waves-effect waves-light btn btn-primary">
+              <span v-if="loadingItems['add-magasin']">
+                    <i class="mdi mdi-loading mdi-spin"></i> chargement...
+                  </span>
+                  <span v-else>
+                    Valider 
+                  </span>
+            </button>
           </div>
         </div>
       </div>
     </div>
-
-    <div
-      class="modal center-modal fade"
-      id="update-magasin"
-      ref="update-magasin"
-      tabindex="-1"
-    >
+  
+    <div class="modal center-modal fade" id="update-magasin" ref="update-magasin" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
               Modifier un magasin
             </h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('update-magasin')" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
+              @click="closeModal('update-magasin')">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -345,19 +276,12 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Code <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step2.code_magasin"
-                    color="secondary"
-                    name="step2.code_magasin"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Code <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.code_magasin" color="secondary" name="step2.code_magasin" size="sm"
+                    rounded-size="sm" type="text" />
                   <small v-if="v$.step2.code_magasin.$error">{{
                     v$.step2.code_magasin.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['code_magasin']">
                     {{ resultError["code_magasin"] }}
                   </small>
@@ -366,41 +290,27 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Nom <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step2.nom_magasin"
-                    color="secondary"
-                    name="step2.nom_magasin"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Nom <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.nom_magasin" color="secondary" name="step2.nom_magasin" size="sm"
+                    rounded-size="sm" type="text" />
                   <small v-if="v$.step2.nom_magasin.$error">{{
                     v$.step2.nom_magasin.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['nom_magasin']">
                     {{ resultError["nom_magasin"] }}
                   </small>
                 </div>
               </div>
-             
+  
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Capacité <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step2.capacite"
-                    color="secondary"
-                    name="step2.capacite"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Capacité <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.capacite" color="secondary" name="step2.capacite" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step2.capacite.$error">{{
                     v$.step2.capacite.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['capacite']">
                     {{ resultError["capacite"] }}
                   </small>
@@ -411,20 +321,11 @@
                   <label for="userpassword">
                     Commune <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step2.commune"
-                              color="secondary"
-                              name="step2.commune"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							               :options="CommunesOptions"
-                              
-                              
-                            />
+                  <MazSelect v-model="step2.commune" color="secondary" name="step2.commune" size="sm" rounded-size="sm"
+                    search :options="CommunesOptions" />
                   <small v-if="v$.step2.commune.$error">{{
                     v$.step2.commune.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['commune']">
                     {{ resultError["commune"] }}
                   </small>
@@ -433,19 +334,12 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Longitude <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step2.longitude"
-                    color="secondary"
-                    name="step2.longitude"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Longitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.longitude" color="secondary" name="step2.longitude" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step2.longitude.$error">{{
                     v$.step2.longitude.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['longitude']">
                     {{ resultError["longitude"] }}
                   </small>
@@ -454,45 +348,29 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Latitude <span class="text-danger">*</span></label
-                  >
-                  <MazInput
-                    v-model="step2.latitude"
-                    color="secondary"
-                    name="step2.latitude"
-                    size="sm"
-                    rounded-size="sm"
-                    type="text"
-                  />
+                    Latitude <span class="text-danger">*</span></label>
+                  <MazInput v-model="step2.latitude" color="secondary" name="step2.latitude" size="sm" rounded-size="sm"
+                    type="text" />
                   <small v-if="v$.step2.latitude.$error">{{
                     v$.step2.latitude.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['latitude']">
                     {{ resultError["latitude"] }}
                   </small>
                 </div>
               </div>
-
-             
+  
+  
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Agent collecte <span class="text-danger">*</span>
                   </label>
-                  <MazSelect
-                              v-model="step2.collecteur"
-                              color="secondary"
-                              name="step2.collecteur"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							               :options="CollectionOptions"
-                              
-                              
-                            />
+                  <MazSelect v-model="step2.collecteur" color="secondary" name="step2.collecteur" size="sm"
+                    rounded-size="sm" search :options="CollectionOptions" />
                   <small v-if="v$.step2.collecteur.$error">{{
                     v$.step2.collecteur.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['collecteur']">
                     {{ resultError["collecteur"] }}
                   </small>
@@ -501,30 +379,33 @@
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
-                    Description <span class="text-danger">*</span></label
-                  >
-                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
-
+                    Description </label>
+                  <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
+                    id="text-area" v-model="step2.description" rows="1"></textarea>
+  
                   <small v-if="v$.step2.description.$error">{{
                     v$.step2.description.$errors[0].$message
-                  }}</small>
+                    }}</small>
                   <small v-if="resultError['description']">
                     {{ resultError["description"] }}
                   </small>
                 </div>
               </div>
-            
+  
             </div>
-           
+  
           </div>
           <div class="modal-footer modal-footer-uniform text-end">
-            <button
-                  type="button"
-                  @click="submitUpdate('update-magasin')"
-                  class="waves-effect waves-light btn btn-primary"
-                >
-                  Valider
-                </button>
+            <button type="button" @click="submitUpdate('update-magasin')"
+              class="waves-effect waves-light btn btn-primary">
+             
+              <span v-if="loadingItems['update-magasin']">
+                    <i class="mdi mdi-loading mdi-spin"></i> chargement...
+                  </span>
+                  <span v-else>
+                    Valider 
+                  </span>
+            </button>
           </div>
         </div>
       </div>
@@ -533,7 +414,7 @@
 </template>
 <script>
 import Pag from "@/components/others/pagination.vue";
-import Loading from "@/components/others/loading.vue";
+import Loading from "@/components/others/loading2.vue";
 import axios from "@/lib/axiosConfig";
 import useVuelidate from "@vuelidate/core";
 import { require, lgmin, lgmax, ValidEmail } from "@/functions/rules";
@@ -543,11 +424,11 @@ import Swal from "sweetalert2";
 import { useToast } from "vue-toastification";
 export default {
   setup() {
-   const toast = useToast();
-   return { toast }
- },
+    const toast = useToast();
+    return { toast }
+  },
   components: {
-    
+
     Pag,
     Loading,
   },
@@ -567,7 +448,8 @@ export default {
   data() {
     return {
       loading: true,
-      searchMagasin:"",
+      loadingItems: {},
+      searchMagasin: "",
       MagasinsOptions: [],
       CommunesOptions: [],
       CollectionOptions: [],
@@ -608,7 +490,7 @@ export default {
       longitude: { require },
       latitude: { require },
       capacite: { require },
-      description: { require },
+      description: {  },
       collecteur: { require },
       commune: { require },
     },
@@ -618,7 +500,7 @@ export default {
       longitude: { require },
       latitude: { require },
       capacite: { require },
-      description: { require },
+      description: {  },
       collecteur: { require },
       commune: { require },
     },
@@ -641,10 +523,10 @@ export default {
         console.log("response", response);
         if (response.status === 200) {
           response.data.map(item => this.CommunesOptions.push({
-				label: item.nom_commune,
-				value: item.id_commune
-				}))
-          this.loading = false;
+            label: item.nom_commune,
+            value: item.id_commune
+          }))
+
         }
       } catch (error) {
         this.handleErrors(error);
@@ -662,9 +544,9 @@ export default {
         if (response.status === 200) {
           response.data.map(item => this.CollectionOptions.push({
             label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-            value: item.id_collecteur 
-				}))
-          this.loading = false;
+            value: item.id_collecteur
+          }))
+
         }
       } catch (error) {
         this.handleErrors(error);
@@ -691,7 +573,7 @@ export default {
     async SubmitMagasins(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
-        this.loading = true;
+        this.loadingItems[modalId] = true;
 
         let data = {
           code_magasin: this.step1.code_magasin,
@@ -703,48 +585,49 @@ export default {
           collecteur: this.step1.collecteur,
           commune: this.step1.commune,
         };
-       
-        console.log('data',data)
+
+        console.log('data', data)
         try {
           const response = await axios.post("/parametrages/magasins", data, {
-            headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
-          }
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            }
           });
-		  console.log('qfs', response)
-		  if (response.status === 200) {
+          console.log('qfs', response)
+          if (response.status === 200) {
             this.closeModal(modalId);
+            this.loadingItems[modalId] = false;
             this.step1 = {
-           code_magasin: "",
-        nom_magasin: "",
-        longitude: "",
-        latitude: "",
-        capacite: "",
-        description: "",
-        collecteur: "",
-        commune: "",
-        };
-        this.v$.step1.$reset();
-			this.successmsg(
-				"Création du magasin",
-				"Votre magasin a été créé avec succès !"
-			);
+              code_magasin: "",
+              nom_magasin: "",
+              longitude: "",
+              latitude: "",
+              capacite: "",
+              description: "",
+              collecteur: "",
+              commune: "",
+            };
+            this.v$.step1.$reset();
+            this.successmsg(
+              "Création du magasin",
+              "Votre magasin a été créé avec succès !"
+            );
 
 
             await this.fetchMagasins();
           } else {
           }
         } catch (error) {
-				  this.handleErrors(error);
+          this.loadingItems[modalId] = false
+          this.handleErrors(error);
         }
-       
-      
+
+
       } else {
       }
     },
-    async HandleIdUpdate(id , modalId) {
-      this.openModal(modalId)
-      this.stepModal = "update";
-      this.loading = true;
+    async HandleIdUpdate(id, modalId) {
+      this.loadingItems[id] = true;
 
       try {
         const response = await axios.get(`/parametrages/magasins/${id}`, {
@@ -766,7 +649,10 @@ export default {
             (this.step2.commune = data.commune),
             (this.step2.collecteur = data.collecteur),
             (this.ToId = data.code_magasin);
-          this.loading = false;
+    
+            this.openModal(modalId)
+            this.loadingItems[id] = false;
+
         }
       } catch (error) {
         this.handleErrors(error);
@@ -776,7 +662,8 @@ export default {
       this.v$.step2.$touch();
 
       if (this.v$.$errors.length == 0) {
-        this.loading = true;
+        this.loadingItems[modalId] = true;
+        
         let data = {
           code_magasin: this.step2.code_magasin,
           nom_magasin: this.step2.nom_magasin,
@@ -797,6 +684,7 @@ export default {
 
           if (response.status === 200) {
             this.closeModal(modalId);
+            this.loadingItems[modalId] = false;
             this.successmsg(
               "Données du magasin mises à jour",
               "Les données du magasin ont été mises à jour avec succès !"
@@ -804,6 +692,7 @@ export default {
             await this.fetchMagasins();
           }
         } catch (error) {
+          this.openModal(modalId)
           this.handleErrors(error);
         }
       } else {
@@ -820,18 +709,24 @@ export default {
         confirmButtonText: "Oui, supprimez-le !",
         cancelButtonText: "Non, annulez !",
         reverseButtons: true,
+        allowOutsideClick: false,
+      preConfirm: async () => {
+        Swal.showLoading();
+        await this.ConfirmeDelete(id);
+      
+    }
       });
 
       // Si l'utilisateur confirme la suppression
-      if (result.isConfirmed) {
-        this.ConfirmeDelete(id);
-      }
+      // if (result.isConfirmed) {
+      //   this.ConfirmeDelete(id);
+      // }
     },
     async ConfirmeDelete(id) {
-      this.loading = true;
+      // this.loading = true;
 
       try {
-        // Faites une requête pour supprimer l'élément avec l'ID itemId
+      
         const response = await axios.delete(`/parametrages/magasins/${id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -860,15 +755,15 @@ export default {
         this.MagasinsOptions = this.data.filter((user) => {
           const Nom = user.code_magasin || "";
           const Descriptions = user.nom_magasin || "";
-          const Commune = user.commune_relation?.nom_commune  || "";
+          const Commune = user.commune_relation?.nom_commune || "";
           const Collecteur = user.collecteur_relation?.nom_collecteur || "";
-         
+
 
           return (
             Nom.toLowerCase().includes(searchValue) ||
             Descriptions.toLowerCase().includes(searchValue) ||
             Commune.toLowerCase().includes(searchValue) ||
-            Collecteur.toLowerCase().includes(searchValue) 
+            Collecteur.toLowerCase().includes(searchValue)
           );
         });
       } else {
@@ -906,7 +801,7 @@ export default {
         //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
       }
       else if
-       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
         await this.$store.dispatch("auth/clearMyAuthenticatedUser");
         this.$router.push("/"); // Redirection vers la page de connexion
       } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
@@ -922,29 +817,29 @@ export default {
       if (!$('.modal-backdrop').length) {
         const backdrop = $('<div class="modal-backdrop fade"></div>');
         $('body').append(backdrop);
-        backdrop.fadeIn(100); 
+        backdrop.fadeIn(100);
       }
     },
 
     openModal(modalId) {
       let modalElement = this.$refs[modalId];
 
-      $(modalElement).fadeIn(100, function() {
+      $(modalElement).fadeIn(100, function () {
         $(modalElement).addClass('show');
       });
       $('body').addClass('modal-open');
       this.addBackdrop();
     },
-    closeModal(modalId) { 
+    closeModal(modalId) {
       let modalElement = this.$refs[modalId];
 
-      $(modalElement).fadeOut(100, function() {
+      $(modalElement).fadeOut(100, function () {
         $(modalElement).removeClass('show');
         $(modalElement).css('display', 'none');
       });
       $('body').removeClass('modal-open');
-      $('.modal-backdrop').fadeOut(100, function() {
-        $(this).remove(); 
+      $('.modal-backdrop').fadeOut(100, function () {
+        $(this).remove();
       });
     },
     async formatValidationErrors(errors) {
@@ -976,4 +871,13 @@ export default {
   },
 };
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.mdi-loading {
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>

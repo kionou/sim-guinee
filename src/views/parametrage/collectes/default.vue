@@ -21,10 +21,10 @@
 		<div class="box">
 				<div class="box-header with-border p-2">
 				  	
-					<div class="navbar-custom-menu r-side">
+					<div class="navbar-custom-menu r-side float-right">
         <ul class="nav navbar-nav justify-content-end">	
 				  
-			<li class="btn-group d-lg-inline-flex d-none h-40">
+			<li class="btn-group d-lg-inline-flex  h-40">
 				<div class="app-menu">
 					<div class="search-bx mx-5">
 						<form>
@@ -850,6 +850,18 @@ export default {
       }
     },
     async  HandleIdUpdate(id , modalId){
+      this.step2 = {
+              code_collecteur:"",
+              nom_collecteur:"",
+              prenom_collecteur:"",
+              sexe_collecteur:"",
+              whatsapp_collecteur:"",
+              telephone_collecteur:"",
+              commune_collecteur:"",
+              adresse:"",
+              relai:"",
+              description:"",
+        };
       this.openModal(modalId)
     this.loading = true;
 
@@ -869,7 +881,7 @@ export default {
             code_collecteur: data.code_collecteur,
             nom_collecteur: data.nom_collecteur,
             prenom_collecteur: data.prenom_collecteur,
-            sexe_collecteur: data.sexe_collecteur[0],
+            sexe_collecteur: data.sexe_collecteur,
             whatsapp_collecteur: data.whatsapp_collecteur,
             telephone_collecteur: data.telephone_collecteur,
             commune_collecteur: data.commune_collecteur,

@@ -5,10 +5,10 @@
     <div class="box">
         <div class="box-header with-border p-2">
             
-          <div class="navbar-custom-menu r-side">
+          <div class="navbar-custom-menu r-side  float-right">
         <ul class="nav navbar-nav justify-content-end">	
           
-      <li class="btn-group d-lg-inline-flex d-none h-40">
+      <li class="btn-group d-lg-inline-flex  h-40">
         <div class="app-menu">
           <div class="search-bx mx-5">
             <form>
@@ -479,30 +479,7 @@
                       
             </div>
       <div class="row mt-3 content-group">
-                        <!-- <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Type marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.type_marche"
-                              color="secondary"
-                              name="step2.type_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="TypesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.type_marche.$error">{{
-                              v$.step2.type_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['type_marche']">
-                              {{ resultError["type_marche"] }}
-                            </small>
-                          </div>
-                        </div> -->
+                       
                         <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
@@ -681,14 +658,37 @@
        </div>
             <div class="row mt-3 content-group">
       
-                
+              <div class="col">
+                          <div class="input-groupe">
+                            <label for="userpassword"
+                              > Type marché <span class="text-danger">*</span></label
+                            >
+                            <MazSelect
+                              v-model="step2.type_marche"
+                              color="secondary"
+                              name="step2.type_marche"
+                              size="sm"
+                              rounded-size="sm"
+                              search
+                              :options="TypesOptions"
+                              
+                              
+                            />
+                            <small v-if="v$.step2.type_marche.$error">{{
+                              v$.step2.type_marche.$errors[0].$message
+                            }}</small>
+                            <small v-if="resultError['type_marche']">
+                              {{ resultError["type_marche"] }}
+                            </small>
+                          </div>
+                        </div>    
                         
             <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Description </label
                             >
-              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
+              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
   
                             <small v-if="v$.step2.description.$error">{{
                               v$.step2.description.$errors[0].$message
@@ -798,6 +798,7 @@
         collecteur:"",
         description:"",
         nature_marche:"",
+        type_marche:"",
        jour_du_marche:[],
   
   
@@ -862,6 +863,7 @@
         description:{},
         jour_du_marche:{require},
          nature_marche:{require},
+         type_marche:{require},
 
   
      },
@@ -924,7 +926,7 @@
     },
     async fetchTypesMarches() {
       try {
-        const response = await axios.get('/parametrages/type-marches',
+        const response = await axios.get('/parametrages/type-marches/admin-dynamic-types',
           {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -935,8 +937,8 @@
   
         if (response.status === 200) {
       response.data.map(item => this.TypesOptions.push({
-        label: item.nom_type_marche,
-        value: item.code_type_marche
+        label: item.type.nom_type_marche,
+        value: item.type.id_type_marche
         }))
           
         }
@@ -995,6 +997,19 @@
       console.log('qfs', response)
       if (response.status === 200) {
             this.closeModal(modalId);
+            this.step1 = {
+            code_marche:"",
+            nom_marche:"",
+            longitude:"",
+            latitude:"",
+            commune:"",
+            collecteur:"",
+            description:"",
+            nature_marche:"",
+          jour_du_marche:[],
+        
+      },
+      this.v$.step1.$reset();
       this.successmsg(
         "Création du marché",
         "Votre marché a été créé avec succès !"
@@ -1012,7 +1027,19 @@
       }
     },
     async  HandleIdUpdate(id , modalId){
-        console.log('Slbvlkjbv',id)
+      this.step2 = {
+            code_marche:"",
+            nom_marche:"",
+            longitude:"",
+            type_marche:"",
+            latitude:"",
+            commune:"",
+            collecteur:"",
+            description:"",
+            nature_marche:"",
+          jour_du_marche:[],
+        
+      },
 
         this.openModal(modalId)
     this.loading = true;
@@ -1035,6 +1062,7 @@
             longitude: data.longitude,
             latitude: data.latitude,
             commune: data.commune,
+            type_marche:data.type_marche,
             collecteur: data?.collecteur,
             nature_marche:data?.nature_marche,
             description: data.description,
@@ -1054,15 +1082,13 @@
     async  submitUpdate(modalId){
    
    this.v$.step2.$touch();
-  
-  
     if (this.v$.$errors.length == 0) {
     
        this.loading = true;
        let data = {
        code_marche:this.step2.code_marche,
             nom_marche:this.step2.nom_marche,
-            type_marche:this.Code,
+            type_marche:this.step2.type_marche,
             longitude:this.step2.longitude,
             latitude:this.step2.latitude,
             commune:this.step2.commune,
@@ -1090,6 +1116,7 @@
         "Votre marché a été mis à jour avec succès !"
       );
       this.$emit('point-collecte-updated');
+    
       this.loading = false
          
           

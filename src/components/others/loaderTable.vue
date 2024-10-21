@@ -1,7 +1,6 @@
 <template >
     <div>
-        <div class="bloc-modale">
-            <div class="overlay"></div>
+       <div class="loadergeneral">
         <div class="loading-circle">
   <div class="circle-segment segment-1"></div>
   <div class="circle-segment segment-2"></div>
@@ -16,7 +15,10 @@
   <div class="circle-segment segment-11"></div>
   <div class="circle-segment segment-12"></div>   
 </div>
-    </div>
+       </div>
+           
+  
+   
 </div>
 </template>
 <script>
@@ -25,27 +27,19 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.bloc-modale {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+
+.loadergeneral{
+
+  width: 100%;
+  height: 50vh;
+  background-color: rgb(254, 254, 254);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 999;
-  padding: 10px;
-  overflow: hidden;
+  justify-content: center;
+
+  
 }
-.overlay {
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
+
 
 .loading-circle {
   margin: 100px auto;

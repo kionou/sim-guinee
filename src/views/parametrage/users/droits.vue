@@ -20,10 +20,10 @@
 		<div class="box">
 				<div class="box-header with-border p-2">
 				  	
-					<div class="navbar-custom-menu r-side">
+					<div class="navbar-custom-menu r-side  float-right">
         <ul class="nav navbar-nav justify-content-end">	
 				  
-			<li class="btn-group d-lg-inline-flex d-none h-40">
+			<li class="btn-group d-lg-inline-flex  h-40">
 				<div class="app-menu">
 					<div class="search-bx mx-5">
 						<form>

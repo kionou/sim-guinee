@@ -4,44 +4,67 @@
         <div class="col-12">
   <div class="box">
     <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
-     <h3 class="box-title mb-0 col-8" style="font-size: 20px;">Liste de toutes les  fiches d'enquêtes {{ collecteData.nom }} pour l'année {{year}} <b style="color:red">( {{ FichesCollOptions.length }})</b></h3>
+     <h3 class="box-title mb-0 col-6" style="font-size: 20px;">Fiches d'enquêtes {{ collecteData.nom }}  {{year}} <b style="color:red">( {{ FichesCollOptions.length }})</b></h3>
  
    
-     <div class="navbar-custom-menu r-side col-4">
-        <ul class="nav navbar-nav justify-content-end">	
+     <div class="navbar-custom-menu r-side  float-right col-6">
+        <ul class="nav navbar-nav row">	
 				  
-			<li class="btn-group d-lg-inline-flex d-none h-40 w-250">
-				<div class="app-menu w-250">
+			<li class="b d-lg-inline-flex  h-40 col-10 px-0">
+				<div class="app-menu">
 					<div class="search-bx mx-5">
 						<form>
-							<div class="input-group">
+              <div class="row">
+                <div class="col-4 ">
+                  <div class="input-group">        
+               <MazInput v-model="debut" color="secondary" secondary  type="month"
+                  size="sm" rounded-size="sm" placeholder="mois début" @input="filterMonth" />
+             </div>
+                </div>
+                <div class="col-4">
+                  <div class="input-group">
+               
                                
-                                <MazSelect v-model="year" color="secondary" secondary :options="yearOptions" search
-                                            v-slot="{ option }" size="sm" rounded-size="sm" placeholder="Selectionnez une année">
-                                            <div class="flex items-center"
-                                                style="padding-top: 0.5rem; padding-bottom: 0.5rem; width: 100%; gap: 1rem"
-                                                @click="handleOptionClickAnnee(option)">
-    
-                                                {{ option.label }}
-    
-                                            </div>
-    
-                                        </MazSelect>
-							</div>
+                    <MazInput v-model="fin" color="secondary" secondary  type="month"
+                    size="sm" rounded-size="sm" placeholder="mois début" @input="filterMonth" />
+             </div>
+                </div>
+                <div class="col-4">
+                  <div class="input-group">
+               
+                               
+               <MazSelect v-model="year" color="secondary" secondary :options="yearOptions" search
+                 v-slot="{ option }" size="sm" rounded-size="sm" placeholder="Selectionnez une année">
+                 <div class="flex items-center"
+                     style="padding-top: 0.5rem; padding-bottom: 0.5rem; width: 100%; gap: 1rem"
+                     @click="handleOptionClickAnnee(option)">
+
+                     {{ option.label }}
+
+                 </div>
+
+                 </MazSelect>
+             </div>
+                </div>
+               
+                  
+                </div>
+							
 						</form>
 					</div>
 				</div>
 			</li>
-			<li class="h-40 me-3">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="openModal('add-fiche-grossiste')"   ><i class="mdi mdi-filter"></i></button>
+
+			<li class="h-40  col-1 px-0">
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-sm btn-primary mb-5"   @click="openModal('add-fiche-grossiste')"   ><i class="mdi mdi-filter"></i></button>
 			</li>
-            <li class="h-40">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-primary mb-5"   @click="Refesh"   ><i class="mdi mdi-refresh"></i></button>
+            <li class="h-40 col-1 px-0">
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-sm btn-primary mb-5"   @click="Refesh"   ><i class="mdi mdi-refresh"></i></button>
 			</li>
 
 			
         </ul>
-                  </div> 
+         </div> 
    </div>
    <!-- /.box-header -->
    <div class="box-body">
@@ -515,6 +538,8 @@
             yearOptions:[],
             years:[],
             year: new Date().getFullYear(),
+            debut:"",
+            fin:"",
 
             initialSelectedItems: [],
             selectAllCheckbox: false,  // État de la checkbox "select all"
@@ -734,7 +759,10 @@ this.FichesCollOptions = [...this.data];
        
     },
     Refesh(){
+      this.debut = "",
+      this.fin = "",
         this.FichesCollOptions = [...this.data];
+
     },
    
     async HandleIdDelete(id , nom) {
@@ -883,6 +911,22 @@ selectAll(event) {
         this.fetchFichesCollectes(this.collecteData.id)
 
     },
+    filterMonth() {
+  const startMonth = this.debut ? new Date(this.debut + '-01') : null;
+  const endMonth = this.fin ? new Date(this.fin + '-31') : null;
+  this.FichesCollOptions = this.data.filter(fiche => {
+
+    const ficheDate = new Date(fiche.enquete?.date_enquete);
+  
+    return (
+      (!startMonth || ficheDate >= startMonth) &&
+      (!endMonth || ficheDate <= endMonth)
+    );
+  });
+
+
+},
+
     filterByName() {
   this.currentPage = 1;
   if (this.searchFicheCollecteFiche !== null) {
