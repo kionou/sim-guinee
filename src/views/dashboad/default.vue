@@ -179,43 +179,6 @@
               <spam>Disponibilités & Bésoins</spam>
             </router-link>
           </li>
-
-      <!-- <li>
-            <router-link to="#" @click.stop="toggleDropdownMenu('autres_parametrages')">
-              <i class="icon-Settings-2"><span class="path1"></span><span class="path2"></span></i>
-              <span>Autres paramètres</span>
-              <span class="pull-right-container">
-                <i :class="['fa', 'fa-angle-right', 'pull-right', { 'fa-rotate-90': openMenus.autres_parametrages }]"></i>
-              </span>
-            </router-link>
-            <transition name="slide">
-              <ul v-show="openMenus.autres_parametrages" class="submenu">
-               
-               
-  
-                <li style="padding-top:6px !important"><router-link to="/sim/collectes"
-                    @click="setActiveSubMenu('/sim/collectes')" :class="{ active: activeSubMenu === '/sim/collectes' }"
-                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
-                        class="path2"></span></i>Chiffre clé</router-link></li>
-
-                <li style="padding-top:6px !important"><router-link to="/sim/types-marches"
-                    @click="setActiveSubMenu('/sim/types-marches')" :class="{ active: activeSubMenu === '/sim/types-marches' }"
-                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
-                        class="path2"></span></i>Disponibilité</router-link></li>
-
-                        <li style="padding-top:6px !important"><router-link to="/sim/points-collecte"
-                    @click="setActiveSubMenu('/sim/points-collecte')" :class="{ active: activeSubMenu === '/sim/points-collecte' }"
-                    style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
-                        class="path2"></span></i>Bésoins</router-link></li>
-
-                      
-
-              
-
-                
-              </ul>
-            </transition>
-          </li> -->
   
         </ul>
       </section>
@@ -367,6 +330,7 @@ export default {
 
         if (response.status === 200) {
             this.TypesMarchesOptions = response.data
+            localStorage.setItem('TypesMarchesOptions', JSON.stringify(this.TypesMarchesOptions));
         }
       } catch (error) {
     this.handleErrors(error);
@@ -375,7 +339,12 @@ export default {
   },
 
   async mounted() {
-    this.fetchTypeMarches(),
+    const savedTypesMarchesOptions = localStorage.getItem('TypesMarchesOptions');
+    if (savedTypesMarchesOptions) {
+      this.TypesMarchesOptions = JSON.parse(savedTypesMarchesOptions);
+    } else {
+      this.fetchTypeMarches();
+    }
 
     console.log("index", this.loggedInUser);
     // Optional: Close dropdown when clicking outside

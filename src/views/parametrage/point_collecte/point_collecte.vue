@@ -1,5 +1,7 @@
 <template >
-    <Loading v-if="loading" style="z-index: 99999"></Loading>
+    <Loading v-if="loading"></Loading>
+
+    <Loading v-if="loading && activeTab === '#tab-' + MarchesOptions[0]?.id_type_marche" style="z-index: 99999"></Loading>
 
   <div>
       <div class="content-header">
@@ -36,7 +38,7 @@
               class="nav-link"
               :data-toggle="'tab'"
               :class="{ active: activeTab === `#tab-${marche.id_type_marche}` }"
-              @click="handleTabClick(`#tab-${marche.id_type_marche}`)"
+              @click="handleTabClick(marche)"
               :href="`#tab-${marche.id_type_marche}`"
               role="tab"
             >
@@ -111,65 +113,147 @@ export default {
 },
   data() {
       return {
-        loading: true,
-    activeTab: '#produit',
+      
     marketCounts: {},
-    MarchesOptions:[],
+  
+
+    loading: true,
+      activeTab: null,
+      MarchesOptions: [],
+      // activeTab: '#produit',
       }
   },
 
 async mounted() {
   this.restoreActiveTab();
-  await this.fetchTypesMarches()
-  const savedTab = localStorage.getItem("PointCollecte");
-    if (savedTab) {
-      this.activeTab = savedTab;
-    } else {
-      this.activeTab = `#tab-${this.MarchesOptions[0].id_type_marche}`;
-      localStorage.setItem("PointCollecte", this.activeTab);
-    }
+    await this.fetchTypesMarches();
+    this.setActiveTab();
+
+
+  //   this.restoreActiveTab();
+  // await this.fetchTypesMarches()
+  // const savedTab = localStorage.getItem("PointCollecte");
+  //   if (savedTab) {
+  //     this.activeTab = savedTab;
+  //   } else {
+  //     this.activeTab = #tab-${this.MarchesOptions[0].id_type_marche};
+  //     localStorage.setItem("PointCollecte", this.activeTab);
+  //   }
 },
 methods: {
-  updateMarketCount({ idTypeMarche, count }) {
-  this.marketCounts[idTypeMarche] = count;
-},
+//   updateMarketCount({ idTypeMarche, count }) {
+//   this.marketCounts[idTypeMarche] = count;
+// },
  
  
-  handleTabClick(tabId) {
-      this.activeTab = tabId;
-      localStorage.setItem("PointCollecte", tabId);
-    },
-  restoreActiveTab() {
-    const savedTab = localStorage.getItem('PointCollecte');
-    if (savedTab) {
-      this.activeTab = savedTab;
-    }
-  },
+//   handleTabClick(marche) {
+//     this.activeTab = `#tab-${marche.id_type_marche}`;
+//       localStorage.setItem("PointCollecte", this.activeTab);
+//       if (!marche.marches) {
+//         this.loadMarcheData(marche);
+//       }
+//     },
+//   restoreActiveTab() {
+//     const savedTab = localStorage.getItem('PointCollecte');
+//     if (savedTab) {
+//       this.activeTab = savedTab;
+//     }
+//   },
 
-  async fetchTypesMarches() {
-    try {
-      const response = await axios.get( '/parametrages/type-marches',
-        {
+//   async fetchTypesMarches() {
+//     try {
+//       const response = await axios.get( '/parametrages/type-marches',
+//         {
+//           headers: {
+//             Authorization: `Bearer ${this.loggedInUser.token}`,
+//           },
+          
+//         }
+//       );
+
+//       if (response.status === 200) {
+           
+//             this.MarchesOptions =  response.data 
+//             this.loading =  false
+//       }
+//     } catch (error) {
+//   this.handleErrors(error);
+//     }
+//   },
+//   handlePointCollecteUpdated() {
+
+// this.fetchTypesMarches();
+// },
+
+
+// debut 
+setActiveTab() {
+      const savedTab = localStorage.getItem("PointCollecte");
+      if (savedTab) {
+        this.activeTab = savedTab;
+        const activeMarche = this.MarchesOptions.find(
+          (marche) => `#tab-${marche.id_type_marche}` === savedTab
+        );
+        if (activeMarche && !activeMarche.marches) {
+          this.loadMarcheData( parseInt(activeMarche));
+        }
+      } else if (this.MarchesOptions.length > 0) {
+        this.activeTab = `#tab-${this.MarchesOptions[0].id_type_marche}`;
+        localStorage.setItem("PointCollecte", this.activeTab);
+        this.loadMarcheData( this.MarchesOptions[0]);
+      }
+    },
+
+    async handleTabClick(marche) {
+      this.activeTab = `#tab-${marche.id_type_marche}`;
+      localStorage.setItem("PointCollecte", this.activeTab);
+      if (!marche.marches) {
+        this.loadMarcheData(marche);
+      }
+    },
+    async fetchTypesMarches() {
+      try {
+        const response = await axios.get("/parametrages/type-marches", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
-          
+        });
+        if (response.status === 200) {
+          this.MarchesOptions = response.data
+      //     .map((marche, index) => ({
+      //   ...marche,
+      //   marches: index === 0 ? marche.marches : null, // Chargez les données du premier marché uniquement
+      // }));
+          this.loading = false;
         }
-      );
-
-      if (response.status === 200) {
-           
-            this.MarchesOptions =  response.data 
-            this.loading =  false
+      } catch (error) {
+        this.handleErrors(error);
       }
-    } catch (error) {
-  this.handleErrors(error);
-    }
-  },
-  handlePointCollecteUpdated() {
+    },
+    async loadMarcheData(marche) {
+      try {
+        this.loading = true;
+        const response = await axios.get(`/parametrages/marche-data/${marche.id_type_marche}`);
+        if (response.status === 200) {
+          marche.marches = response.data;
+        }
+      } catch (error) {
+        this.handleErrors(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    handlePointCollecteUpdated() {
+      this.fetchTypesMarches();
+    },
+    restoreActiveTab() {
+      const savedTab = localStorage.getItem("PointCollecte");
+      if (savedTab) {
+        this.activeTab = savedTab;
+      }
+    },
+  
 
-this.fetchTypesMarches();
-},
   triggerToast(errorMessage) {
     this.toast.error(errorMessage, {
       position: "top-right",
@@ -204,7 +288,8 @@ this.fetchTypesMarches();
     else if
      (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
       await this.$store.dispatch("auth/clearMyAuthenticatedUser");
-      this.$router.push("/"); // Redirection vers la page de connexion
+      this.$router.push("/"); 
+      
     } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
       this.loading = false;
       this.data = [];

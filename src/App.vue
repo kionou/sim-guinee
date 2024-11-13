@@ -18,7 +18,7 @@ import  "@/assets/js/pages/chat-popup.js"
 import  "@/assets/icons/feather-icons/feather.min.js"	
 import  "@/assets/vendor_components/apexcharts-bundle/dist/apexcharts.js"
 import Footer from './components/others/footer.vue'
-// import  "@/assets/js/template.js"
+ import  "@/assets/js/template.js"
 // import  "@/assets/js/pages/dashboard.js"
 // import  "@/assets/js/pages/data-table.js"
 
@@ -26,6 +26,9 @@ import Footer from './components/others/footer.vue'
     import "@/assets/vendor_components/jquery-validation-1.17.0/dist/jquery.validate.min.js"
     import "@/assets/vendor_components/sweetalert/sweetalert.min.js"
     import "@/assets/js/pages/steps.js"
+
+    import AOS from 'aos';
+    import 'aos/dist/aos.css';
 
 
 
@@ -35,7 +38,12 @@ import Footer from './components/others/footer.vue'
     Footer
   },
   created() {
-   
+    AOS.init({
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false
+    });
   },
   watch: {
     

@@ -23,22 +23,7 @@ async fetchDataFromAPI({ commit }) {
     
     }
   },
-  async fetchMpmeData({ commit } ,authenticatedUser) {
-  
-    try {
-      const response = await axios.get('/mcipmes',{
-        headers: {
-          Authorization: `Bearer ${authenticatedUser.token}`,
-        },
-      });
-      const data = response.data.data.data;
-   
 
-      commit('SET_MPME_DATA', data); // Appel de la mutation pour mettre à jour le state
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données de /mpme:', error);
-    }
-  },
 
   fetchCountries: async ({ commit }) => {
     try {

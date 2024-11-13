@@ -70,10 +70,10 @@
                     <div class="widget-user-image" >
                         <div  style="cursor: pointer;"  data-original-title="picture"     @click="handleImageClick(data , 'update-picture')">
                           <img v-if="data?.image === '' || data?.image === null" class="rounded-circle " width="45"  src="@/assets/img/logo_mobile.png"
-                        alt="User Avatar" style="float: left; margin-right: 10px ;  height:45px !important"/>
+                        :alt="data.nom_produit" style="float: left; margin-right: 10px ;  height:45px !important"/>
 
                         <img v-else class="rounded-circle " width="45"  :src="data?.image"
-                        alt="User Avatar" style="float: left; margin-right: 10px ; height:45px !important"/>
+                        :alt="data.nom_produit" style="float: left; margin-right: 10px ; height:45px !important"/>
                         </div>
               
 
