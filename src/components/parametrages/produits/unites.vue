@@ -42,6 +42,7 @@
                   <th>Nom</th>
                   <th>Définition</th>
                   <th>Poids indicatif</th>
+                  <th>Unité conventionnelle</th>
                   <th>Actions</th>
   
                 </tr>
@@ -80,6 +81,7 @@
                   </td>
                   <td>{{ data?.definition }}</td>
                   <td>{{ data?.poids_indicatif }}</td>
+                  <td>{{ data?.unite_conventionel }}</td>
   
                   <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
@@ -110,7 +112,7 @@
     </div>
   
     <div class="modal center-modal fade" id="add-unite" ref="add-unite" tabindex="-1">
-      <div class="modal-dialog modal-xl">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Ajouter des Unités</h5>
@@ -153,20 +155,38 @@
                       <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="input-groupe">
-                      <label for="userpassword">Poids Indicatif <span class="text-danger">*</span></label>
-                      <MazInput v-model="unite.poids_indicatif" color="info" name="poids_indicatif" size="sm"
-                        rounded-size="sm" type="text" @input="clearErrorUnites(index, 'poids_indicatif')" />
-                      <small v-if="errors.Unites && errors.Unites[index] && errors.Unites[index].poids_indicatif">{{
-                        errors.Unites[index].poids_indicatif }}</small>
-                      <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
-                    </div>
-                  </div>
+                
   
   
   
                 </div>
+                <div class="row  content-group">
+  
+ 
+  <div class="col">
+    <div class="input-groupe">
+      <label for="userpassword">Poids Indicatif <span class="text-danger">*</span></label>
+      <MazInput v-model="unite.poids_indicatif" color="info" name="poids_indicatif" size="sm"
+        rounded-size="sm" type="text" @input="clearErrorUnites(index, 'poids_indicatif')" />
+      <small v-if="errors.Unites && errors.Unites[index] && errors.Unites[index].poids_indicatif">{{
+        errors.Unites[index].poids_indicatif }}</small>
+      <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
+    </div>
+  </div>
+  <div class="col">
+    <div class="input-groupe">
+      <label for="userpassword">Unité conventionnelle <span class="text-danger">*</span></label>
+      <MazSelect v-model="unite.unite_conventionel" color="info" name="unite_conventionel" size="sm"
+        rounded-size="sm" :options="Conventions" @click="clearErrorUnites(index, 'unite_conventionel')" />
+      <small v-if="errors.Unites && errors.Unites[index] && errors.Unites[index].unite_conventionel">{{
+        errors.Unites[index].unite_conventionel }}</small>
+      <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
+    </div>
+  </div>
+
+
+
+</div>
               </div>
               <div class="col-1" style="position: relative">
   
@@ -240,6 +260,19 @@
                     }}</small>
                   <small v-if="resultError['poids_indicatif']">
                     {{ resultError["poids_indicatif"] }}
+                  </small>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-groupe">
+                  <label for="userpassword"> Unité conventionnelle <span class="text-danger">*</span></label>
+                  <MazSelect v-model="step2.unite_conventionel" color="secondary" name="step2.unite_conventionel" size="sm"
+                    rounded-size="sm" :options="Conventions" />
+                  <small v-if="v$.step2.unite_conventionel.$error">{{
+                    v$.step2.unite_conventionel.$errors[0].$message
+                    }}</small>
+                  <small v-if="resultError['unite_conventionel']">
+                    {{ resultError["unite_conventionel"] }}
                   </small>
                 </div>
               </div>
@@ -342,6 +375,7 @@ export default {
         nom_unite: "",
         definition: "",
         poids_indicatif: 0,
+        unite_conventionel:"",
       },
       v$: useVuelidate(),
       error: "",
@@ -351,9 +385,15 @@ export default {
         nom_unite: "",
         definition: "",
         poids_indicatif: 0,
+        unite_conventionel:"",
+
 
       }
       ],
+      Conventions:[
+        {label:'kilo' , value:'kilo'},
+        {label:'litre' , value:'litre'},
+      ]
 
     }
   },
@@ -363,6 +403,8 @@ export default {
       nom_unite: { require },
       definition: { require },
       poids_indicatif: { require },
+      unite_conventionel:{ require },
+
 
     },
   },
@@ -373,7 +415,7 @@ export default {
   methods: {
     successmsg: successmsg,
     AddformDataUnites() {
-      this.Unites.push({ nom_unite: "", definition: "", poids_indicatif: 0, });
+      this.Unites.push({ nom_unite: "", definition: "", poids_indicatif: 0, unite_conventionel:"", });
     },
     deleteRowUnites(index) {
 
@@ -405,6 +447,11 @@ export default {
           isValid = false;
         }
 
+        if (!unite.unite_conventionel) {
+          uniteErrors.unite_conventionel = 'Ce champs est obligatoire!';
+          isValid = false;
+        }
+
 
         this.errors.Unites[index] = uniteErrors;
       });
@@ -431,7 +478,7 @@ export default {
           this.loading = false
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async SubmitUnite(modalId) {
@@ -450,7 +497,7 @@ export default {
 
 
           if (response.status === 200) {
-            this.Unites = [{ nom_unite: "", definition: "", poids_indicatif: 0, }];
+            this.Unites = [{ nom_unite: "", definition: "", poids_indicatif: 0, unite_conventionel:"", }];
 
             this.closeModal(modalId);
             this.successmsg(
@@ -487,6 +534,7 @@ export default {
           this.step2.nom_unite = data.nom_unite,
             this.step2.definition = data.definition,
             this.step2.poids_indicatif = data.poids_indicatif,
+            this.step2.unite_conventionel = data.unite_conventionel
 
             this.ToId = data.id_unite
           this.loading = false;
@@ -494,7 +542,7 @@ export default {
         }
       } catch (error) {
 
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
 
     },
@@ -510,6 +558,7 @@ export default {
           nom_unite: this.step2.nom_unite,
           definition: this.step2.definition,
           poids_indicatif: this.step2.poids_indicatif,
+          unite_conventionel : this.step2.unite_conventionel
         }
 
         try {
@@ -739,6 +788,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

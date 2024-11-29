@@ -45,6 +45,8 @@ import Enquete_Prix_Par_Marches_Frontaliere from '../views/Prix_marche/frontalie
 import Chiffre from '../views/autrre_parametrage/chiffres/default.vue'
 import Besoins from '../views/autrre_parametrage/besoins/default.vue'
 import Disponibilite from '../views/autrre_parametrage/disponibilites/default.vue'
+import Rapports from '../views/rapports/default.vue'
+
 
 import Test from '../views/test.vue'
 
@@ -284,6 +286,13 @@ const router = createRouter({
             props:true,
             meta: { requiresAuth: true },
              component: Disponibilite
+          },
+          {
+            path: 'rapports',
+            name: 'rapports',
+            props:true,
+            meta: { requiresAuth: true },
+             component: Rapports
           },
         
         

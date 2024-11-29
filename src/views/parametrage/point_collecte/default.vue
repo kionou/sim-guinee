@@ -162,7 +162,7 @@ export default {
 		  this.loading = false
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
 	getCountForType(typeMarche) {

@@ -48,6 +48,7 @@
                    <th>Commune</th>
                    <th>Agent collecte</th>
                    <th>Nature du marché</th>
+                   <th>Superviseur</th>
                    <th>Jours du port</th>
                    <th>Actions</th>
                   
@@ -92,6 +93,10 @@
           
           </div>
            </td>
+           <td style="width: 170px;" class="text-center">
+          <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.superviseur?.firstname ?? "-"}} {{data?.superviseur?.lastname ?? "-"}}</span>
+          <span style="font-size:12px !important" class="text-danger  d-block">{{data?.superviseur?.whatsapp ?? "-"}} </span>
+                   </td>
                    <td class="text-center" 
                     style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" 
                     :title="data?.jour_du_marche">
@@ -384,27 +389,50 @@
                           </div>
              </div>        
        </div>
-            <div class="row mt-3 content-group">
+       <div class="row mt-3 content-group">
       
-                
-                        
-            <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Description </label
-                            >
-              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
-  
-                            <small v-if="v$.step1.description.$error">{{
-                              v$.step1.description.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['description']">
-                              {{ resultError["description"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
-            </div>
+      <div class="col">
+             <div class="input-groupe">
+               <label for="userpassword"
+                 >Superviseur <span class="text-danger">*</span></label
+               >
+               <MazSelect
+                 v-model="step1.relai"
+                 color="secondary"
+                 name="step1.relai"
+                 size="sm"
+                 rounded-size="sm"
+                 search
+           :options="SuperviseurOptions"
+                 
+                 
+               />
+               <small v-if="v$.step1.relai.$error">{{
+                 v$.step1.relai.$errors[0].$message
+               }}</small>
+               <small v-if="resultError['relai']">
+                 {{ resultError["relai"] }}
+               </small>
+             </div>
+           </div> 
+           
+<div class="col">
+             <div class="input-groupe">
+               <label for="userpassword"
+                 > Description </label
+               >
+ <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
+
+               <small v-if="v$.step1.description.$error">{{
+                 v$.step1.description.$errors[0].$message
+               }}</small>
+               <small v-if="resultError['description']">
+                 {{ resultError["description"] }}
+               </small>
+             </div>
+           </div>
+         
+</div>
              
       </div>
       <div class="modal-footer modal-footer-uniform text-end">
@@ -656,50 +684,82 @@
                           </div>
              </div>        
        </div>
-            <div class="row mt-3 content-group">
+       <div class="row mt-3 content-group">
       
-                 <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Type marché <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step2.type_marche"
-                              color="secondary"
-                              name="step2.type_marche"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-                              :options="TypesOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step2.type_marche.$error">{{
-                              v$.step2.type_marche.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['type_marche']">
-                              {{ resultError["type_marche"] }}
-                            </small>
-                          </div>
-                        </div> 
-                        
-            <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Description </label
-                            >
-              <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
-  
-                            <small v-if="v$.step2.description.$error">{{
-                              v$.step2.description.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['description']">
-                              {{ resultError["description"] }}
-                            </small>
-                          </div>
-                        </div>
+      <div class="col">
+                  <div class="input-groupe">
+                    <label for="userpassword"
+                      > Type marché <span class="text-danger">*</span></label
+                    >
+                    <MazSelect
+                      v-model="step2.type_marche"
+                      color="secondary"
+                      name="step2.type_marche"
+                      size="sm"
+                      rounded-size="sm"
+                      search
+                      :options="TypesOptions"
                       
-            </div>
+                      
+                    />
+                    <small v-if="v$.step2.type_marche.$error">{{
+                      v$.step2.type_marche.$errors[0].$message
+                    }}</small>
+                    <small v-if="resultError['type_marche']">
+                      {{ resultError["type_marche"] }}
+                    </small>
+                  </div>
+                </div>    
+                  <div class="col">
+                  <div class="input-groupe">
+                    <label for="userpassword"
+                      >Superviseur <span class="text-danger">*</span></label
+                    >
+                    <MazSelect
+                      v-model="step2.relai"
+                      color="secondary"
+                      name="step2.relai"
+                      size="sm"
+                      rounded-size="sm"
+                      search
+        :options="SuperviseurOptions"
+                      
+                      
+                    />
+                    <small v-if="v$.step2.relai.$error">{{
+                      v$.step2.relai.$errors[0].$message
+                    }}</small>
+                    <small v-if="resultError['relai']">
+                      {{ resultError["relai"] }}
+                    </small>
+                  </div>
+                </div> 
+                
+    
+              
+    </div>
+
+    <div class="row mt-3 content-group">
+
+
+        
+<div class="col">
+          <div class="input-groupe">
+            <label for="userpassword"
+              > Description </label
+            >
+<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
+
+            <small v-if="v$.step2.description.$error">{{
+              v$.step2.description.$errors[0].$message
+            }}</small>
+            <small v-if="resultError['description']">
+              {{ resultError["description"] }}
+            </small>
+          </div>
+        </div>
+      
+</div>
              
       </div>
             <div class="modal-footer modal-footer-uniform text-end">
@@ -760,6 +820,8 @@
             TypesOptions:[],
             CommunesOptions:[],
             CollecteursOptions:[],
+            SuperviseurOptions:[],
+
             data:[],
             currentPage: 1,
             itemsPerPage: 10,
@@ -787,6 +849,7 @@
         description:"",
        jour_du_marche:[],
        nature_marche:"",
+       relai:"",
         
       },
   step2: {
@@ -800,6 +863,7 @@
        jour_du_marche:[],
        nature_marche:"",
        type_marche:"",
+       relai:"",
   
   
       },
@@ -850,6 +914,7 @@
         description:{},
         jour_du_marche:{require},
         nature_marche:{require},
+        relai:{require},
         
       },
        
@@ -864,6 +929,7 @@
         jour_du_marche:{require},
         nature_marche:{require},
         type_marche:{require},
+        relai:{require},
   
      },
   },
@@ -872,6 +938,7 @@
     await this.fetchCommunes()
      await this.fetchCollecteurs()
      await this.fetchTypesMarches()
+     await this.fetchUsers()
         
     },
     methods: {
@@ -897,7 +964,7 @@
               this.loading =  false
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
   async fetchCommunes() {
@@ -920,7 +987,7 @@
         }
       } catch (error) {
   
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchTypesMarches() {
@@ -964,11 +1031,41 @@
           value: item.id_collecteur 
         });
   });
+
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
+    async fetchUsers() {
+		try {
+		  const response = await axios.get(`/utilisateurs/${2}`, {
+			headers: {
+			  Authorization: `Bearer ${this.loggedInUser.token}`,
+			},
+		  });
+  
+		
+		  if (response.status === 200) {
+        response.data
+        
+        .map(item => {
+      this.SuperviseurOptions
+     
+      .push({
+          label: `${item.firstname} ${item.lastname}`,
+          value: item.id 
+        });
+      });
+	  
+
+     
+			this.loading = false;
+		  }
+		} catch (error) {
+			this.handleErrorsGet(error);
+		}
+	  },
     async SubmitCollecteur(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
@@ -985,6 +1082,8 @@
             nature_marche:this.step1.nature_marche,
             description:this.step1.description,
             jour_du_marche:(this.step1.jour_du_marche).toString(),
+            relai:this.step1.relai
+
        }
        
      console.log('data',data)
@@ -1006,6 +1105,8 @@
             description:"",
             nature_marche:"",
           jour_du_marche:[],
+          relai:"",
+
         
       },
       this.v$.step1.$reset();
@@ -1037,6 +1138,8 @@
             description:"",
             nature_marche:"",
           jour_du_marche:[],
+          relai:"",
+
         
       },
   
@@ -1066,6 +1169,8 @@
             description: data.description,
             nature_marche:data?.nature_marche,
             jour_du_marche:data?.jour_du_marche?.split(','),
+            relai: data.relai,
+
           }
           this.Code = parseInt(data.type_marche)
           this.ToId = data.code_marche
@@ -1074,7 +1179,7 @@
         }
       } catch (error) {
       
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
   
     },
@@ -1097,6 +1202,8 @@
             description:this.step2.description,
             nature_marche:this.step2.nature_marche,
             jour_du_marche:(this.step2.jour_du_marche).toString(),
+            relai:this.step2.relai
+
             }
   
   
@@ -1248,6 +1355,29 @@
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

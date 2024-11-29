@@ -179,7 +179,7 @@
             
           }
         } catch (error) {
-           this.handleErrors(error);
+           this.handleErrorsGet(error);
         }
       },
       handleEnqueteUpdated() {
@@ -234,6 +234,29 @@
           return false;
         }
       },
+      async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
       },
   //     beforeRouteLeave(to, from, next) {
   //     console.log('kiter');

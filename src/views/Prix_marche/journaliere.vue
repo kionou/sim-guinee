@@ -71,10 +71,10 @@
               </div>
              
               <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
-                    class="fw-semibold fs-16" data-bs-toggle="tooltip"
-                    title="Current Salary">{{dataDetail?.personnel_relation?.firstname}} {{dataDetail?.personnel_relation?.lastname}}</span></div>
-              </div>
+                  <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
+                      class="fw-semibold fs-16" data-bs-toggle="tooltip"
+                      title="Current Salary">{{relai?.nom_collecteur}} {{relai?.prenom_collecteur}} ({{relai?.whatsapp_collecteur}})</span></div>
+                </div>
               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Jour du marché : <span
                     class="fw-semibold fs-16" data-bs-toggle="tooltip" :title="dataDetail?.marche_relation?.jour_du_marche">
@@ -132,7 +132,7 @@
                                     <th> Prix (GNF) de l'unité  de mesure</th>
                                     <th> Prix moyen en (kg ou L)</th> 
                                     <th> Niveau d'approvisionnement</th>
-                                    <th>Statut</th>
+                                    <!-- <th>Statut</th> -->
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -171,7 +171,7 @@
                                     <td style="width: 90px;" class="text-center">{{ data?.prix_kg_litre ?? "-" }}</td>
     
                                     <td style="width: 90px;" class="text-center">{{getCleanCaractere(data.niveau_approvisionement)  ?? "-" }}</td>
-                                    <td style="width: 90px;" class="text-center">{{ data.statut ?? "-" }}</td>
+                                    <!-- <td style="width: 90px;" class="text-center">{{ data.statut ?? "-" }}</td> -->
                                     <td style="width: 120px">
                                         <div class="d-flex justify-content-evenly border-0">
                                             <a href="javascript:void(0)" class="btn btn-circle btn-success btn-xs" title=""
@@ -333,7 +333,7 @@
                                     </small>
                                 </div>
                             </div> -->
-                            <div class="col-6">
+                            <!-- <div class="col-6">
                                 <div class="input-groupe">
                                     <label for="userpassword">
                                       Statut <span class="text-danger">*</span>
@@ -347,7 +347,7 @@
                                         {{ resultError["statut"] }}
                                     </small>
                                 </div>
-                            </div>
+                            </div> -->
                             <!-- <div class="col-6">
                                 <div class="input-groupe">
                                     <label for="userpassword">
@@ -363,13 +363,13 @@
                                     </small>
                                 </div>
                             </div> -->
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="input-groupe">
                                     <label for="userpassword">
                                         Observation</label>
                                     <textarea class="form-control"
                                         style="border-radius:0 !important; border:1px solid #e5eaee !important"
-                                        id="text-area" v-model="step1.observation" rows="1"></textarea>
+                                        id="text-area" v-model="step1.observation" rows="2"></textarea>
     
                                     <small v-if="v$.step1.observation.$error">{{
                                         v$.step1.observation.$errors[0].$message
@@ -522,7 +522,7 @@
                                     </small>
                                 </div>
                             </div> -->
-                            <div class="col-6">
+                            <!-- <div class="col-6">
                                 <div class="input-groupe">
                                     <label for="userpassword">
                                       Statut <span class="text-danger">*</span>
@@ -536,7 +536,7 @@
                                         {{ resultError["statut"] }}
                                     </small>
                                 </div>
-                            </div>
+                            </div> -->
                             <!-- <div class="col-6">
                                 <div class="input-groupe">
                                     <label for="userpassword">
@@ -552,13 +552,13 @@
                                     </small>
                                 </div>
                             </div> -->
-                            <div class="col-6">
+                            <div class="col-12">
                                 <div class="input-groupe">
                                     <label for="userpassword">
                                         Observation</label>
                                     <textarea class="form-control"
                                         style="border-radius:0 !important; border:1px solid #e5eaee !important"
-                                        id="text-area" v-model="step2.observation" rows="1"></textarea>
+                                        id="text-area" v-model="step2.observation" rows="2"></textarea>
     
                                     <small v-if="v$.step2.observation.$error">{{
                                         v$.step2.observation.$errors[0].$message
@@ -639,10 +639,10 @@
                                         class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">{{ detailData?.niveau_approvisionement}}</span>
                                 </div>
                             </div>
-                            <div  class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                            <!-- <div  class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                 <div  class="mt-1">Statut <span 
                                         class="fw-semibold fs-16" data-bs-toggle="tooltip" title="Current Salary">{{detailData?.statut}}</span></div>
-                            </div>
+                            </div> -->
                                              
                             <div  class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                 <div  class="mt-1">Observation : <span 
@@ -702,6 +702,7 @@ export default {
     return {
       loading: true,
       dataDetail:"",
+      relai:"",
       searchMagasin: "",
       MagasinsOptions: [],
       ProduitsOptions: [],
@@ -720,7 +721,7 @@ export default {
         prix_kg_litre: "",
         niveau_approvisionement: "",
         observation: "",
-        statut: "",
+        // statut: "",
       },
       step2: {
         produit: "",
@@ -730,7 +731,7 @@ export default {
         prix_kg_litre: "",
         niveau_approvisionement: "",
         observation: "",
-        statut: "",
+        // statut: "",
       },
       v$: useVuelidate(),
       error: "",
@@ -762,7 +763,7 @@ export default {
         niveau_approvisionement:  { require },
         observation:  {  },
 
-        statut:  { require }, 
+        // statut:  { require }, 
       
     },
     step2: {
@@ -774,7 +775,7 @@ export default {
         niveau_approvisionement:  { require },
         observation:  {  },
 
-        statut:  { require }, 
+        // statut:  { require }, 
     },
   },
   async mounted() {
@@ -782,6 +783,7 @@ export default {
     await this.fetchPrixJournaliere();
     await this.fetchUnites();
     await this.fetchProduits();
+    await this.fetchCollecteurs( this.dataDetail?.marche_relation?.relai);
   
   
 
@@ -817,7 +819,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchProduits() {
@@ -838,12 +840,13 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchPrixJournaliere() {
       try {
-        const response = await axios.get(`enquetes/marches-prix/prix-enquetes/{enquente_id}?identite=${this.id}&type=${this.nom}`, {
+        const response = await axios.get(`enquetes/marches-prix/prix-enquetes/journalier/{enquente_id}?identite=${this.id}`, {
+
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -856,9 +859,27 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
+    async fetchCollecteurs(id) {
+        try {
+          const response = await axios.get(`/parametrages/collecteurs/${id}`, {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+  
+       
+          if (response.status === 200) {
+            this.relai = response.data
+          
+            this.loading = false;
+          }
+        } catch (error) {
+          this.handleErrorsGet(error);
+        }
+      },
     async SubmitPrixJournaliere(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
@@ -871,7 +892,7 @@ export default {
           prix_mesure: this.step1.prix_mesure,
           prix_kg_litre: this.step1.prix_kg_litre,
           niveau_approvisionement: this.step1.niveau_approvisionement,
-          statut: this.step1.statut,
+          statut: true,
           observation: this.step1.observation,
           // etat: this.step1.etat,
           enquete:this.id
@@ -897,7 +918,7 @@ export default {
         prix_kg_litre: "",
         niveau_approvisionement: "",
         observation: "",
-        statut: "",
+        // statut: "",
          
         };
         this.v$.step1.$reset();
@@ -906,6 +927,7 @@ export default {
               "Votre enquête sur les prix a été créée avec succès !"
           );
             await this.fetchPrixJournaliere();
+        
           } else {
           }
         } catch (error) {
@@ -916,6 +938,7 @@ export default {
       } else {
       }
     },
+   
     async HandleIdUpdate(id , modalId , nom) {
       this.openModal(modalId)
       this.stepModal = "update";
@@ -937,14 +960,14 @@ export default {
             (this.step2.poids_unitaire = data.poids_unitaire),
             (this.step2.prix_kg_litre = data.prix_kg_litre),
             (this.step2.niveau_approvisionement = data.niveau_approvisionement.toString()),
-            (this.step2.statut = data.statut),
+            // (this.step2.statut = data.statut),
             (this.step2.observation = data.observation),
             (this.step2.prix_mesure = data.prix_mesure),
             (this.ToId = data.id_fiche);
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async submitUpdate(modalId) {
@@ -959,7 +982,7 @@ export default {
           prix_mesure: this.step2.prix_mesure,
           prix_kg_litre: this.step2.prix_kg_litre,
           niveau_approvisionement: this.step2.niveau_approvisionement,
-          statut: this.step2.statut,
+          statut: true,
           observation: this.step2.observation,
           enquete:this.id
         };
@@ -1104,6 +1127,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

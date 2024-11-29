@@ -78,7 +78,7 @@
                 <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                   <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
                       class="fw-semibold fs-16" data-bs-toggle="tooltip"
-                      title="Current Salary">{{dataDetail?.personnel_relation?.firstname}} {{dataDetail?.personnel_relation?.lastname}}</span></div>
+                      title="Current Salary">{{relai?.nom_collecteur}} {{relai?.prenom_collecteur}} ({{relai?.whatsapp_collecteur}})</span></div>
                 </div>
               </div>
             </div>
@@ -299,8 +299,8 @@
                   <div class="input-groupe">
                     <label for="userpassword">
                      Etat corporel <span class="text-danger">*</span></label>
-                    <MazInput v-model="step1.etat_corporel" color="secondary" name="step1.etat_corporel" size="sm"
-                      rounded-size="sm" type="text" />
+                    <MazSelect v-model="step1.etat_corporel" color="secondary" name="step1.etat_corporel" size="sm"
+                      rounded-size="sm" search :options="CorporelOptions" />
                     <small v-if="v$.step1.etat_corporel.$error">{{
                       v$.step1.etat_corporel.$errors[0].$message
                       }}</small>
@@ -438,7 +438,7 @@
       </div>
     
       <div class="modal center-modal fade" id="update-prix-collecte" ref="update-prix-collecte" tabindex="-1">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">
@@ -525,8 +525,8 @@
                   <div class="input-groupe">
                     <label for="userpassword">
                      Etat corporel <span class="text-danger">*</span></label>
-                    <MazInput v-model="step2.etat_corporel" color="secondary" name="step2.etat_corporel" size="sm"
-                      rounded-size="sm" type="text" />
+                    <MazSelect v-model="step2.etat_corporel" color="secondary" name="step2.etat_corporel" size="sm"
+                      rounded-size="sm" search :options="CorporelOptions" />
                     <small v-if="v$.step2.etat_corporel.$error">{{
                       v$.step2.etat_corporel.$errors[0].$message
                       }}</small>
@@ -804,6 +804,7 @@
       return {
         loading: true,
         dataDetail: "",
+        relai:"",
         searchPrixCollecte: "",
         MagasinsOptions: [],
         CommunesOptions: [],
@@ -866,6 +867,14 @@
   
   
         ],
+        CorporelOptions:[
+        { label: "médiocre", value: "médiocre" },
+        { label: "mauvais ", value: "mauvais " },
+        { label: "moyen", value: "moyen" },
+        { label: "assez bon", value: "assez bon" },
+        { label: "très bon", value: "très bon" },
+
+        ],
         v$: useVuelidate(),
         error: "",
         resultError: {},
@@ -908,14 +917,13 @@
     },
     async mounted() {
       this.dataDetail = await JSON.parse(localStorage.getItem('DataPrixMarche'));
+     
       await this.fetchMagasins();
       await this.fetchProduits();
       await this.fetchUnites();
       await this.fetchCommunes();
-      await this.fetchCollecteurs();
-  
-  
-  
+      await this.fetchCollecteurs( this.dataDetail?.marche_relation?.relai);
+     
     },
     methods: {
       successmsg: successmsg,
@@ -944,7 +952,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchUnites() {
@@ -964,7 +972,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchCommunes() {
@@ -982,34 +990,37 @@
               value:  item.code_origine_produit
             }))
             this.loading = false;
+            // response.data.map(item => this.CommunesOptions.push({
+            //   label: item.nom_commune,
+            //   value: item.code_commune
+            // }))
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
-      async fetchCollecteurs() {
+      async fetchCollecteurs(id) {
         try {
-          const response = await axios.get("/parametrages/collecteurs", {
+          const response = await axios.get(`/parametrages/collecteurs/${id}`, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
           });
   
-          console.log("response", response);
+       
           if (response.status === 200) {
-            response.data.map(item => this.CollectionOptions.push({
-              label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-              value: item.id_collecteur
-            }))
+            this.relai = response.data
+          
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchMagasins() {
         try {
-          const response = await axios.get(`enquetes/marches-prix/prix-enquetes/{enquente_id}?identite=${this.id}&type=${this.nom}`, {
+          const response = await axios.get(`enquetes/marches-prix/prix-enquetes/betail/{enquente_id}?identite=${this.id}`, {
+         
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -1022,7 +1033,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async SubmitMagasins(modalId) {
@@ -1049,8 +1060,7 @@
   
   
           };
-  
-          console.log('data', data)
+
           try {
             const response = await axios.post("enquetes/marches-prix/betails", data, {
               headers: {
@@ -1079,6 +1089,7 @@
             );
   
               await this.fetchMagasins();
+              //  this.sendSmsToWhatsApp()
             } else {
             }
           } catch (error) {
@@ -1088,6 +1099,66 @@
   
         } else {
         }
+      },
+      getDateFr() {
+      const options = { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric'
+      };
+      return new Date().toLocaleDateString('fr-FR', options);
+    },
+      async sendSmsToWhatsApp() {
+        let NumberRelais = this.relai?.whatsapp_collecteur?.trim()
+        if(!NumberRelais.startsWith("+224") && !NumberRelais.startsWith("224")){
+          NumberRelais = '224' + NumberRelais
+        }
+        if(NumberRelais.startsWith("+") ){
+          NumberRelais =  NumberRelais.slice(1)
+        }
+        let localNumber = NumberRelais.slice(3)
+        if( localNumber.length !== 9){
+          console.log('error')
+        }
+      
+       
+          const messageText = ` 
+           🔔 Nouvelle Collecte Effectuée ✅
+              Salut Mr/Mlle ${this.dataDetail?.personnel_relation?.username}
+              L'agent ${this.dataDetail?.collecteur_relation?.nom_collecteur} ${this.dataDetail?.collecteur_relation?.prenom_collecteur} vient de faire une collecte du produit ${this.step1.produit}.
+              Les données ont été bien enregistrées.
+
+              +----+Données collectées----+
+                Type de marché: Bétail
+                Marché: ${this.dataDetail?.marche_relation?.nom_marche}
+                Agent:  ${this.dataDetail?.collecteur_relation?.nom_collecteur} ${this.dataDetail?.collecteur_relation?.prenom_collecteur}
+                Date :  ${this.getDateFr()}
+                +--------------------++
+                -- Riz paddy: {details_collecte['riz_paddy']} GNF / kilo
+                -- Riz local: {details_collecte['riz_local']} GNF / sac de 25 kilo
+                -- Mais blanc: {details_collecte['mais_blanc']} / bol
+                 +--------------------++
+
+              
+              `
+          const data = {
+            message: messageText,
+            tel: NumberRelais?.length === 12 ? NumberRelais : '0'
+          } 
+          try {
+            const response = await axios.post('/sendwhatsapp-message', data, {
+              headers: {
+                Authorization: `Bearer ${this.loggedInUser.token}`,
+              },
+            });
+            console.log('responsesms', response)
+  
+            if (response.status === 200) {  
+            }
+          } catch (error) {
+            this.handleErrors(error);
+          }
+        
       },
       async HandleIdUpdate(id, modalId , nom) {
         this.openModal(modalId)
@@ -1119,7 +1190,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async submitUpdate(modalId) {
@@ -1292,6 +1363,29 @@
           return false;
         }
       },
+      async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
       addBackdrop() {
         if (!$('.modal-backdrop').length) {
           const backdrop = $('<div class="modal-backdrop fade"></div>');

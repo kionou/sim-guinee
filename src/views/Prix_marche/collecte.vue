@@ -76,10 +76,10 @@
                 </div>
               </div>
               <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
-                <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
-                    class="fw-semibold fs-16" data-bs-toggle="tooltip"
-                    title="Current Salary">{{dataDetail?.personnel_relation?.firstname}} {{dataDetail?.personnel_relation?.lastname}}</span></div>
-              </div>
+                  <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
+                      class="fw-semibold fs-16" data-bs-toggle="tooltip"
+                      title="Current Salary">{{relai?.nom_collecteur}} {{relai?.prenom_collecteur}} ({{relai?.whatsapp_collecteur}})</span></div>
+                </div>
             </div>
           </div>
         </div>
@@ -428,7 +428,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
+              <!-- <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Statut <span class="text-danger">*</span>
@@ -442,14 +442,14 @@
                     {{ resultError["statut"] }}
                   </small>
                 </div>
-              </div>
-              <div class="col-6">
+              </div> -->
+              <div class="col-12">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Observation 
                   </label>
                   <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
-                    id="text-area" v-model="step1.observation" rows="1"></textarea>
+                    id="text-area" v-model="step1.observation" rows="2"></textarea>
   
   
                   <small v-if="v$.step1.observation.$error">{{
@@ -697,7 +697,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-6">
+              <!-- <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Statut <span class="text-danger">*</span>
@@ -711,14 +711,14 @@
                     {{ resultError["statut"] }}
                   </small>
                 </div>
-              </div>
+              </div> -->
               <div class="col-6">
                 <div class="input-groupe">
                   <label for="userpassword">
                     Observation 
                   </label>
                   <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important"
-                    id="text-area" v-model="step2.observation" rows="1"></textarea>
+                    id="text-area" v-model="step2.observation" rows="2"></textarea>
   
   
                   <small v-if="v$.step2.observation.$error">{{
@@ -828,11 +828,11 @@
                         title="Current Salary">{{detailData?.niveau_approvisionement }}</span>
                     </div>
                   </div>
-                  <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                  <!-- <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                     <div class="mt-1"> Statut : <span class="fw-semibold fs-16" data-bs-toggle="tooltip"
                         title="Current Salary">{{detailData?.statut}}</span>
                     </div>
-                  </div>
+                  </div> -->
                   <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12">
                     <div class="mt-1"> Observation : <span class="fw-semibold fs-16" data-bs-toggle="tooltip"
                         title="Current Salary">{{detailData?.observation}}</span>
@@ -890,6 +890,7 @@ export default {
     return {
       loading: true,
       dataDetail: "",
+      relai:"",
       searchPrixCollecte: "",
       MagasinsOptions: [],
       CommunesOptions: [],
@@ -914,7 +915,7 @@ export default {
         destination_finale: "",
         etat_route: "",
         niveau_approvisionement: "",
-        statut: "",
+        // statut: "",
         observation: "",
         
 
@@ -940,7 +941,7 @@ export default {
         destination_finale: "",
         etat_route: "",
         niveau_approvisionement: "",
-        statut: "",
+        // statut: "",
         observation: "",
       },
       Fournisseur: [
@@ -981,7 +982,7 @@ export default {
       destination_finale: { require },
       etat_route: {  },
       niveau_approvisionement: { require },
-      statut: { require },
+      // statut: { require },
       observation: {  },
     
 
@@ -997,7 +998,7 @@ export default {
       destination_finale: { require },
       etat_route: {  },
       niveau_approvisionement: { require },
-      statut: { require },
+      // statut: { require },
       observation: {  },
     },
   },
@@ -1007,7 +1008,7 @@ export default {
     await this.fetchProduits();
     await this.fetchUnites();
     await this.fetchCommunes();
-    await this.fetchCollecteurs();
+    await this.fetchCollecteurs( this.dataDetail?.marche_relation?.relai);
 
 
 
@@ -1039,7 +1040,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchUnites() {
@@ -1059,7 +1060,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchCommunes() {
@@ -1079,32 +1080,30 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
-    async fetchCollecteurs() {
-      try {
-        const response = await axios.get("/parametrages/collecteurs", {
-          headers: {
-            Authorization: `Bearer ${this.loggedInUser.token}`,
-          },
-        });
-
-        console.log("response", response);
-        if (response.status === 200) {
-          response.data.map(item => this.CollectionOptions.push({
-            label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-            value: item.id_collecteur
-          }))
-          this.loading = false;
+    async fetchCollecteurs(id) {
+        try {
+          const response = await axios.get(`/parametrages/collecteurs/${id}`, {
+            headers: {
+              Authorization: `Bearer ${this.loggedInUser.token}`,
+            },
+          });
+  
+       
+          if (response.status === 200) {
+            this.relai = response.data
+          
+            this.loading = false;
+          }
+        } catch (error) {
+          this.handleErrorsGet(error);
         }
-      } catch (error) {
-        this.handleErrors(error);
-      }
-    },
+      },
     async fetchMagasins() {
       try {
-        const response = await axios.get(`enquetes/marches-prix/prix-enquetes/{enquente_id}?identite=${this.id}&type=${this.nom}`, {
+        const response = await axios.get(`enquetes/marches-prix/prix-enquetes/collecte/{enquente_id}?identite=${this.id}`, {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
@@ -1117,7 +1116,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async SubmitMagasins(modalId) {
@@ -1136,7 +1135,7 @@ export default {
           destination_finale: this.step1.destination_finale,
           etat_route: this.step1.etat_route,
           niveau_approvisionement: this.step1.niveau_approvisionement,
-          statut: this.step1.statut,
+          statut: true,
           observation: this.step1.observation,
           // etat:"",
           enquete: this.id,
@@ -1166,7 +1165,7 @@ export default {
               destination_finale: "",
               etat_route: "",
               niveau_approvisionement: "",
-              statut: "",
+              // statut: "",
               observation: "",
               etat: "",
             }
@@ -1177,6 +1176,7 @@ export default {
           );
 
             await this.fetchMagasins();
+           
           } else {
           }
         } catch (error) {
@@ -1187,6 +1187,7 @@ export default {
       } else {
       }
     },
+    
     async HandleIdUpdate(id, modalId , nom) {
       this.openModal(modalId)
       this.stepModal = "update";
@@ -1200,7 +1201,6 @@ export default {
         });
 
         if (response.status === 200) {
-          console.log("Slbvlkjbv", response);
 
           let data = response.data;
           (this.step2.produit = data.produit),
@@ -1212,13 +1212,13 @@ export default {
             (this.step2.destination_finale = data.destination_finale),
             (this.step2.etat_route = data.etat_route),
             (this.step2.niveau_approvisionement = data.niveau_approvisionement.toString()),
-            (this.step2.statut = data.statut),
+            // (this.step2.statut = data.statut),
             (this.step2.observation = data.observation),
             (this.ToId = data.id_fiche);
-          this.loading = false;
+            this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async submitUpdate(modalId) {
@@ -1236,13 +1236,11 @@ export default {
           destination_finale: this.step2.destination_finale,
           etat_route: this.step2.etat_route,
           niveau_approvisionement: this.step2.niveau_approvisionement,
-          statut: this.step2.statut,
+          statut: true,
           observation: this.step2.observation,
           // etat:"",
           enquete: this.id,
         };
-        console.log('data',data)
-
         try {
           const response = await axios.put(`/enquetes/marches-prix/collectes/edition?id=${this.ToId}`, data, {
             headers: {
@@ -1387,6 +1385,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

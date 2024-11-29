@@ -5,14 +5,14 @@
         <div class="content-header">
             <div class="d-flex align-items-center justify-content-between">
     
-                <h3 class="page-title"> Disponibilités ou Bésoins </h3>
+                <h3 class="page-title">  Offres & Demandes </h3>
                 <div class="d-inline-block align-items-center">
                     <nav>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><router-link to="/"><i
                                         class="mdi mdi-home-outline"></i></router-link></li>
                             <li class="breadcrumb-item" aria-current="page">SIM</li>
-                            <li class="breadcrumb-item active" aria-current="page">Disponibilités ou Bésoins</li>
+                            <li class="breadcrumb-item active" aria-current="page"> Offres & Demandes</li>
                         </ol>
                     </nav>
                 </div>
@@ -27,9 +27,9 @@
                 style="border-bottom: 1px solid var(--color-primary) !important;">
                 <ul class="nav nav-tabs customtab2 ">
                     <li class=" nav-item"> <a href="#navpills-1" class="nav-link active" data-toggle="tab"
-                            aria-expanded="false">Disponibilités</a> </li>
+                            aria-expanded="false">Offres</a> </li>
                     <li class="nav-item"> <a href="#navpills-3" class="nav-link" data-toggle="tab" aria-expanded="true"
-                            @click="loadFiche">Bésoins</a> </li>
+                            @click="loadFiche">Demandes</a> </li>
                 </ul>
                
             </div>

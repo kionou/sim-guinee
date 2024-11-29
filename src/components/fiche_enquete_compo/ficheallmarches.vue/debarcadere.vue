@@ -56,7 +56,7 @@
 			</li>
 
 			<li class="h-40  col-1 px-0">
-				<button type="button" class="waves-effect waves-circle btn btn-circle btn-sm btn-primary mb-5"   @click="openModal('add-fiche-grossiste')"   ><i class="mdi mdi-filter"></i></button>
+				<button type="button" class="waves-effect waves-circle btn btn-circle btn-sm btn-primary mb-5"   @click="openModal('add-fiche-debarcadere')"   ><i class="mdi mdi-filter"></i></button>
 			</li>
             <li class="h-40 col-1 px-0">
 				<button type="button" class="waves-effect waves-circle btn btn-circle btn-sm btn-primary mb-5"   @click="Refesh"   ><i class="mdi mdi-refresh"></i></button>
@@ -174,12 +174,12 @@
          
             </div>
 
-            <div class="modal center-modal fade"  id="add-fiche-collecte"  ref="add-fiche-collecte" tabindex="-1">
+            <div class="modal center-modal fade"  id="add-fiche-debarcadere"  ref="add-fiche-debarcadere" tabindex="-1">
           <div class="modal-dialog ">
           <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Recherchez...</h5>
-            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-fiche-collecte')" >
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-fiche-debarcadere')" >
               <span aria-hidden="true">&times;</span>
             </button>
             </div>
@@ -270,7 +270,7 @@
             </div>
             <div class="modal-footer modal-footer-uniform text-end">
           
-              <button type="button" @click="submitFicheCollecte('add-fiche-collecte')" class="waves-effect waves-light btn btn-primary ">Valider</button>
+              <button type="button" @click="submitFicheCollecte('add-fiche-debarcadere')" class="waves-effect waves-light btn btn-primary ">Valider</button>
           
 
             </div>
@@ -685,7 +685,7 @@ async fetchFichesCollectes(id) {
              this.loading =  false
        }
      } catch (error) {
-       this.handleErrors(error);
+       this.handleErrorsGet(error);
       
       
      }
@@ -730,7 +730,7 @@ async fetchFichesCollectes(id) {
 });
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
     async fetchCommuneByCode(code ) {
@@ -749,7 +749,7 @@ async fetchFichesCollectes(id) {
 		
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
     async fetchNumberFiche() {
@@ -766,7 +766,7 @@ async fetchFichesCollectes(id) {
 		this.step1.num_fiche  = response.data
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
     async fetchProduits() {
@@ -785,7 +785,7 @@ async fetchFichesCollectes(id) {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async submitFicheCollecte(modalId) {
@@ -875,7 +875,7 @@ this.FichesCollOptions = [...this.data];
         }
       } catch (error) {
       
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
 
     },
@@ -1126,6 +1126,29 @@ triggerToast(errorMessage) {
         this.FichesCollOptions = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

@@ -1804,7 +1804,7 @@ Theme Primary Color
   .theme-primary .mailbox-nav .nav-pills > li > a.active:hover, .theme-primary .mailbox-nav .nav-pills > li > a.active:focus {
     border-color: #8950fc; }
 .theme-primary .nav-tabs-custom > .nav-tabs > li a.active {
-  border-top-color: #8950fc; }
+  border-top-color: var(--color-primary); }
 .theme-primary .profile-tab li a.nav-link.active {
   border-bottom: 2px solid #8950fc; }
 .theme-primary .customtab li a.nav-link.active {

@@ -61,9 +61,8 @@
                    <th class="text-center">Code</th>
                    <th>Nom & Prenoms</th>
                    <th>Coordonnees</th>
-                   <th>Commune</th>
-                   <th>Superviseur</th>
-                   <th>Description</th>
+                   <th>Commune</th>            
+                   <th>Statut</th>
                    <th>Actions</th>
                   
                </tr>
@@ -88,7 +87,7 @@
                    <td>
 					<div>
 					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data.nom_collecteur}} {{data.prenom_collecteur}}</span>
-					<span style="font-size:12px !important" class="text-danger  d-block">{{data.sexe_collecteur[0]}} </span>
+					<span style="font-size:12px !important" class="text-danger  d-block">{{data.sexe_collecteur}} </span>
 				  </div>
 				   </td>
                    <td >
@@ -100,15 +99,11 @@
 				   <td style="width: 100px;" class="text-center">
                     {{ data?.commune?.nom_commune ?? "-"}}
                    </td>
-				   <td>
-					<div>
-					<span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relai?.nom_collecteur}} {{data?.collecteur_relai?.prenom_collecteur}}</span>
-					<span style="font-size:12px !important" class="text-danger  d-block">{{data?.collecteur_relai?.whatsapp_collecteur}} </span>
-				  </div>
-				   </td>
-				   <td style="width: 100px;" class="text-center">
-                    {{ data?.description ?? "-"}}
-                   </td>
+           <td>
+					
+					  <a v-if="data?.statut === true" @click="HandleIdUpdateStatus(data?.code_collecteur)" href="javascript:void(0)" class="btn btn-circle btn-success btn-xs"><i class="ti-lock "></i></a>
+					  <a v-else href="javascript:void(0)" @click="HandleIdUpdateStatus(data?.code_collecteur)" class="btn btn-circle btn-danger btn-xs"><i class="ti-unlock "></i></a>
+					</td>
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.id_collecteur , 'update-collecteur')"><i class="ti-marker-alt"></i></a>
@@ -139,7 +134,7 @@
 	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title">Ajouter un(e) Agent collecte</h5>
+			<h5 class="modal-title">Ajouter un Agent collecte</h5>
 			<button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-collecteur')" >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -325,49 +320,76 @@
                         </div>
                       
             </div>
-			<div class="row mt-3 content-group">
-                        <div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              >Superviseur <span class="text-danger">*</span></label
-                            >
-                            <MazSelect
-                              v-model="step1.relai"
-                              color="secondary"
-                              name="step1.relai"
-                              size="sm"
-                              rounded-size="sm"
-                              search
-							  :options="SuperviseurOptions"
-                              
-                              
-                            />
-                            <small v-if="v$.step1.relai.$error">{{
-                              v$.step1.relai.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['relai']">
-                              {{ resultError["relai"] }}
-                            </small>
-                          </div>
-                        </div>
-						<div class="col">
-                          <div class="input-groupe">
-                            <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
-                            >
-							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
-
-                            <small v-if="v$.step1.description.$error">{{
-                              v$.step1.description.$errors[0].$message
-                            }}</small>
-                            <small v-if="resultError['description']">
-                              {{ resultError["description"] }}
-                            </small>
-                          </div>
-                        </div>
-                      
+            <div class="row mt-3 content-group">
+              <div class="col-6" >
+				  <div class="input-groupe">
+					<label for="userpassword">
+					  Mot de passe <span class="text-danger">*</span></label
+					>
+					<MazInput
+					  v-model="step1.password"
+					  color="secondary"
+					  name="step1.password"
+					  size="sm"
+					  rounded-size="sm"
+					  type="password"
+					  autocomplete="new-password"
+					/>
+					<small v-if="v$.step1.password.$error">{{
+					  v$.step1.password.$errors[0].$message
+					}}</small>
+					<small v-if="resultError['password']">
+					  {{ resultError["password"] }}
+					</small>
+				  </div>
+				</div>
+  
+				<div class="col-6" >
+				  <div class="input-groupe">
+					<label for="userpassword">
+					  Confirmer votre mot de passe <span class="text-danger">*</span></label
+					>
+					<MazInput
+					  v-model="step1.password_confirm"
+					  color="secondary"
+					  name="step1.password_confirm"
+					  size="sm"
+					  rounded-size="sm"
+					  type="password"
+					/>
+					<small v-if="v$.step1.password_confirm.$error">{{
+					  v$.step1.password_confirm.$errors[0].$message
+					}}</small>
+					<small v-if="resultError['password_confirm']">
+					  {{ resultError["password_confirm"] }}
+					</small>
+					<small v-if="!validatePasswordsMatch()">Les mots de passe ne correspondent pas.</small>
+				  </div>
+				</div>
+  
             </div>
-             
+           
+            <div class="row mt-3 content-group">
+                  
+                  <div class="col">
+                                <div class="input-groupe">
+                                  <label for="userpassword"
+                                    > Description </label
+                                  >
+                    <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
+      
+                                  <small v-if="v$.step1.description.$error">{{
+                                    v$.step1.description.$errors[0].$message
+                                  }}</small>
+                                  <small v-if="resultError['description']">
+                                    {{ resultError["description"] }}
+                                  </small>
+                                </div>
+                              </div>
+                            
+                  </div>
+          
+            
 		  </div>
 		  <div class="modal-footer modal-footer-uniform text-end">
 		
@@ -384,7 +406,7 @@
           <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title">Modifier un(e) collcteur(e)</h5>
+            <h5 class="modal-title">Modifier un agent de  collecte</h5>
             <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-collecteur')" >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -415,7 +437,7 @@
                             </small>
                           </div>
                         </div>
-						<div class="col">
+					       	<div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
                               > Nom <span class="text-danger">*</span></label
@@ -571,8 +593,57 @@
                         </div>
                       
             </div>
-			<div class="row mt-3 content-group">
-				<div class="col">
+		
+            <div class="row mt-3 content-group">
+              <div class="col-6" >
+				  <div class="input-groupe">
+					<label for="userpassword">
+					  Mot de passe <span class="text-danger">*</span></label
+					>
+					<MazInput
+					  v-model="step2.password"
+					  color="secondary"
+					  name="step2.password"
+					  size="sm"
+					  rounded-size="sm"
+					  type="password"
+					  autocomplete="new-password"
+					/>
+					<small v-if="v$.step2.password.$error">{{
+					  v$.step2.password.$errors[0].$message
+					}}</small>
+					<small v-if="resultError['password']">
+					  {{ resultError["password"] }}
+					</small>
+				  </div>
+				</div>
+  
+				<div class="col-6" >
+				  <div class="input-groupe">
+					<label for="userpassword">
+					  Confirmer votre mot de passe <span class="text-danger">*</span></label
+					>
+					<MazInput
+					  v-model="step2.password_confirm"
+					  color="secondary"
+					  name="step2.password_confirm"
+					  size="sm"
+					  rounded-size="sm"
+					  type="password"
+					/>
+					<small v-if="v$.step2.password_confirm.$error">{{
+					  v$.step2.password_confirm.$errors[0].$message
+					}}</small>
+					<small v-if="resultError['password_confirm']">
+					  {{ resultError["password_confirm"] }}
+					</small>
+					<small v-if="!validatePasswordsMatchupdate()">Les mots de passe ne correspondent pas.</small>
+				  </div>
+				</div>
+  
+            </div>
+            <div class="row mt-3 content-group">
+				<!-- <div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
                               >Superviseur <span class="text-danger">*</span></label
@@ -595,13 +666,13 @@
                               {{ resultError["relai"] }}
                             </small>
                           </div>
-                        </div>
+                        </div> -->
 						<div class="col">
                           <div class="input-groupe">
                             <label for="userpassword"
-                              > Description <span class="text-danger">*</span></label
+                              > Description </label
                             >
-							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+							<textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
 
                             <small v-if="v$.step2.description.$error">{{
                               v$.step2.description.$errors[0].$message
@@ -612,8 +683,7 @@
                           </div>
                         </div>
                       
-            </div>
-             
+            </div> 
 		  </div>
                     
             </div>
@@ -686,8 +756,11 @@ export default {
 				telephone_collecteur:"",
 				commune_collecteur:"",
 				adresse:"",
-				relai:"",
+				// relai:"",
 				description:"",
+        password: "",
+        password_confirm: "",
+        
 			},
             step2: {
 				code_collecteur:"",
@@ -698,8 +771,10 @@ export default {
 				telephone_collecteur:"",
 				commune_collecteur:"",
 				adresse:"",
-				relai:"",
+				// relai:"",
 				description:"",
+        password: "",
+        password_confirm: "",
 
 			},
             v$: useVuelidate(),
@@ -718,8 +793,10 @@ export default {
 				telephone_collecteur:{require},
 				commune_collecteur:{require},
 				adresse:{require},
-				relai:{require},
-				description:{require},
+				// relai:{require},
+				description:{},
+        password_confirm: { require, lgmin: lgmin(5) },
+	    	password: { require },
 			},
        
          step2: {
@@ -731,8 +808,10 @@ export default {
 				telephone_collecteur:{require},
 				commune_collecteur:{require},
 				adresse:{require},
-				relai:{require},
-				description:{require},
+				// relai:{require},
+				description:{},
+        password_confirm: {  },
+	    	password: {  },
 		 },
   },
   async  mounted() {
@@ -742,7 +821,12 @@ export default {
     },
     methods: {
         successmsg:successmsg,
-  
+        validatePasswordsMatch() {
+      return this.step1.password === this.step1.password_confirm  
+    },
+    validatePasswordsMatchupdate() {
+      return this.step2.password === this.step2.password_confirm;
+    },
         
         async fetchCollecteurs() {
       try {
@@ -755,7 +839,7 @@ export default {
           }
         );
 
-          console.log('responsecolecteurs',response)
+        
         if (response.status === 200) {
               this.data  = response.data ;
               this.CollecteursOptions = this.data
@@ -766,7 +850,7 @@ export default {
               this.loading =  false
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
 	async fetchCommunes() {
@@ -790,12 +874,13 @@ export default {
         }
       } catch (error) {
 
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
     async SubmitCollecteur(modalId) {
       this.v$.step1.$touch();
       if (this.v$.$errors.length == 0) {
+
         this.loading = true;
        let data = {
 
@@ -807,8 +892,9 @@ export default {
             telephone_collecteur:this.step1.telephone_collecteur,
             commune_collecteur:this.step1.commune_collecteur,
             adresse:this.step1.adresse,
-            relai:this.step1.relai,
+            // relai:this.step1.relai,
             description:this.step1.description,
+            password: this.step1.password,
        }
        
 	   console.log('data',data)
@@ -820,6 +906,16 @@ export default {
 		  console.log('qfs', response)
 		  if (response.status === 200) {
             this.closeModal(modalId);
+         
+        this.v$.step1.$reset();
+			this.successmsg(
+				"Création du collecteur",
+				"Votre collecteur a été créé avec succès !"
+			);
+
+
+            await this.fetchCollecteurs();
+            this.sendSmsToWhatsApp('add')
             this.step1 = {
               code_collecteur:"",
               nom_collecteur:"",
@@ -829,17 +925,12 @@ export default {
               telephone_collecteur:"",
               commune_collecteur:"",
               adresse:"",
-              relai:"",
+              // relai:"",
               description:"",
+              password:"",
+              password_confirm: "",
+
         };
-        this.v$.step1.$reset();
-			this.successmsg(
-				"Création du collecteur",
-				"Votre collecteur a été créé avec succès !"
-			);
-
-
-            await this.fetchCollecteurs();
           } else {
           }
         } catch (error) {
@@ -849,6 +940,82 @@ export default {
       
       }
     },
+    async sendSmsToWhatsApp(a) {
+      let NumberRelais = a === 'add' 
+    ? this.step1.telephone_collecteur?.trim() 
+    : this.step2.telephone_collecteur?.trim();
+
+if (NumberRelais) {
+    // Supprimer le "+" s'il est présent
+    if (NumberRelais.startsWith("+")) {
+        NumberRelais = NumberRelais.slice(1);
+    }
+
+    // Extraire l'indicatif du pays (les premiers chiffres avant le numéro local)
+    const countryCode = NumberRelais.slice(0, 3); // Supposant que les indicatifs de pays font 3 chiffres
+    const localNumber = NumberRelais.slice(3); 
+
+    console.log("Code du pays :", countryCode);
+    console.log("Numéro local :", localNumber);
+
+  
+} else {
+    console.log("Erreur : le numéro est vide ou invalide.");
+}
+
+       
+          const messageText = ` 
+         
+           Salut Mr/Mme ${this.step1.nom_collecteur}  ${this.step1.prenom_collecteur}
+
+            Votre compte collecteur a été créé avec succès.
+             Voici vos informations de connexion :
+
+            Nom d'utilisateur : ${this.step1.code_collecteur}
+            Mot de passe : ${this.step1.password}  
+           
+            Vous pouvez désormais vous connecter à votre espace personnel pour commencer votre travail.
+             Veuillez changer votre mot de passe lors de votre première connexion pour des raisons de sécurité.
+
+            Si vous avez des questions ou rencontrez des difficultés, n'hésitez pas à nous contacter.
+
+            
+              `
+              const messageTextupdate = `
+        Salut Mr/Mme ${this.step2.nom_collecteur} ${this.step2.prenom_collecteur},
+
+        Votre compte collecteur a été modifié avec succès.
+        ${this.step2.password
+            ? `Voici vos informations de connexion :
+        
+        Nom d'utilisateur : ${this.step2.code_collecteur}
+        Mot de passe : ${this.step2.password}`
+            : `Vos informations personnelles ont été mises à jour avec succès.`}
+
+        Si vous avez des questions ou rencontrez des difficultés, n'hésitez pas à nous contacter.
+    `;
+          const data = {
+            message: a === 'add' ? messageText : messageTextupdate ,
+            tel: NumberRelais
+            // tel: '22557408303'
+          } 
+          // console.log('dara',data)
+          try {
+            const response = await axios.post('/sendwhatsapp-message', data, {
+              headers: {
+                Authorization: `Bearer ${this.loggedInUser.token}`,
+              },
+            });
+            console.log('responsesms', response)
+  
+            if (response.status === 200) {  
+            }
+          } catch (error) {
+            this.handleErrors(error);
+          }
+        
+      },
+      
     async  HandleIdUpdate(id , modalId){
       this.step2 = {
               code_collecteur:"",
@@ -859,7 +1026,7 @@ export default {
               telephone_collecteur:"",
               commune_collecteur:"",
               adresse:"",
-              relai:"",
+              // relai:"",
               description:"",
         };
       this.openModal(modalId)
@@ -886,7 +1053,7 @@ export default {
             telephone_collecteur: data.telephone_collecteur,
             commune_collecteur: data.commune_collecteur,
             adresse: data.adresse,
-            relai: data.relai,
+            // relai: data.relai,
             description: data.description,
             
 
@@ -898,7 +1065,7 @@ export default {
         }
       } catch (error) {
       
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
 
     },
@@ -919,15 +1086,18 @@ export default {
             telephone_collecteur:this.step2.telephone_collecteur,
             commune_collecteur:this.step2.commune_collecteur,
             adresse:this.step2.adresse,
-            relai:this.step2.relai,
+            // relai:this.step2.relai,
             description:this.step2.description,
+            password: this.step2.password,
+
           
           
             }
+            console.log('data',data)
 
-
- 
-      try {
+if(this.step2.password === undefined){
+  console.log('bonjour')
+  try {
         const response = await axios.put(`/parametrages/collecteurs/${this.ToId}`,data, {
           headers: {
            
@@ -943,12 +1113,44 @@ export default {
 				"Votre collecteur a été mis à jour avec succès !"
 			);
             await this.fetchCollecteurs();
+            this.sendSmsToWhatsApp('update')
+
          
           
         } 
       } catch (error) {
 		this.handleErrors(error);
       }
+}else{
+  console.log('bonsoir')
+
+  try {
+        const response = await axios.put(`/parametrages/collecteurs/edit-with-pass/${this.ToId}`,data, {
+          headers: {
+           
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          
+          },
+        });
+     
+        if (response.status === 200) {
+          this.closeModal(modalId);
+          this.successmsg(
+				"Mise à jour du collecteur",
+				"Votre collecteur a été mis à jour avec succès !"
+			);
+            await this.fetchCollecteurs();
+            this.sendSmsToWhatsApp('update')
+
+         
+          
+        } 
+      } catch (error) {
+		this.handleErrors(error);
+      }
+}
+ 
+    
     } else {
   
       this.loading = false;
@@ -1005,6 +1207,53 @@ export default {
          }
    
        },
+       async HandleIdUpdateStatus(id) {
+		// Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
+		const result = await Swal.fire({
+		  title: "Êtes-vous sûr ?",
+		  text: "Vous ne pourrez pas annuler cette action !",
+		  icon: "warning",
+		  showCancelButton: true,
+		  confirmButtonText: "Oui, modifiez-le !",
+		  cancelButtonText: "Non, annulez !",
+		  reverseButtons: true,
+		});
+  
+		// Si l'utilisateur confirme la suppression
+		if (result.isConfirmed) {
+		  this.HandleIdStatut(id);
+		}
+	  },
+	  async HandleIdStatut(id) {
+      this.loading = true;
+      try {
+        const response = await axios.get(`/parametrages/collecteurs/collecteur-identite/statut/${id}`, {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+          params: {
+            code: id
+          }
+        });
+
+        if (response.status === 200) {
+          this.successmsg(
+            "Données de l'agent mises à jour",
+            "Les données de l'agent ont été mises à jour avec succès !"
+          );
+          await this.fetchCollecteurs();
+
+          this.loading = false;
+        }
+      } catch (error) {
+       
+        this.handleErrorsGet(error);
+
+
+        
+      }
+
+    },
     filterByName() {
 this.currentPage = 1;
 if (this.searchCollect !== null) {
@@ -1065,6 +1314,31 @@ triggerToast(errorMessage) {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+     
+      }
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+        
         this.loading = false;
         return false;
       }

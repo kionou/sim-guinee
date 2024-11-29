@@ -428,7 +428,7 @@
                                                     Origine des bovins débarqués <span class="text-danger">*</span></label>
                                                 <MazSelect v-model="step2.origine_bovins_debarques" color="secondary"
                                                     name="step2.destination_finale" size="sm" rounded-size="sm" search
-                                                    :options="ProvenancesOptions" />
+                                                    :options="CommunesOptions" />
                                                 <small v-if="v$.step2.origine_bovins_debarques.$error">{{
                                                     v$.step2.origine_bovins_debarques.$errors[0].$message
                                                     }}</small>
@@ -592,7 +592,7 @@
                                                     Origine des ovins débarqués <span class="text-danger">*</span></label>
                                                 <MazSelect v-model="step3.origine_ovins_debarques" color="secondary"
                                                     name="step3.origine_ovins_debarques" size="sm" rounded-size="sm" search
-                                                    :options="ProvenancesOptions" />
+                                                    :options="CommunesOptions" />
                                                 <small v-if="v$.step3.origine_ovins_debarques.$error">{{
                                                     v$.step3.origine_ovins_debarques.$errors[0].$message
                                                     }}</small>
@@ -752,7 +752,7 @@
                                                     Origine des caprins débarqués <span class="text-danger">*</span></label>
                                                 <MazSelect v-model="step4.origine_caprins_debarques" color="secondary"
                                                     name="step4.origine_caprins_debarques" size="sm" rounded-size="sm"
-                                                    type="text" search :options="ProvenancesOptions" />
+                                                    type="text" search :options="CommunesOptions" />
                                                 <small v-if="v$.step4.origine_caprins_debarques.$error">{{
                                                     v$.step4.origine_caprins_debarques.$errors[0].$message
                                                     }}</small>
@@ -1080,7 +1080,7 @@
                                 Origine des bovins débarqués <span class="text-danger">*</span></label>
                             <MazSelect v-model="Updatestep2.origine_bovins_debarques" color="secondary"
                                 name="Updatestep2.destination_finale" size="sm" rounded-size="sm" search
-                                :options="ProvenancesOptions" />
+                                :options="CommunesOptions" />
                             <small v-if="v$.Updatestep2.origine_bovins_debarques.$error">{{
                                 v$.Updatestep2.origine_bovins_debarques.$errors[0].$message
                                 }}</small>
@@ -1244,7 +1244,7 @@
                                 Origine des ovins débarqués <span class="text-danger">*</span></label>
                             <MazSelect v-model="Updatestep3.origine_ovins_debarques" color="secondary"
                                 name="Updatestep3.origine_ovins_debarques" size="sm" rounded-size="sm" search
-                                :options="ProvenancesOptions" />
+                                :options="CommunesOptions" />
                             <small v-if="v$.Updatestep3.origine_ovins_debarques.$error">{{
                                 v$.Updatestep3.origine_ovins_debarques.$errors[0].$message
                                 }}</small>
@@ -1404,7 +1404,7 @@
                                 Origine des caprins débarqués <span class="text-danger">*</span></label>
                             <MazSelect v-model="Updatestep4.origine_caprins_debarques" color="secondary"
                                 name="Updatestep4.origine_caprins_debarques" size="sm" rounded-size="sm"
-                                type="text" search :options="ProvenancesOptions" />
+                                type="text" search :options="CommunesOptions" />
                             <small v-if="v$.Updatestep4.origine_caprins_debarques.$error">{{
                                 v$.Updatestep4.origine_caprins_debarques.$errors[0].$message
                                 }}</small>
@@ -1902,7 +1902,9 @@ export default {
           this.loading = false
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
 
 
       }
@@ -1936,7 +1938,9 @@ export default {
           });
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
     },
     async fetchCommunes() {
@@ -1954,7 +1958,9 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
     },
     async fetchCommuneByCode(code) {
@@ -1972,7 +1978,7 @@ export default {
 
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchNumberFiche() {
@@ -1989,7 +1995,9 @@ export default {
           this.step1.num_fiche = response.data
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
     },
     async fetchProvenances() {
@@ -2007,7 +2015,9 @@ export default {
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+           this.handleErrorsGet(error);
+        return
+
         }
       },
     async submitFicheCollecte(modalId) {
@@ -2140,7 +2150,9 @@ export default {
         }
       } catch (error) {
 
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
 
     },
@@ -2406,6 +2418,29 @@ selectAll(event) {
         this.FichesCollOptions = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

@@ -45,7 +45,7 @@
 				  <tr>
 					<th>Nom & Prenoms</th>
 					<th>Coordonnées</th>
-					<th>Role</th>
+					<th>Rôle</th>
 					<th>Commune</th>
 					<th>Status</th>
 					<th>Actions</th>
@@ -87,7 +87,7 @@
 					  <br />
 					  {{ data.whatsapp }}
 					</td>
-					<td>{{ data.role ?? "pas rôle" }}</td>
+					<td>{{ data.role_relation?.name ?? "pas rôle" }}</td>
 					<td>
 					  {{ data.commune_relation?.nom_commune ?? "-" }}
 					</td>
@@ -293,7 +293,7 @@
 						size="sm"
 						rounded-size="sm"
 						search
-						:options="CommunesOptions"
+						:options="OptionsRoles"
 						
                               
                             />
@@ -328,7 +328,7 @@
 				  </div>
 				</div>
   
-				<div class="col-6" v-if="stepModal === 'add'">
+				<div class="col-6" >
 				  <div class="input-groupe">
 					<label for="userpassword">
 					  Confirmer votre mot de passe <span class="text-danger">*</span></label
@@ -518,7 +518,7 @@
 						size="sm"
 						rounded-size="sm"
 						search
-						:options="CommunesOptions"
+						:options="OptionsRoles"
 						
                               
                             />
@@ -583,6 +583,7 @@
 		loading: true,
 		UsersOptions: [],
 		CommunesOptions:[],
+		OptionsRoles:[],
 		data: [],
 		currentPage: 1,
 		itemsPerPage: 10,
@@ -640,6 +641,7 @@
 	async mounted() {
 	  await this.fetchUsers();
 	  await this.fetchCommunes();
+	  await this.getRoles()
 	},
 	methods: {
 	  successmsg: successmsg,
@@ -649,20 +651,20 @@
 	 
 	  async fetchUsers() {
 		try {
-		  const response = await axios.get("/utilisateurs", {
+		  const response = await axios.get("/utilisateurs/", {
 			headers: {
 			  Authorization: `Bearer ${this.loggedInUser.token}`,
 			},
 		  });
   
-		  console.log("response", response);
+		  
 		  if (response.status === 200) {
 			this.data = response.data;
 			this.UsersOptions = this.data;
 			this.loading = false;
 		  }
 		} catch (error) {
-			this.handleErrors(error);
+			this.handleErrorsGet(error);
 		}
 	  },
 	  async fetchCommunes() {
@@ -673,7 +675,7 @@
 			},
 		  });
   
-		  console.log("response", response);
+		console.log("response", response);
 		  if (response.status === 200) {
 			response.data.map(item => this.CommunesOptions.push({
 				label: item.nom_commune,
@@ -682,9 +684,32 @@
 			this.loading = false;
 		  }
 		} catch (error) {
-			this.handleErrors(error);
+			this.handleErrorsGet(error);
 		}
 	  },
+	  async getRoles() {
+      try {
+        const response = await axios.get("/roles", {
+          headers: {
+            Authorization: `Bearer ${this.loggedInUser.token}`,
+          },
+        });
+
+       
+        if (response.status === 200) {
+          this.data = response.data;
+          this.RolesOptions = this.data;
+          this.OptionsRoles = [],
+          response?.data?.map(r => this.OptionsRoles.push({
+            label: r.name,
+            value: r.id
+          }))
+          this.loading = false;
+        }
+      } catch (error) {
+        this.handleErrorsGet(error);
+      }
+    },
 	  async SubmitUsers(modalId) {
 		this.v$.step1.$touch();
 		if (this.v$.$errors.length == 0) {
@@ -698,7 +723,7 @@
 			  commune: this.step1.commune,
 			  password_confirm: this.step1.password_confirm,
 			  password: this.step1.password,
-			  role: null,
+			  role: this.step1.role,
 			};
 
 		  try {
@@ -754,7 +779,7 @@
 			this.loading = false;
 		  }
 		} catch (error) {
-			this.handleErrors(error);
+			this.handleErrorsGet(error);
 		}
 	  },
 	  async submitUpdate(modalId) {
@@ -770,7 +795,7 @@
 			  lastname: this.step2.lastname,
 			  whatsapp: this.step2.whatsapp,
 			  commune: this.step2.commune,
-			  role:null,
+			  role:this.step2.role,
         };
 
         try {
@@ -877,7 +902,7 @@
         }
       } catch (error) {
        
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
 
 
         
@@ -953,6 +978,32 @@ async handleErrors(error) {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+	async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      if (error.response?.data.detail.includes('204')) {
+        console.log('bonjour')
+        this.loading = false;
+        this.data = [];
+        // Logique pour une erreur serveur
+        //   this.$router.push("/maintenance"); // Redirection vers une page de maintenance si nécessaire
+      }
+      else if
+       (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); // Redirection vers la page de connexion
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+      
         this.loading = false;
         return false;
       }

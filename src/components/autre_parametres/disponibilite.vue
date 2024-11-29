@@ -4,7 +4,7 @@
         <div class="col-12">
             <div class="box">
                 <div class="box-header with-border d-flex justify-content-between align-items-center p-3">
-                    <h3 class="box-title mb-0"> Liste des produits disponibles</h3>
+                    <h3 class="box-title mb-0"> Liste des offres</h3>
                     <div class="navbar-custom-menu r-side  float-right">
                         <ul class="nav navbar-nav justify-content-end">
                             <li class="btn-group d-lg-inline-flex  h-40">
@@ -41,7 +41,7 @@
     
                                     <th>N°</th>
                                     <th>Nom & Prenoms</th>
-                                    <th>Geo local.</th>
+                                    <th>Adresse</th>
                                     <th>visibilité</th>
                                     <th>Produits</th>
                                     <th>Actions</th>
@@ -110,7 +110,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            Ajouter une disponibilité
+                            Ajouter une offre
                         </h5>
                         <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
                             @click="closeModal('add-magasin')">
@@ -191,7 +191,7 @@
                             <div class="col-xl-6 col-sm-12">
                                 <div class="input-groupe">
                                     <label for="userpassword">
-                                        Geo localisation <span class="text-danger">*</span>
+                                        Adresse <span class="text-danger">*</span>
                                     </label>
                                     <MazInput v-model="step1.geolocalisation" color="secondary" name="step1.geolocalisation" size="sm"
                                         rounded-size="sm" type="text" />
@@ -274,7 +274,8 @@
                         name="quantite_disponible"
                         size="sm"
                         rounded-size="sm"
-                        type="number"
+                        type="text"
+                        placeholder="12 tonnes ou 120 litres"
                         @input="clearErrorProduits(index, 'quantite_disponible')"
 
                       />
@@ -363,7 +364,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                           Détail sur le produits
+                           Détail sur les produits
                         </h5>
                         <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
                             @click="closeModal('update-magasin')">
@@ -377,7 +378,7 @@
                 <tr>
                  
                   <th>Nom & Code</th>
-                  <th>Disponibilite</th>
+                  <th>Quantité disponible</th>
                   <th>Date de disponibilité</th>
                   <th>Famille</th>
                   <th>Forme</th>
@@ -415,7 +416,7 @@
                     </div>
                   </td>
 
-                  <td style="width: 100px;" class="text-center">{{ data?.disponibilite ?? "-" }}</td>
+                  <td style="" class="text-center">{{data?.quantite_disponible ?? "-" }}</td>
                   <td class="text-center" style="width: 160px; color:red;font-weight:bolder">{{ getYear(data?.date_disponiblite)  ?? "-" }}</td>
                   <td style="width: auto;" class="text-center">
                     {{ data?.produit_relation?.famille?.nom_famille_produit ?? "-" }}
@@ -618,7 +619,9 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
     },
 
@@ -637,7 +640,9 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+         this.handleErrorsGet(error);
+        return
+
       }
     },
     async SubmitDispo(modalId) {
@@ -677,8 +682,8 @@ export default {
             this.Produits = [{  quantite_disponible:"",  produit:"",  date_disponiblite:"", photo:"", }],
             this.currentStep = 1
             this.successmsg(
-              "Création du disponibilité",
-              "Votre disponibilité a été créé avec succès !"
+              "Création d'une offre",
+              "Votre offre a été créé avec succès !"
             );
 
 
@@ -731,8 +736,8 @@ export default {
         if (response.status === 200) {
           this.loading = false;
           this.successmsg(
-            "Données  disponibilité supprimées",
-            "Les données du disponibilité ont été supprimées avec succès !"
+            "Données  de l'offre supprimées",
+            "Les données de l'offre ont été supprimées avec succès !"
           );
           await this.fetchMagasins();
         } else {
@@ -804,6 +809,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

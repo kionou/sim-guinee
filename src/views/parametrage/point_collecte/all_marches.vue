@@ -66,12 +66,13 @@
               <tr>
                 <th class="text-center">Code</th>
                 <th>Nom </th>
-                <th>Geo local.</th>
+                <!-- <th>Geo local.</th> -->
                 <th>Région</th>
                 <th>Préfecture</th>
                 <th>Commune</th>
                 <th>Agent collecte</th>
                 <th>Jours du marché</th>
+                <th>Superviseur</th>
                 <th>Nb de fiches suivies</th>
                 <th> suivre</th>
   
@@ -111,9 +112,9 @@
                   </div>
                 </td>
 
-                <td style="width: 100px;" class="text-center">
+                <!-- <td style="width: 100px;" class="text-center">
                   {{ data?.marche?.longitude ?? "-"}} , {{ data?.marche?.latitude ?? "-"}}
-                </td>
+                </td> -->
 
                 <td style="width: 100px;" class="text-center">
                   {{ data?.marche?.commune_relation?.prefecture_?.region_relation?.nom_region ?? "-"}}
@@ -127,7 +128,7 @@
 
                 <td style="width: 170px;" class="text-center">
                   <span
-                    class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.collecteur_relation?.nom_collecteur
+                    class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.marche?.collecteur_relation?.nom_collecteur
                     ?? "-"}} {{data?.marche?.collecteur_relation?.prenom_collecteur ?? "-"}}</span>
                   <span style="font-size:12px !important"
                     class="text-danger  d-block">{{data?.marche?.collecteur_relation?.whatsapp_collecteur ?? "-"}} </span>
@@ -139,6 +140,10 @@
                     :title="data?.marche?.jour_du_marche">
                   {{ data?.marche?.jour_du_marche ?? "-" }}
                 </td>
+                <td style="width: 170px;" class="text-center">
+          <span class="text-dark font-weight-600 hover-primary mb-1 font-size-14">{{data?.marche?.superviseur?.firstname ?? "-"}} {{data?.marche?.superviseur?.lastname ?? "-"}}</span>
+          <span style="font-size:12px !important" class="text-danger  d-block">{{data?.marche?.superviseur?.whatsapp ?? "-"}} </span>
+                   </td>
 
                 <td   class="text-center"
              
@@ -286,7 +291,7 @@ export default {
 		  this.loading = false
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     loadFiche(){
@@ -393,6 +398,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

@@ -4,13 +4,13 @@
   <div class="content-header">
 			<div class="d-flex align-items-center justify-content-between">
 				
-					<h3 class="page-title"> Types de marché</h3>
+					<h3 class="page-title"> Types de  points de collectes </h3>
 					<div class="d-inline-block align-items-center">
 						<nav>
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item"><router-link to="/"><i class="mdi mdi-home-outline"></i></router-link></li>
 								<li class="breadcrumb-item" aria-current="page">SIM</li>
-								<li class="breadcrumb-item active" aria-current="page">Types de marché</li>
+								<li class="breadcrumb-item active" aria-current="page">Types de points de collectes </li>
 							</ol>
 						</nav>
 					</div>
@@ -51,7 +51,7 @@
   </div>
 <div class="box mx-2">
 <div class="box-header with-border">
-  <h3 class="box-title mb-0">Liste des types de marché </h3>
+  <h3 class="box-title mb-0">Liste des types des points de collectes  </h3>
 </div>
 
 <div class="box-body">
@@ -98,7 +98,7 @@
                
                  <td style="width: 100px;">
                   <div class="d-flex justify-content-evenly border-0">
-                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.type?.code_marche , 'update-type-marche')"   ><i class="ti-marker-alt"></i></a>
+                      <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data?.type?.code_type_marche , 'update-type-marche')"   ><i class="ti-marker-alt"></i></a>
                       <!-- <a href="javascript:void(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_marche)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a> -->
                   </div>   
         </td > 
@@ -126,7 +126,7 @@
   <div class="modal-dialog ">
   <div class="modal-content">
     <div class="modal-header">
-    <h5 class="modal-title">Ajouter un type de  marché</h5>
+    <h5 class="modal-title">Ajouter un type de points de collectes </h5>
     <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('add-type-marche')">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -192,7 +192,7 @@
                           <label for="userpassword"
                             > Description <span class="text-danger">*</span></label
                           >
-                          <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="1"  ></textarea>
+                          <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step1.description" rows="2"  ></textarea>
 
                           <small v-if="v$.step1.description.$error">{{
                             v$.step1.description.$errors[0].$message
@@ -224,7 +224,7 @@
         <div class="modal-dialog ">
         <div class="modal-content">
           <div class="modal-header">
-          <h5 class="modal-title">Modifier un type de  marché</h5>
+          <h5 class="modal-title">Modifier un type de points de collectes </h5>
           <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3" @click="closeModal('update-type-marche')" >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -243,6 +243,7 @@
                             size="sm"
                             rounded-size="sm"
                             type="text"
+                            disabled
                             
                             
                           />
@@ -290,7 +291,7 @@
                           <label for="userpassword"
                             > Description <span class="text-danger">*</span></label
                           >
-                          <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="1"  ></textarea>
+                          <textarea class="form-control" style="border-radius:0 !important; border:1px solid #e5eaee !important" id="text-area"  v-model="step2.description" rows="2"  ></textarea>
 
                           <small v-if="v$.step2.description.$error">{{
                             v$.step2.description.$errors[0].$message
@@ -417,7 +418,7 @@ async  mounted() {
             this.loading =  false
       }
     } catch (error) {
-  this.handleErrors(error);
+  this.handleErrorsGet(error);
     }
   },
 
@@ -435,15 +436,15 @@ async  mounted() {
      }
      
       try {
-        const response = await axios.post("/parametrages/marches", data, {
+        const response = await axios.post("/parametrages/type-marches", data, {
           headers: { Authorization: `Bearer ${this.loggedInUser.token}` ,
         }
         });
     if (response.status === 200) {
           this.closeModal(modalId);
     this.successmsg(
-      "Création du marché",
-      "Votre marché a été créé avec succès !"
+      "Création du type de de points de collecte",
+      "Votre type de de points de collecte a été créé avec succès !"
     );
 
           await this.fetchMarches();
@@ -457,29 +458,25 @@ async  mounted() {
     }
   },
   async  HandleIdUpdate(id , modalId) {
-    this.openModal(modalId)
+
+this.step2 = {}
   this.loading = true;
 
     try {
-      const response = await axios.get(`/parametrages/marches/${id}`, {
-        headers: {
-          Authorization: `Bearer ${this.loggedInUser.token}`
-        }
-      });
-
-    
-      if (response.status === 200) {   
-        let data =  response.data
+      const response = await this.MarchesOptions.find(item => item.type?.code_type_marche === id);
+        let data =  response
         this.step2 = {
-          code_type_marche: data.code_type_marche,
-          nom_type_marche: data.nom_type_marche,
-          description: data.description,
+          code_type_marche: data.type?.code_type_marche,
+          nom_type_marche: data.type?.nom_type_marche,
+          description: data.type?.description,
         }
      
-        this.ToId = data.id_type_marche
+        this.ToId = data.type?.id_type_marche
+    this.openModal(modalId)
+
         this.loading = false;
       
-      }
+      
     } catch (error) {
     
   this.handleErrors(error);
@@ -504,7 +501,7 @@ async  mounted() {
 
 
     try {
-      const response = await axios.put(`/parametrages/marches/${this.ToId}`,data, {
+      const response = await axios.put(`/parametrages/type-marches/${this.step2.code_type_marche}`,data, {
         headers: {
          
           Authorization: `Bearer ${this.loggedInUser.token}`,
@@ -515,8 +512,8 @@ async  mounted() {
       if (response.status === 200) {
         this.closeModal(modalId);
         this.successmsg(
-      "Mise à jour du marché",
-      "Votre marché a été mis à jour avec succès !"
+      "Mise à jour du type de points de collecte ",
+      "Votre type de points de collecte  a été mis à jour avec succès !"
     );
           await this.fetchMarches();
        
@@ -531,54 +528,7 @@ async  mounted() {
 
   }
  },
-  async HandleIdDelete(id) {
-   // Affichez une boîte de dialogue Sweet Alert pour confirmer la suppression
-   const result = await Swal.fire({
-      title: 'Êtes-vous sûr ?',
-      text: 'Vous ne pourrez pas annuler cette action !',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Oui, supprimez-le !',
-      cancelButtonText: 'Non, annulez !',
-      reverseButtons: true
-   });
-
-   // Si l'utilisateur confirme la suppression
-   if (result.isConfirmed) {
-     this.ConfirmeDelete(id);
-   }
-       },
-       async ConfirmeDelete(id) {
-        this.loading = true
-       
-       try {
-         // Faites une requête pour supprimer l'élément avec l'ID itemId
-         const response = await axios.delete(`/parametrages/marches/${id}`, {
-           headers: {
-             Authorization: `Bearer ${this.loggedInUser.token}`,
-           },
  
- 
-         });
-     
-         if (response.status === 200) {
-           this.loading = false
-     this.successmsg(
-          "Suppression du marché",
-          "Votre marché a été supprimé avec succès !"
-        );
-          await this.fetchMarches();
- 
-         } else {
-      
-    this.handleErrors(error);
-         }
-       } catch (error) {
-    this.handleErrors(error);
-         
-       }
- 
-     },
   filterByName() {
 this.currentPage = 1;
 if (this.searchMarche !== null) {
@@ -587,9 +537,9 @@ const  searchValue = tt.toLowerCase()
 this.MarchesOptions =this.data.filter(user => {
 
 
-  const Code = user.code_type_marche || '';
-  const nom = user.nom_type_marche || '';
-  const Commune = user?.description || '';
+  const Code = user.type?.code_type_marche || '';
+  const nom = user.type?.nom_type_marche || '';
+  const Commune = user?.type?.description || '';
   
   
   return Code.toLowerCase().includes(searchValue) || nom.toLowerCase().includes(searchValue) || Commune.toLowerCase().includes(searchValue) 
@@ -645,6 +595,29 @@ triggerToast(errorMessage) {
       return false;
     }
   },
+  async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
   addBackdrop() {
       if (!$('.modal-backdrop').length) {
         const backdrop = $('<div class="modal-backdrop fade"></div>');

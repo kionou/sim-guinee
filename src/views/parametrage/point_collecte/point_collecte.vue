@@ -67,7 +67,7 @@
             <div class="p-15">
               <!-- Composant lié au type de marché -->
                <ComposantDebarcadere @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :marches="marche.marches"  v-if="marche.id_type_marche === 6 " :id-type-marche="marche.id_type_marche" />
-               <ComposantPort @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :marches="marche.marches"  v-if=" marche.id_type_marche === 7" :id-type-marche="marche.id_type_marche" />
+               <ComposantPort @point-collecte-updated="handlePointCollecteUpdated" :description="marche.description"  :marches="marche.marches"  v-else-if=" marche.id_type_marche === 7" :id-type-marche="marche.id_type_marche" />
                 <ComposantMarche v-else :id-type-marche="marche.id_type_marche" :description="marche.description" @point-collecte-updated="handlePointCollecteUpdated"   :marches="marche.marches" />
 
                 
@@ -227,7 +227,7 @@ setActiveTab() {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async loadMarcheData(marche) {
@@ -238,7 +238,7 @@ setActiveTab() {
           marche.marches = response.data;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       } finally {
         this.loading = false;
       }
@@ -299,6 +299,29 @@ setActiveTab() {
       return false;
     }
   },
+  async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
 
 },
 beforeRouteLeave(to, from, next) {

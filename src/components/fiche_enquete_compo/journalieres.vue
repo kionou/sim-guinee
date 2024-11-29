@@ -549,7 +549,7 @@
               this.loading =  false
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
        
        
       }
@@ -575,7 +575,7 @@
   });
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
     async fetchCommuneByCode(code) {
@@ -593,7 +593,7 @@
     
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
     async fetchNumberFiche() {
@@ -610,7 +610,7 @@
     this.step1.num_fiche  = response.data
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
     async submitFicheCollecte(modalId) {
@@ -679,7 +679,7 @@
         }
       } catch (error) {
       
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
   
     },
@@ -926,6 +926,29 @@
         this.FichesCollOptions = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

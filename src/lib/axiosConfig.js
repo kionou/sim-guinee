@@ -9,7 +9,7 @@ import { mapGetters } from "vuex";
 // https://cors-proxy.fringe.zone/
 
 const axiosInstance = axios.create({
-  baseURL: 'https://sim-guinee.org/api/',
+  baseURL: 'https://sim-guinee.com/api/',
   headers: {
     // 'Content-Type': 'application/json', 
     // 'Content-Type': 'multipart/form-data',

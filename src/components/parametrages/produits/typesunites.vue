@@ -67,81 +67,47 @@
               </ul>
             </div>
           </div>
-
-          
-
-           
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <div class="table-responsive">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                   
-                    <th  class="fw-semibold">Nom </th>
-                    <th>Unités concernées</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <!-- <thead v-if="paginatedItems.length === 0">
-                  <tr>
-                    <td colspan="18">
-                      <div class="badge bg-warning" style="width: 100%; font-size: 14px">
-                        Pas de données !!
-                      </div>
-                    </td>
-                  </tr>
-                </thead> -->
-                <thead v-for="(marche , index) in paginatedItems" :key="index">
-                  <tr >
-                   
+               <div class="box-body">
+                <div class="table-responsive">
+  <table id="example1" class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th class="fw-semibold">Nom</th>
+        <th>Unités concernées</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(marche, index) in paginatedItems" :key="index">
+        <!-- Affichage du nom du marché -->
+        <td>
+          <div>
+            <span style="font-weight: 600; font-size: 1.1em; display: block">
+              {{ marche?.nom_type_marche }}
+            </span>
+          </div>
+        </td>
+        <!-- Affichage des unités dans des colonnes individuelles -->
+        <td class="cursor-pointer" style="cursor: pointer;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px">
+            <span
+              v-for="(unite, dex) in marche.unites"
+              :key="dex"  @click="HandleIdDelete(unite?.id)"
+              class="badge bg-light text-dark "
+              style="padding: 5px 10px; border: 1px solid #ddd"
+            >
+              {{ unite?.unite_relation?.nom_unite }}
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-                    <td   :rowspan="marche.unites.length + 1">
-                        <div style="display: inline-block">
-                       <span style="font-weight: 600; font-size: 1.1em; display: block">  {{ marche?.nom_type_marche }}</span>
-                                    
-                         </div>
-                      
-                    </td>
-                </tr>
-                <!-- <tr v-if="marche.unites.length === 0">
-                    <div class="badge bg-warning" style="width: 100%; font-size: 14px">
-                        Pas de données !!
-                      </div>
-                </tr> -->
-                        <tr   v-for="(unite , dex) in marche.unites" :key="dex">
-                      <td>{{ unite?.unite_relation?.nom_unite }}</td>
-                      <td style="width: 100px">
-                      <div class="d-flex justify-content-evenly border-0">
-                     
-                        <a
-                          href="javascript:void(0)"
-                          class="btn btn-circle btn-danger btn-xs"
-                          @click="HandleIdDelete(unite.id)"
-                          title=""
-                          data-toggle="tooltip"
-                          data-original-title="Delete"
-                          ><i class="ti-trash"></i
-                        ></a>
-                      </div>
-                    </td> 
-                            
-                        </tr>
-
-                      
-                   
-                  
-  
-                   
-  
-
-                    
-               
-                </thead>
-              </table>
-            </div>
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-lg-12">
                 <div class="container_pagination">
                   <Pag
@@ -151,7 +117,19 @@
                   />
                 </div>
               </div>
-            </div>
+            </div> -->
+          </div>
+            <!-- <div class="row">
+              <div class="col-lg-12">
+                <div class="container_pagination">
+                  <Pag
+                    :current-page="currentPage"
+                    :total-pages="totalPages"
+                    @page-change="updateCurrentPage"
+                  />
+                </div>
+              </div>
+            </div> -->
           </div>
           <!-- /.box-body -->
         </div>
@@ -434,7 +412,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchUnites() {
@@ -454,7 +432,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
 
@@ -478,7 +456,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async SubmitTypesUnites(modalId) {
@@ -537,7 +515,7 @@
           });
   
           if (response.status === 200) {
-            console.log("Slbvlkjbv", response);
+           
   
             let data = response.data;
            
@@ -549,7 +527,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async submitUpdate(modalId) {
@@ -727,6 +705,29 @@
           return false;
         }
       },
+      async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
       addBackdrop() {
         if (!$('.modal-backdrop').length) {
           const backdrop = $('<div class="modal-backdrop fade"></div>');

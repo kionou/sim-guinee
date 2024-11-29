@@ -71,7 +71,7 @@
       <!-- sidebar-->
       <section class="sidebar">
         <!-- sidebar menu-->
-        <ul class="sidebar-menu" data-widget="tree">
+        <ul class="sidebar-menu" >
           <li>
             <router-link to="/" @click="setActiveMenu('/')" :class="{ active: activeMenu === '/' }">
               <i class="icon-Layout-4-blocks"><span class="path1"></span><span class="path2"></span></i>
@@ -112,7 +112,7 @@
                 <li style="padding-top:6px !important"><router-link to="/sim/types-marches"
                     @click="setActiveSubMenu('/sim/types-marches')" :class="{ active: activeSubMenu === '/sim/types-marches' }"
                     style="color:var(--color-primary)"><i class="icon-Commit me-2"><span class="path1"></span><span
-                        class="path2"></span></i>Types de marchés</router-link></li>
+                        class="path2"></span></i>Types de points de collectes </router-link></li>
 
                         <li style="padding-top:6px !important"><router-link to="/sim/points-collecte"
                     @click="setActiveSubMenu('/sim/points-collecte')" :class="{ active: activeSubMenu === '/sim/points-collecte' }"
@@ -176,7 +176,14 @@
           <li>
             <router-link to="/sim/disponibilites-besoins" @click="setActiveMenu('/sim/disponibilites-besoins')" :class="{ active: activeMenu === '/sim/disponibilites-besoins' }">
               <i class="icon-Write"><span class="path1"></span><span class="path2"></span></i>
-              <spam>Disponibilités & Bésoins</spam>
+              <spam>Offres & Demandes</spam>
+            </router-link>
+          </li>
+
+          <li>
+            <router-link to="/sim/rapports" @click="setActiveMenu('/sim/rapports')" :class="{ active: activeMenu === '/sim/rapports' }">
+              <i class="icon-Chart-pie"><span class="path1"></span><span class="path2"></span></i>
+              <spam>Rapports</spam>
             </router-link>
           </li>
   
@@ -192,7 +199,7 @@
     </div>
     <footer class="main-footer p-3 text-center text-white" style="background-color: #ffca08 !important;">
   
-      &copy; 2024 <a href="https://www.cosit-mali.com/">COSIT-SARL</a>. Tout droit reservé.
+      &copy; 2024 <a class="lien" href="https://anasa.gov.gn/2021/"><span class="lien">ANASA</span> </a>. Tout droit reservé.
     </footer>
   
   </div>
@@ -331,20 +338,36 @@ export default {
         if (response.status === 200) {
             this.TypesMarchesOptions = response.data
             localStorage.setItem('TypesMarchesOptions', JSON.stringify(this.TypesMarchesOptions));
+            return response.data;
         }
       } catch (error) {
-    this.handleErrors(error);
+    this.handleErrorsGet(error);
       }
     },
   },
 
   async mounted() {
+    try {
+    // Appelez l'API pour vérifier les données disponibles
+    const response = await this.fetchTypeMarches();
+console.log('response', response)
+    if (response && response.length > 0) {
+      // Mettez à jour les données dans le localStorage avec celles de l'API
+      localStorage.setItem('TypesMarchesOptions', JSON.stringify(response));
+      this.TypesMarchesOptions = response;
+    } else {
+      // Si la réponse de l'API est vide, nettoyez le localStorage
+      localStorage.removeItem('TypesMarchesOptions');
+      this.TypesMarchesOptions = [];
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des données :', error);
+    // Vous pouvez laisser les données locales si l'API est inaccessible
     const savedTypesMarchesOptions = localStorage.getItem('TypesMarchesOptions');
     if (savedTypesMarchesOptions) {
       this.TypesMarchesOptions = JSON.parse(savedTypesMarchesOptions);
-    } else {
-      this.fetchTypeMarches();
     }
+  }
 
     console.log("index", this.loggedInUser);
     // Optional: Close dropdown when clicking outside
@@ -559,7 +582,7 @@ export default {
           expandTransitionDelay: 200
         }
 
-        var Selector = {
+        var Selectors = {
           collapsed: '.sidebar-collapse',
           open: '.sidebar-open',
           mainSidebar: '.main-sidebar',
@@ -593,12 +616,12 @@ export default {
 
         PushMenu.prototype.init = function () {
           if (this.options.expandOnHover
-            || ($('body').is(Selector.mini + Selector.layoutFixed))) {
+            || ($('body').is(Selectors.mini + Selectors.layoutFixed))) {
             this.expandOnHover()
             $('body').addClass(ClassName.expandFeature)
           }
 
-          $(Selector.contentWrapper).on(function () {
+          $(Selectors.contentWrapper).on(function () {
             // Enable hide menu when clicking on the content-wrapper on small screens
             if ($(window).width() <= this.options.collapseScreenSize && $('body').hasClass(ClassName.open)) {
               this.close()
@@ -606,7 +629,7 @@ export default {
           }.bind(this))
 
           // __Fix for android devices
-          $(Selector.searchInput).on(function (e) {
+          $(Selectors.searchInput).on(function (e) {
             e.stopPropagation()
           })
         }
@@ -651,13 +674,13 @@ export default {
         }
 
         PushMenu.prototype.expandOnHover = function () {
-          $(Selector.mainSidebar).hover(function () {
-            if ($('body').is(Selector.mini + Selector.collapsed)
+          $(Selectors.mainSidebar).hover(function () {
+            if ($('body').is(Selectors.mini + Selectors.collapsed)
               && $(window).width() > this.options.collapseScreenSize) {
               this.expand()
             }
           }.bind(this), function () {
-            if ($('body').is(Selector.expanded)) {
+            if ($('body').is(Selectors.expanded)) {
               this.collapse()
             }
           }.bind(this))
@@ -713,7 +736,7 @@ export default {
         })
       }(jQuery) // End of use strict
 
-
+// fin selector 739
       /* Tree()
        * Converts a nested list into a multilevel
        * tree view menu.
@@ -1983,7 +2006,7 @@ export default {
 
 .submenu {
   list-style: none !important;
-  padding-left: 57px !important;
+  padding-left: 17px !important;
 }
 
 .slide-enter-active,
@@ -1997,6 +2020,11 @@ export default {
 .slide-leave-to {
   max-height: 0;
   opacity: 0;
+}
+
+a .lien:hover{
+  color:red !important ;
+
 }
 
 

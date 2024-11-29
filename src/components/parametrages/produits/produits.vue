@@ -47,11 +47,10 @@
                   <th>Nom & Code</th>
                   <th>Groupe d'aliments</th>
                   <th>Famille</th>
-                  <!-- <th>Origine</th> -->
                   <th>Forme</th>
 
                   <th>Filière</th>
-                  <th>Status</th>
+                  <th>Type de marché</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -94,7 +93,11 @@
                    </td>
 
                   <td>{{ data?.filiere_relation?.nom_filiere_produit}}</td>
-                  <td>{{ data?.affichage_ecran }}</td>
+                  <td>
+                    <span v-for="(code, index) in data?.type_marche" :key="index">
+                    {{ getLabelByValue(code) }}<span v-if="index < data?.type_marche.length - 1">, </span>
+                  </span>
+                  </td>
                   <td style="width: 100px">
                     <div class="d-flex justify-content-evenly border-0">
                       <a
@@ -897,6 +900,16 @@ export default {
         {label: 'Oui' , value:true},
         {label: 'Non' , value:false},
       ],
+        Marches: [
+            { label: "Collecte", value: "01" },
+            { label: "Grossiste", value: "02" },
+            { label: "Journalier", value: "03" },
+            { label: "Hebdomadaire", value: "04" },
+            { label: "Bétail", value: "05" },
+            { label: "Débarcadère", value: "06" },
+            { label: "Port", value: "07" },
+            { label: "Transfrontalier", value: "08" },
+        		],
       v$: useVuelidate(),
       error: "",
       resultError: {},
@@ -960,7 +973,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchFamille() {
@@ -980,7 +993,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchOrigines() {
@@ -1000,7 +1013,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchFormes() {
@@ -1020,7 +1033,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchFilieres() {
@@ -1043,7 +1056,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async fetchTypesMarches() {
@@ -1063,7 +1076,7 @@ export default {
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
     async fetchProduits() {
@@ -1082,7 +1095,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async SubmitProduit(modalId) {
@@ -1170,7 +1183,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async submitUpdate(modalId) {
@@ -1350,6 +1363,10 @@ handleImageClick(data , modalId) {
         this.loading = false;
       }
     },
+    getLabelByValue(value) {
+      const marche = this.Marches.find(m => m.value === value);
+      return marche ? marche.label : value; 
+    },
 triggerFileInput() {
       console.log('Triggering file input');
       this.$refs.fileInput.click();
@@ -1469,6 +1486,29 @@ triggerFileInput() {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

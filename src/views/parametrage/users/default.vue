@@ -28,7 +28,7 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs justify-content-center" role="tablist">
 						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" @click="handleTabClick('#user')" href="#user" role="tab"><span class="hidden-xs-down">Utilisateurs</span></a> </li>
-						<li class="nav-item"> <a class="nav-link " data-toggle="tab" @click="handleTabClick('#role')" href="#role" role="tab"><span class="hidden-xs-down">Roles</span></a> </li>
+						<li class="nav-item"> <a class="nav-link " data-toggle="tab" @click="handleTabClick('#role')" href="#role" role="tab"><span class="hidden-xs-down">Rôles</span></a> </li>
 						<li class="nav-item"> <a class="nav-link" data-toggle="tab" @click="handleTabClick('#permission')" href="#permission" role="tab"><span class="hidden-xs-down">Permissions</span></a> </li>
 			
 					</ul>
@@ -47,7 +47,7 @@
 						</div>
 						<div class="tab-pane" id="permission" role="tabpanel">
 							<div class="p-15">
-								<Familles></Familles>
+								<Permissions></Permissions>
 							</div>
 						</div>
 						
@@ -63,11 +63,12 @@
 <script>
 import Utilisateurs from "@/components/parametrages/users/utilisateurs.vue"
 import Roles from "@/components/parametrages/users/roles.vue"
-import Origines from "@/components/parametrages/produits/origines.vue"
+import Permissions from "@/components/parametrages/users/permissions.vue"
+
 
 export default {
     components:{
-        Utilisateurs ,Roles , Origines 
+        Utilisateurs ,Roles , Permissions 
     },
     data() {
         return {

@@ -78,7 +78,7 @@
                 <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-6">
                   <div class="mt-1"><i class="ti-layout-column4 me-2 fs-14"></i>Superviseur: <span
                       class="fw-semibold fs-16" data-bs-toggle="tooltip"
-                      title="Current Salary">{{dataDetail?.personnel_relation?.firstname}} {{dataDetail?.personnel_relation?.lastname}}</span></div>
+                      title="Current Salary">{{relai?.nom_collecteur}} {{relai?.prenom_collecteur}} ({{relai?.whatsapp_collecteur}})</span></div>
                 </div>
               </div>
             </div>
@@ -679,6 +679,7 @@
       return {
         loading: true,
         dataDetail: "",
+        relai:"",
         searchPrixCollecte: "",
         MagasinsOptions: [],
         CommunesOptions: [],
@@ -771,7 +772,7 @@
       await this.fetchProduits();
       await this.fetchUnites();
       await this.fetchCommunes();
-      await this.fetchCollecteurs();
+      await this.fetchCollecteurs( this.dataDetail?.marche_relation?.relai);
   
   
   
@@ -803,7 +804,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchUnites() {
@@ -823,7 +824,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchCommunes() {
@@ -843,32 +844,30 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
-      async fetchCollecteurs() {
+      async fetchCollecteurs(id) {
         try {
-          const response = await axios.get("/parametrages/collecteurs", {
+          const response = await axios.get(`/parametrages/collecteurs/${id}`, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
           });
   
-          console.log("response", response);
+       
           if (response.status === 200) {
-            response.data.map(item => this.CollectionOptions.push({
-              label: `${item.nom_collecteur} ${item.prenom_collecteur}`,
-              value: item.id_collecteur
-            }))
+            this.relai = response.data
+          
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async fetchMagasins() {
         try {
-          const response = await axios.get(`enquetes/marches-prix/prix-enquetes/{enquente_id}?identite=${this.id}&type=${this.nom}`, {
+          const response = await axios.get(`enquetes/marches-prix/prix-enquetes/debarcadere/{enquente_id}?identite=${this.id}`, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
@@ -881,7 +880,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async SubmitMagasins(modalId) {
@@ -933,6 +932,7 @@
             );
   
               await this.fetchMagasins();
+             
             } else {
             }
           } catch (error) {
@@ -943,6 +943,7 @@
         } else {
         }
       },
+    
       async HandleIdUpdate(id, modalId , nom) {
         this.openModal(modalId)
         this.stepModal = "update";
@@ -971,7 +972,7 @@
             this.loading = false;
           }
         } catch (error) {
-          this.handleErrors(error);
+          this.handleErrorsGet(error);
         }
       },
       async submitUpdate(modalId) {
@@ -1140,6 +1141,29 @@
           return false;
         }
       },
+      async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
       addBackdrop() {
         if (!$('.modal-backdrop').length) {
           const backdrop = $('<div class="modal-backdrop fade"></div>');

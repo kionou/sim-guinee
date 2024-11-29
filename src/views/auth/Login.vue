@@ -83,7 +83,7 @@
   </div>
 
                     </div>
-                    <div  style="text-align: end;">
+                    <div  style="text-align: end;"  @click="openModal('add-email')">
                     <a  href="#">Mot de passe oublié ?</a>
 
                     </div>
@@ -103,11 +103,115 @@
         </div>
     </div>
 
-    <footer class=" p-3 text-center text-white" style="background-color: #ffca08 !important;">
-    
-    &copy; 2024 <a href="https://www.cosit-mali.com/">COSIT-SARL</a>. Tout droit reservé.
-</footer> 
+    <footer class="main-footer p-3 text-center text-white" style="background-color: #ffca08 !important;">
+  
+  &copy; 2024 <a class="lien" href="https://anasa.gov.gn/2021/"><span class="lien">ANASA</span> </a>. Tout droit reservé.
+</footer>
       
+    </div>
+
+    <div
+      class="modal center-modal fade"
+      id="add-email"
+      ref="add-email"
+      tabindex="-1"
+    >
+      <div class="modal-dialog " v-if="isEmail">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Entrez votre Adresse Email
+            </h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('update-magasin')" >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mt-3 content-group">
+              <div class="col-xl-12">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Adresse Email <span class="text-danger">*</span></label
+                  >
+                  <MazInput
+                    v-model="step2.email"
+                    color="secondary"
+                    name="step2.email"
+                    size="sm"
+                    rounded-size="sm"
+                   
+                  />
+                  <small v-if="v$.step2.email.$error">{{
+                    v$.step2.email.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['email']">
+                    {{ resultError["email"] }}
+                  </small>
+                </div>
+              </div>
+             
+            </div>
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
+                  type="button"
+                  @click="PasswordOtp('add-email')"
+                  class="waves-effect waves-light btn btn-primary"
+                >
+                  Valider
+                </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-dialog " v-if="isCode">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Verification de  Code
+            </h5>
+            <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('update-magasin')" >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="text-subtitle-2 font-weight-bold mb-3">
+              Veuillez entrer le code que nous avons envoyé à votre
+         adresse e-mail pour réinitialiser votre mot de passe.
+      </div>
+            <div class="row mt-3 content-group">
+              <div class="col-xl-12">
+                <div class="input-groupe">
+                  <label for="userpassword">
+                    Code <span class="text-danger">*</span></label
+                  >
+                  <MazInputCode v-model="step3.code" size="xs"  divider="•" color="secondary"  @input="onOtpInputPassworod" />
+
+                  <small v-if="v$.step3.code.$error">{{
+                    v$.step3.code.$errors[0].$message
+                  }}</small>
+                  <small v-if="resultError['code']">
+                    {{ resultError["code"] }}
+                  </small>
+                </div>
+              </div>
+             
+            </div>
+           
+          </div>
+          <div class="modal-footer modal-footer-uniform text-end">
+            <button
+                  type="button"
+                  @click="submitUpdate('add-email')"
+                  class="waves-effect waves-light btn btn-primary"
+                >
+                  Valider
+                </button>
+          </div>
+        </div>
+      </div>
+
     </div>
    
 </template>
@@ -128,9 +232,17 @@ export default {
     data() {
         return {
            loading:false,
+           isEmail:true,
+           isCode:false,
             step1:{
              username: '',
              password: '',
+           },
+           step2:{
+            email:"",
+           },
+           step3:{
+            code:"",
            },
         resultError: {},
         v$: useVuelidate(),
@@ -142,12 +254,19 @@ export default {
         username: {
       require,
     },
+    
     password: {
       require,
       lgmin: lgmin(4),
       lgmax: lgmax(20),
     }
     },
+    step2:{
+            email:{require},
+           },
+           step3:{
+            code:{},
+           },
 
   },
   methods: {
@@ -166,10 +285,10 @@ password:this.step1.password,
 console.log("eeeee",DataUser);
 try {
 const response = await axios.post('/login' , DataUser);
-console.log('response.login', response.data);
+
 
 if (response.data) {
-    console.log('ffsc<',response.data)
+
  this.InfoUser = response.data
 //  this.setMyAuthenticatedUser(this.InfoUser);
  this.fetchUserDetail(this.InfoUser)
@@ -240,18 +359,20 @@ async ChangePassword(){
   
   }, 
 
-  async PasswordOtp(){
+  async PasswordOtp(modalId){
 
-           this.v$.step3.$touch()
+           this.v$.step2.$touch()
           if (this.v$.$errors.length == 0 ) {
-             this.loading = true
+            //  this.loading = true
           
           let CodeUserEmail ={
             email:1,
-            value:this.step3.email
+            value:this.step2.email
           
           }
-
+          this.isEmail = false,
+          this.isCode = true
+          return
           try {
          const response = await axios.post('/mcipme/send-otp', CodeUserEmail);
          
@@ -278,9 +399,11 @@ async ChangePassword(){
   onOtpInputPassworod() {
       // Vérifiez si l'OTP est complètement saisi (longueur de 4 chiffres)
       this.errorOtp  = ''
-      if (this.step4.code.length === 4) {
-        // Déclenchez votre action ici, par exemple, appelez une méthode pour envoyer à l'API
-        this.HamdleOtpPassword();
+   console.log('code',this.step3.code)
+
+      if (this.step3.code.length === 5) {
+   console.log('code',this.step3.code)
+        // this.HamdleOtpPassword();
       }
     },
     async  HamdleOtpPassword(){
@@ -335,6 +458,36 @@ async ChangePassword(){
             
             }
 
+    },
+
+    addBackdrop() {
+      if (!$('.modal-backdrop').length) {
+        const backdrop = $('<div class="modal-backdrop fade"></div>');
+        $('body').append(backdrop);
+        backdrop.fadeIn(100); 
+      }
+    },
+
+    openModal(modalId) {
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeIn(100, function() {
+        $(modalElement).addClass('show');
+      });
+      $('body').addClass('modal-open');
+      this.addBackdrop();
+    },
+    closeModal(modalId) { 
+      let modalElement = this.$refs[modalId];
+
+      $(modalElement).fadeOut(100, function() {
+        $(modalElement).removeClass('show');
+        $(modalElement).css('display', 'none');
+      });
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').fadeOut(100, function() {
+        $(this).remove(); 
+      });
     },
   },
     mounted() {
@@ -519,6 +672,10 @@ async ChangePassword(){
   }
  }
 
+ a .lien:hover{
+  color:red !important ;
+
+}
 
 
 </style>

@@ -87,7 +87,7 @@
                    </td>
                   <td style="width: 120px;" class="text-center">{{ data?.valeur_realise ?? "-" }}</td>
                   <td style="width: 80px;" class="text-center">{{ data.taux }}</td>
-                  <td style="width: 100px; color:red; font-weight:bolder">{{ getYear(data.periode)  }}</td>
+                  <td style="width: 200px; color:red; font-weight:bolder">{{ data.periode  }}</td>
                   <td class="text-center"  style="width: 80px;">
                     <div v-if="data?.visible === true"  class="btn btn-circle btn-success btn-xs"><i class="ti-lock "></i></div>
                     <div v-else  class="btn btn-circle btn-danger btn-xs"><i class="ti-unlock "></i></div>
@@ -205,7 +205,7 @@
                     name="step1.periode"
                     size="sm"
                     rounded-size="sm"
-                    type="date"
+                    type="text"
                   />
                   <small v-if="v$.step1.periode.$error">{{
                     v$.step1.periode.$errors[0].$message
@@ -351,7 +351,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              Modifier un magasin
+              Modifier un chiffre clé
             </h5>
             <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"   @click="closeModal('update-magasin')" >
               <span aria-hidden="true">&times;</span>
@@ -414,7 +414,7 @@
                     name="step2.periode"
                     size="sm"
                     rounded-size="sm"
-                    type="date"
+                    type="text"
                   />
                   <small v-if="v$.step2.periode.$error">{{
                     v$.step2.periode.$errors[0].$message
@@ -681,7 +681,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async SubmitMagasins(modalId) {
@@ -762,7 +762,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
     async submitUpdate(modalId) {
@@ -915,6 +915,29 @@ export default {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }

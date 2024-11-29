@@ -13,7 +13,7 @@
                         </div>
                         <div class="col-xl-6">
                             <div class="row  content-group">
-                                <div class="col-4">
+                                <div class="col-xl-4">
                                     <div class="input-groupe">
                                         <label for="">Région</label>
                                         <MazSelect v-model="Region" color="secondary" secondary :options="regionsSelect" search
@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
     
-                                <div class="col-4">
+                                <div class="col-xl-4">
                                     <div class="input-groupe">
                                         <label for="">Famille</label>
                                         <MazSelect v-model="Famille" color="secondary" :options="FamilleSelect" search
@@ -48,7 +48,7 @@
     
                                     </div>
                                 </div>
-                                <div class="col-4 mt-4 ps-0">
+                                <div class="col-xl-4 mt-4 ps-0">
                                   <div class="d-flex justify-content-between">
                                   <button class="waves-effect waves-light btn btn-social-icon btn-danger"  @click="openModal('export-pdf')" :disabled="ProduitsOptions.length === 0 || paginatedItems.length === 0"><i class="fa fa-file-pdf-o"></i></button>
                                   <button class="waves-effect waves-light btn btn-social-icon btn-info" @click="exportToCSV" :disabled="ProduitsOptions.length === 0 || paginatedItems.length === 0"><i class="fa  fa-file-text-o"></i></button>
@@ -541,15 +541,17 @@ export default {
         this.FamillesOptions = famille.data
         this.RegionsOptions = region.data
 
-        famille.data.map(item => item.affichage_ecran && this.FamilleSelect.push({
-          label: item.nom_famille_produit,
-          value: item.id_famille_produit
-        }))
-
         region.data.map(item => this.regionsSelect.push({
           label: item.nom_region,
           value: item.id_region
         }))
+
+        famille.data?.map(item => item.affichage_ecran && this.FamilleSelect.push({
+          label: item.nom_famille_produit,
+          value: item.id_famille_produit
+        }))
+
+       
 
         this.Famille = this.FamilleSelect[0].id_famille_produit
         this.Region = region.data[0].id_region
@@ -562,7 +564,7 @@ export default {
       } catch (error) {
         console.log('err', error)
 
-        // this.handleErrors(error);
+         this.handleErrorsGet(error);
       }
     },
     async fetchProduitsByIdFamille(id) {
@@ -578,7 +580,7 @@ export default {
           this.loading = true;
         }
       } catch (error) {
-        // this.handleErrors(error);
+         this.handleErrorsGet(error);
       }
     },
 
@@ -616,7 +618,7 @@ export default {
           this.loading = false;
         }
       } catch (error) {
-        // this.handleErrors(error);
+         this.handleErrorsGet(error);
       }
 
     },
@@ -806,7 +808,29 @@ formatBudget(value) {
         backdrop.fadeIn(100);
       }
     },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
 
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
+        this.loading = false;
+        return false;
+      }
+    },
     openModal(modalId) {
       let modalElement = this.$refs[modalId];
 

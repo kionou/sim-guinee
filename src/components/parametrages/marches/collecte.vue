@@ -767,7 +767,7 @@ export default {
               this.loading =  false
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
 	async fetchCommunes() {
@@ -791,7 +791,7 @@ export default {
         }
       } catch (error) {
 
-        this.handleErrors(error);
+        this.handleErrorsGet(error);
       }
     },
 	async fetchCollecteurs() {
@@ -815,7 +815,7 @@ export default {
 });
         }
       } catch (error) {
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
     },
     async SubmitCollecteur(modalId) {
@@ -871,7 +871,7 @@ export default {
 
       
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
+          
         
           let data =  response.data
           this.step2 = {
@@ -894,7 +894,7 @@ export default {
         }
       } catch (error) {
       
-		this.handleErrors(error);
+		this.handleErrorsGet(error);
       }
 
     },
@@ -1074,6 +1074,29 @@ triggerToast(errorMessage) {
         this.data = [];
       } else {
         this.triggerToast(error.response?.data.detail);
+        this.loading = false;
+        return false;
+      }
+    },
+    async handleErrorsGet(error) {
+      console.log('Error:', error);
+      if (error.response?.status === 500) {
+        
+      }
+      if (error.response?.data.detail.includes('204')) {
+        this.loading = false;
+        this.data = [];
+
+     
+      }
+      else if (error.response?.status === 401 || error.response?.data.detail.includes(401)) {
+        await this.$store.dispatch("auth/clearMyAuthenticatedUser");
+        this.$router.push("/"); 
+      } else if (error.response?.status === 404 || error.response?.data.detail.includes(404)) {
+        this.loading = false;
+        this.data = [];
+      } else {
+     
         this.loading = false;
         return false;
       }
