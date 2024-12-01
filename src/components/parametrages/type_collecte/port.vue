@@ -871,6 +871,8 @@
             error: "",
             resultError: {},
             jours:[
+            {label:'Tous les jours' , value:'Tous les jours'},
+
                 {label:'Lundi' , value:'Lundi'},
                 {label:'Mardi' , value:'Mardi'},
                 {label:'Mercredi' , value:'Mercredi'},

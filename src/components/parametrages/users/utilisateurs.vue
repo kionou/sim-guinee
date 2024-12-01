@@ -697,8 +697,8 @@
 
        
         if (response.status === 200) {
-          this.data = response.data;
-          this.RolesOptions = this.data;
+         
+         
           this.OptionsRoles = [],
           response?.data?.map(r => this.OptionsRoles.push({
             label: r.name,
@@ -914,7 +914,6 @@
 		if (this.searchUsers !== null) {
 		  const tt = this.searchUsers;
 		  const searchValue = tt.toLowerCase();
-		  console.log('user',searchValue)
 		  this.UsersOptions = this.data.filter((user) => {
 			const Username = user.username || "";
 			const Email = user.email || "";
@@ -922,7 +921,7 @@
 			const Lastname = user.lastname || "";
 			const Whatsapp = user.whatsapp || "";
 			const Commune = user.commune_relation?.nom_commune || "";
-			const Role = user.role || "";
+			 const Role = user.role_relation?.name || "";
 			// const Status = user.status || "";
 			return (
 			  Username.toLowerCase().includes(searchValue) ||
@@ -931,7 +930,7 @@
 			  Lastname.toLowerCase().includes(searchValue) ||
 			  Whatsapp.toLowerCase().includes(searchValue) ||
 			  Commune.toLowerCase().includes(searchValue) ||
-			  Role.toLowerCase().includes(searchValue) 
+			   Role.toLowerCase().includes(searchValue) 
 			//   Status.toLowerCase().includes(searchValue)
 			);
 		  });

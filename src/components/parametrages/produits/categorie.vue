@@ -426,7 +426,7 @@ export default {
 
       
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
+           
         
           let data =  response.data
           this.step2.code_categorie_produit = data.code_categorie_produit,

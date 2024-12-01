@@ -41,7 +41,7 @@
                   <th class="text-center">N°</th>
                   <th>Nom</th>
                   <th>Définition</th>
-                  <th>Poids indicatif</th>
+                  <!-- <th>Poids indicatif</th> -->
                   <th>Unité conventionnelle</th>
                   <th>Actions</th>
   
@@ -80,7 +80,7 @@
                     </div>
                   </td>
                   <td>{{ data?.definition }}</td>
-                  <td>{{ data?.poids_indicatif }}</td>
+                  <!-- <td>{{ data?.poids_indicatif }}</td> -->
                   <td>{{ data?.unite_conventionel }}</td>
   
                   <td style="width: 100px;">
@@ -156,24 +156,7 @@
                     </div>
                   </div>
                 
-  
-  
-  
-                </div>
-                <div class="row  content-group">
-  
- 
-  <div class="col">
-    <div class="input-groupe">
-      <label for="userpassword">Poids Indicatif <span class="text-danger">*</span></label>
-      <MazInput v-model="unite.poids_indicatif" color="info" name="poids_indicatif" size="sm"
-        rounded-size="sm" type="text" @input="clearErrorUnites(index, 'poids_indicatif')" />
-      <small v-if="errors.Unites && errors.Unites[index] && errors.Unites[index].poids_indicatif">{{
-        errors.Unites[index].poids_indicatif }}</small>
-      <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
-    </div>
-  </div>
-  <div class="col">
+                  <div class="col">
     <div class="input-groupe">
       <label for="userpassword">Unité conventionnelle <span class="text-danger">*</span></label>
       <MazSelect v-model="unite.unite_conventionel" color="info" name="unite_conventionel" size="sm"
@@ -183,6 +166,23 @@
       <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
     </div>
   </div>
+  
+  
+                </div>
+                <div class="row  content-group">
+  
+ 
+  <!-- <div class="col">
+    <div class="input-groupe">
+      <label for="userpassword">Poids Indicatif <span class="text-danger">*</span></label>
+      <MazInput v-model="unite.poids_indicatif" color="info" name="poids_indicatif" size="sm"
+        rounded-size="sm" type="text" @input="clearErrorUnites(index, 'poids_indicatif')" />
+      <small v-if="errors.Unites && errors.Unites[index] && errors.Unites[index].poids_indicatif">{{
+        errors.Unites[index].poids_indicatif }}</small>
+      <small v-if="resultError['Unites']"> {{ resultError["Unites"] }} </small>
+    </div>
+  </div> -->
+  
 
 
 
@@ -250,7 +250,7 @@
                   </small>
                 </div>
               </div>
-              <div class="col-12">
+              <!-- <div class="col-12">
                 <div class="input-groupe">
                   <label for="userpassword"> Poids Indicateur <span class="text-danger">*</span></label>
                   <MazInput v-model="step2.poids_indicatif" color="secondary" name="step2.poids_indicatif" size="sm"
@@ -262,7 +262,7 @@
                     {{ resultError["poids_indicatif"] }}
                   </small>
                 </div>
-              </div>
+              </div> -->
               <div class="col-12">
                 <div class="input-groupe">
                   <label for="userpassword"> Unité conventionnelle <span class="text-danger">*</span></label>
@@ -374,7 +374,7 @@ export default {
       step2: {
         nom_unite: "",
         definition: "",
-        poids_indicatif: 0,
+        // poids_indicatif: 0,
         unite_conventionel:"",
       },
       v$: useVuelidate(),
@@ -384,7 +384,7 @@ export default {
       Unites: [{
         nom_unite: "",
         definition: "",
-        poids_indicatif: 0,
+        poids_indicatif: 1,
         unite_conventionel:"",
 
 
@@ -402,7 +402,7 @@ export default {
     step2: {
       nom_unite: { require },
       definition: { require },
-      poids_indicatif: { require },
+      // poids_indicatif: { require },
       unite_conventionel:{ require },
 
 
@@ -415,7 +415,7 @@ export default {
   methods: {
     successmsg: successmsg,
     AddformDataUnites() {
-      this.Unites.push({ nom_unite: "", definition: "", poids_indicatif: 0, unite_conventionel:"", });
+      this.Unites.push({ nom_unite: "", definition: "", poids_indicatif: 1, unite_conventionel:"", });
     },
     deleteRowUnites(index) {
 
@@ -497,7 +497,7 @@ export default {
 
 
           if (response.status === 200) {
-            this.Unites = [{ nom_unite: "", definition: "", poids_indicatif: 0, unite_conventionel:"", }];
+            this.Unites = [{ nom_unite: "", definition: "", poids_indicatif: 1, unite_conventionel:"", }];
 
             this.closeModal(modalId);
             this.successmsg(
@@ -533,8 +533,9 @@ export default {
           let data = response.data
           this.step2.nom_unite = data.nom_unite,
             this.step2.definition = data.definition,
-            this.step2.poids_indicatif = data.poids_indicatif,
-            this.step2.unite_conventionel = data.unite_conventionel
+            // this.step2.poids_indicatif = data.poids_indicatif,
+            this.step2.unite_conventionel = data.unite_conventionel,
+            // this.image = data.image
 
             this.ToId = data.id_unite
           this.loading = false;
@@ -557,7 +558,7 @@ export default {
         let data = {
           nom_unite: this.step2.nom_unite,
           definition: this.step2.definition,
-          poids_indicatif: this.step2.poids_indicatif,
+          poids_indicatif: 1,
           unite_conventionel : this.step2.unite_conventionel
         }
 
@@ -704,7 +705,8 @@ export default {
       let data = {
         nom_unite: this.dataFile.nom_unite,
         definition: this.dataFile.definition,
-        poids_indicatif: this.dataFile.poids_indicatif,
+        poids_indicatif: 1,
+        unite_conventionel:this.dataFile.unite_conventionel,
         image: url,
       };
       console.log('data', data)

@@ -425,7 +425,7 @@ export default {
 
       
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
+            
         
           let data =  response.data
           this.step2.code_forme_produit = data.code_forme_produit,

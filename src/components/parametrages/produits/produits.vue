@@ -1198,7 +1198,7 @@ export default {
           categorie_produit: this.step2.categorie_produit,
           forme_produit: this.step2.forme_produit,
           famille_produit: this.step2.famille_produit,
-           type_marche: this.step2.type_marche,
+          type_marche: this.step2.type_marche,
           collecteur: this.step2.collecteur,
           affichage_ecran: this.step2.affichage_ecran,
           filiere: this.step2.filiere,
@@ -1382,11 +1382,14 @@ triggerFileInput() {
       }
     },
     async submitUpdateFile(url , modalId) {
+     console.log(' this.dataFile' ,  this.dataFile)
+
      
         this.loading = true;
         let data = {
           code_produit: this.dataFile.code_produit,
           nom_produit: this.dataFile.nom_produit,
+          nom_produit_en:this.dataFile.nom_produit_en,
           categorie_produit: this.dataFile.categorie_produit,
           forme_produit: this.dataFile.forme_produit,
           famille_produit: this.dataFile.famille_produit,
@@ -1394,6 +1397,7 @@ triggerFileInput() {
           collecteur: this.dataFile.collecteur,
           affichage_ecran: this.dataFile.affichage_ecran,
           filiere: this.dataFile.filiere,
+          type_marche:this.dataFile.type_marche,
           image: url,
         };
         console.log('data',data)

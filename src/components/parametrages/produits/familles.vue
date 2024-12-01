@@ -66,7 +66,7 @@
                    <td style="width: 100px;">
                     <div class="d-flex justify-content-evenly border-0">
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs" title="" @click="HandleIdUpdate(data.code_famille_produit ,'update-famille')"  data-original-title="Update" ><i class="ti-marker-alt"></i></a>
-                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.code_famille_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
+                        <a href="javascript:vcode(0)" class="btn btn-circle btn-danger btn-xs" @click="HandleIdDelete(data.id_famille_produit)" title="" data-toggle="tooltip" data-original-title="Delete"><i class="ti-trash"></i></a>
                     </div>   
 					</td > 
                </tr>
@@ -490,7 +490,7 @@ export default {
 
       
         if (response.status === 200) {
-            console.log('Slbvlkjbv',response)
+            
         
           let data =  response.data
           this.step2.code_famille_produit = data.code_famille_produit,

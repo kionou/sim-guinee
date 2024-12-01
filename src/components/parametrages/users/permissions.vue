@@ -51,15 +51,15 @@
                   <tr v-for="(data , index) in paginatedItems" :key="data.id_magasin">
     
                     <td style="width: 50px;" class="text-center">{{ index + 1 }}</td>
-                    <td>{{ data.nom_magasin }}</td>
+                    <td>{{ data.title }}</td>
                    
                     <td style="width: 100px">
                       <div class="d-flex justify-content-evenly border-0">
                         <a href="javascript:void(0)" class="btn btn-circle btn-info btn-xs"
-                    @click="HandleIdUpdate(data?.code_magasin, 'update-roles')"
+                    @click="HandleIdUpdate(data?.id, 'update-permissions')"
                     data-original-title="Update">
                     
-                    <span v-if="loadingItems[data?.code_magasin]">
+                    <span v-if="loadingItems[data?.id]">
                       <i class="mdi mdi-loading mdi-spin"></i> 
                     </span>
                     <span v-else>
@@ -87,7 +87,7 @@
     
    
     
-      <div class="modal center-modal fade" id="update-roles" ref="update-roles" tabindex="-1">
+      <div class="modal center-modal fade" id="update-permissions" ref="update-permissions" tabindex="-1">
         <div class="modal-dialog ">
           <div class="modal-content">
             <div class="modal-header">
@@ -95,7 +95,7 @@
                 Modifier une permissions
               </h5>
               <button type="button" class=" modal_close btn btn-circle btn-danger close py-1 px-3"
-                @click="closeModal('update-roles')">
+                @click="closeModal('update-permissions')">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -104,14 +104,14 @@
                 <div class="col-12">
                   <div class="input-groupe">
                     <label for="userpassword">
-                      nom <span class="text-danger">*</span></label>
-                    <MazInput v-model="step2.name" color="secondary" name="step2.name" size="sm"
+                      Nom <span class="text-danger">*</span></label>
+                    <MazInput v-model="step2.title" color="secondary" name="step2.title" size="sm"
                       rounded-size="sm" type="text" />
-                    <small v-if="v$.step2.name.$error">{{
-                      v$.step2.name.$errors[0].$message
+                    <small v-if="v$.step2.title.$error">{{
+                      v$.step2.title.$errors[0].$message
                       }}</small>
-                    <small v-if="resultError['name']">
-                      {{ resultError["name"] }}
+                    <small v-if="resultError['title']">
+                      {{ resultError["title"] }}
                     </small>
                   </div>
                 </div>
@@ -119,10 +119,10 @@
     
             </div>
             <div class="modal-footer modal-footer-uniform text-end">
-              <button type="button" @click="submitUpdate('update-roles')"
+              <button type="button" @click="submitUpdate('update-permissions')"
                 class="waves-effect waves-light btn btn-primary">
                
-                <span v-if="loadingItems['update-roles']">
+                <span v-if="loadingItems['update-permissions']">
                       <i class="mdi mdi-loading mdi-spin"></i> chargement...
                     </span>
                     <span v-else>
@@ -180,11 +180,9 @@
         itemsPerPage: 10,
         ToId: "",
         totalPageArray: [],
-        step1: {
-         name:""
-        },
+        
         step2: {
-         name:""
+         title:""
         },
         v$: useVuelidate(),
         error: "",
@@ -192,12 +190,9 @@
       };
     },
     validations: {
-      step1: {
-        name: { require },
      
-      },
       step2: {
-        name: { require },
+        title: { require },
   
       },
     },
@@ -211,19 +206,16 @@
    
       async getPermissions() {
         try {
-          const response = await axios.get("/parametrages/magasins", {
+          const response = await axios.get("/permissions", {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
           });
   
-          console.log("response", response);
+   
           if (response.status === 200) {
-         response?.data?.map(p => this.PermissionsOptions.push({
-          label:p.name,
-          value:p.id
-         }))
-        
+            this.data  = response?.data
+            this.PermissionsOptions =  this.data
             this.loading = false;
           }
         } catch (error) {
@@ -235,17 +227,15 @@
         this.loadingItems[id] = true;
   
         try {
-          const response = await axios.get(`/parametrages/magasins/${id}`, {
+          const response = await axios.get(`/permissions/{id}?role_id=${id}`, {
             headers: {
               Authorization: `Bearer ${this.loggedInUser.token}`,
             },
           });
   
           if (response.status === 200) {
-            console.log("Slbvlkjbv", response);
-  
             let data = response.data;
-            (this.step2.name = data.name), 
+            (this.step2.title = data.title), 
               (this.ToId = data.id);
               this.openModal(modalId)
               this.loadingItems[id] = false;
@@ -262,12 +252,12 @@
           this.loadingItems[modalId] = true;
           
           let data = {
-            name: this.step2.name,
+            title: this.step2.title,
            
           };
   
           try {
-            const response = await axios.put(`/parametrages/magasins/${this.ToId}`, data, {
+            const response = await axios.put(`/permissions/{id}?role_id=${this.ToId}`, data, {
               headers: {
                 Authorization: `Bearer ${this.loggedInUser.token}`,
               },
@@ -277,10 +267,10 @@
               this.closeModal(modalId);
               this.loadingItems[modalId] = false;
               this.successmsg(
-                "Données du rôle mises à jour",
-                "Les données du rôle ont été mises à jour avec succès !"
+                "Données de la permission mises à jour",
+                "Les données de la permission ont été mises à jour avec succès !"
               );
-              await this.getRoles();
+              await this.getPermissions();
             }
           } catch (error) {
             this.openModal(modalId)
@@ -297,7 +287,7 @@
           const tt = this.searchRoles;
           const searchValue = tt.toLowerCase();
           this.PermissionsOptions = this.data.filter((user) => {
-            const Nom = user.name || "";
+            const Nom = user.title || "";
             return (
               Nom.toLowerCase().includes(searchValue) 
             );

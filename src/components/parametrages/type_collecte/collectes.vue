@@ -481,9 +481,7 @@
                         </div>
                      <div class="col">
                           <div class="input-groupe">
-                            <label for="userpassword"
-                              > Nom <span class="text-danger">*</span></label
-                            >
+                            <label for="userpassword"> Nom <span class="text-danger">*</span></label>
                             <MazInput
                               v-model="step2.nom_marche"
                               color="secondary"
@@ -869,6 +867,7 @@
             error: "",
             resultError: {},
             jours:[
+            {label:'Tous les jours' , value:'Tous les jours'},
                 {label:'Lundi' , value:'Lundi'},
                 {label:'Mardi' , value:'Mardi'},
                 {label:'Mercredi' , value:'Mercredi'},

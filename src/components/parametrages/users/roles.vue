@@ -258,7 +258,7 @@
                   <label for="userpassword">
                     permissions <span class="text-danger">*</span></label>
                   <MazSelect v-model="step2.name" color="secondary" name="step2.name" size="sm" rounded-size="sm" search
-                    :options="PermissiosnOptions" />
+                    :options="PermissionsOptions" />
                   <small v-if="v$.step2.name.$error">{{
                     v$.step2.name.$errors[0].$message
                     }}</small>
@@ -363,6 +363,7 @@ export default {
   },
   async mounted() {
     await this.getRoles();
+    await this.getPermissions();
 
   },
   methods: {
@@ -393,16 +394,15 @@ export default {
     },
     async getPermissions() {
       try {
-        const response = await axios.get("/parametrages/magasins", {
+        const response = await axios.get("/permissions", {
           headers: {
             Authorization: `Bearer ${this.loggedInUser.token}`,
           },
         });
 
-        console.log("response", response);
         if (response.status === 200) {
           response?.data?.map(p => this.PermissionsOptions.push({
-            label: p.name,
+            label: p.title,
             value: p.id
           }))
 

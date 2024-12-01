@@ -225,8 +225,9 @@
                             size="sm"
                             rounded-size="sm"
                             search
-                            :options="jours"
+                            :options="computedJours"
                             multiple
+                            @update:model-value="updateModelValue"
                             
                             
                           />
@@ -808,6 +809,21 @@ components:{
     const endIndex = startIndex + this.itemsPerPage;
     return this.MarchesOptions.slice(startIndex, endIndex);
   },
+  computedJours() {
+   
+      // if (this.step1.jour_du_marche.includes('Tous les jours')) {
+      //   return this.jours.map(jour => ({
+      //     ...jour,
+      //     disabled: jour.value !== 'Tous les jours'
+      //   }));
+      // }
+
+      
+      return this.jours.map(jour => ({
+        ...jour,
+        disabled: this.step1.jour_du_marche.includes(jour.value) && jour.value !== 'Tous les jours'
+      }));
+    },
 
 },
   data() {
@@ -872,6 +888,7 @@ step2: {
           error: "",
           resultError: {},
           jours:[
+              {label:'Tous les jours' , value:'Tous les jours'},
               {label:'Lundi' , value:'Lundi'},
               {label:'Mardi' , value:'Mardi'},
               {label:'Mercredi' , value:'Mercredi'},
@@ -947,7 +964,10 @@ async  mounted() {
   methods: {
       successmsg:successmsg,
 
-      
+      updateModelValue(value) {
+        console.log(value)
+      this.step1.jour_du_marche = value;
+    },
       async fetchMarches(id) {
     try {
       const response = await axios.get( `/parametrages/marches/marche/listes?type_marche=${id}`,
